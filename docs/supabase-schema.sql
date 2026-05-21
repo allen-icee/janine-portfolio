@@ -190,111 +190,50 @@ alter table experience_items enable row level security;
 alter table client_records enable row level security;
 alter table financial_records enable row level security;
 
-create policy "Public can read portfolio items"
-  on portfolio_items for select
-  using (true);
+-- Safely drop all existing policies before recreating them
+drop policy if exists "Public can read portfolio items" on portfolio_items;
+drop policy if exists "Public can read testimonials" on testimonials;
+drop policy if exists "Public can read proof items" on proof_items;
+drop policy if exists "Public can read education items" on education_items;
+drop policy if exists "Public can read experience items" on experience_items;
+drop policy if exists "Public can read active faqs" on faqs;
+drop policy if exists "Public can read active services" on services;
+drop policy if exists "Public can read site settings" on site_settings;
+drop policy if exists "Admins can read own admin profile" on admin_profiles;
+drop policy if exists "Admins can manage portfolio items" on portfolio_items;
+drop policy if exists "Admins can manage testimonials" on testimonials;
+drop policy if exists "Admins can manage faqs" on faqs;
+drop policy if exists "Admins can manage services" on services;
+drop policy if exists "Admins can manage site settings" on site_settings;
+drop policy if exists "Admins can manage proof items" on proof_items;
+drop policy if exists "Admins can manage education items" on education_items;
+drop policy if exists "Admins can manage experience items" on experience_items;
+drop policy if exists "Admins can manage client records" on client_records;
+drop policy if exists "Admins can manage financial records" on financial_records;
+drop policy if exists "Admins can read inquiries" on inquiries;
+drop policy if exists "Admins can update inquiries" on inquiries;
 
-create policy "Public can read testimonials"
-  on testimonials for select
-  using (true);
+-- Recreate policies
+create policy "Public can read portfolio items" on portfolio_items for select using (true);
+create policy "Public can read testimonials" on testimonials for select using (true);
+create policy "Public can read proof items" on proof_items for select using (true);
+create policy "Public can read education items" on education_items for select using (true);
+create policy "Public can read experience items" on experience_items for select using (true);
+create policy "Public can read active faqs" on faqs for select using (is_active = true);
+create policy "Public can read active services" on services for select using (is_active = true);
+create policy "Public can read site settings" on site_settings for select using (true);
 
-create policy "Public can read proof items"
-  on proof_items for select
-  using (true);
+create policy "Admins can read own admin profile" on admin_profiles for select to authenticated using (auth.uid() = id);
+create policy "Admins can manage portfolio items" on portfolio_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage testimonials" on testimonials for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage faqs" on faqs for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage services" on services for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage site settings" on site_settings for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage proof items" on proof_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage education items" on education_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage experience items" on experience_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage client records" on client_records for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage financial records" on financial_records for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 
-create policy "Public can read education items"
-  on education_items for select
-  using (true);
-
-create policy "Public can read experience items"
-  on experience_items for select
-  using (true);
-
-create policy "Public can read active faqs"
-  on faqs for select
-  using (is_active = true);
-
-create policy "Public can read active services"
-  on services for select
-  using (is_active = true);
-
-create policy "Public can read site settings"
-  on site_settings for select
-  using (true);
-
-create policy "Admins can read own admin profile"
-  on admin_profiles for select
-  to authenticated
-  using (auth.uid() = id);
-
-create policy "Admins can manage portfolio items"
-  on portfolio_items for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage testimonials"
-  on testimonials for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage faqs"
-  on faqs for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage services"
-  on services for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage site settings"
-  on site_settings for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage proof items"
-  on proof_items for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage education items"
-  on education_items for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage experience items"
-  on experience_items for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage client records"
-  on client_records for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can manage financial records"
-  on financial_records for all
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
--- Inquiries should be inserted through Laravel to add validation, rate limiting, and spam checks.
-create policy "Admins can read inquiries"
-  on inquiries for select
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
-
-create policy "Admins can update inquiries"
-  on inquiries for update
-  to authenticated
-  using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()))
-  with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can read inquiries" on inquiries for select to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can update inquiries" on inquiries for update to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
