@@ -2,19 +2,25 @@ import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { isSupabaseConfigured, supabase } from '../../lib/supabase'
+import { getAdminAccessCache, setAdminAccessCache } from '../../lib/adminAccess'
 
 type AdminGuardProps = {
   children: ReactNode
 }
 
 export function AdminGuard({ children }: AdminGuardProps) {
-  const [isAllowed, setIsAllowed] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isAllowed, setIsAllowed] = useState(getAdminAccessCache() === true)
+  const [isLoading, setIsLoading] = useState(getAdminAccessCache() !== true)
   const [message, setMessage] = useState('')
 
   useEffect(() => {
+    if (getAdminAccessCache() === true) {
+      return
+    }
+
     const checkAccess = async () => {
       if (!isSupabaseConfigured || !supabase) {
+        setAdminAccessCache(false)
         setMessage('Supabase is not configured yet. Add your frontend .env values first.')
         setIsLoading(false)
         return
@@ -24,6 +30,7 @@ export function AdminGuard({ children }: AdminGuardProps) {
       const user = sessionData.session?.user
 
       if (!user) {
+        setAdminAccessCache(false)
         setMessage('Please sign in before opening the admin dashboard.')
         setIsLoading(false)
         return
@@ -36,11 +43,13 @@ export function AdminGuard({ children }: AdminGuardProps) {
         .maybeSingle()
 
       if (!adminProfile) {
+        setAdminAccessCache(false)
         setMessage('This account is not listed in admin_profiles.')
         setIsLoading(false)
         return
       }
 
+      setAdminAccessCache(true)
       setIsAllowed(true)
       setIsLoading(false)
     }

@@ -138,7 +138,7 @@ export function About() {
                   <div className="size-12 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm p-1.5">
                     {!imgErrors.college ? (
                       <img
-                        src="/src/assets/images/TSULogo.png"
+                        src="/src/assets/images/GJCLogo.png"
                         alt="College Logo"
                         className="h-full w-full object-contain"
                         onError={() => handleError("college")}
