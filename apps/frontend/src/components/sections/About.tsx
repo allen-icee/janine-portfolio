@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 
 export function About() {
-  // Safe React state for image fallbacks
   const [imgErrors, setImgErrors] = useState({
     cutout: false,
     grad: false,
@@ -16,22 +15,17 @@ export function About() {
   };
 
   return (
+    // Matches the alternating pattern perfectly
     <section
       id="about"
       className="relative overflow-hidden bg-[#f9f6f3] px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
     >
-      {/* Background Ambience */}
       <div className="absolute left-1/2 top-0 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-[#f8cdb4]/40 blur-[100px]" />
       <div className="absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-[#e3d1d1]/40 blur-[120px]" />
 
-      {/* Main Container */}
       <div className="mx-auto flex max-w-7xl flex-col gap-16 lg:gap-24">
-        {/* =========================================================
-            SECTION 1: THE BIO (Layered Overlap Design)
-        ========================================================= */}
-        {/* Container changed to justify-center to pull elements together */}
+        {/* SECTION 1: THE BIO */}
         <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:items-end">
-          {/* Transparent Cutout Image */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -42,7 +36,7 @@ export function About() {
             <div className="aspect-[3/4] w-full lg:h-[500px] lg:w-auto">
               {!imgErrors.cutout ? (
                 <img
-                  src="/src/assets/images/transparent-janine.png"
+                  src="/src/assets/images/AboutPage.png"
                   alt="Janine Portrait"
                   className="h-full w-full object-contain drop-shadow-2xl"
                   onError={() => handleError("cutout")}
@@ -59,23 +53,20 @@ export function About() {
             </div>
           </motion.div>
 
-          {/* Bio Glass Card - Added negative margins for overlap */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            // -mt-16 creates mobile overlap, lg:-ml-20 creates desktop overlap, lg:mt-0 resets it
             className="relative z-10 w-full -mt-16 sm:max-w-xl lg:mt-0 lg:-ml-20 lg:w-1/2 lg:pb-10 lg:max-w-none"
           >
             <div className="rounded-[2rem] border border-[#efdad0] bg-white/80 p-6 shadow-xl backdrop-blur-md sm:p-8 lg:p-10">
-              <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl">
-                About Me.
+              <h2 className="font-serif text-4xl font-bold text-center tracking-tight text-[#3c232c] sm:text-5xl">
+                About Me
               </h2>
               <p className="mt-3 font-serif text-lg font-bold italic text-[#ad6a6c]">
                 Specializing in social media, design, research, and analytics.
               </p>
-
               <div className="mt-6 space-y-4 text-sm leading-relaxed text-[#3c232c]/80 sm:text-base">
                 <p>
                   With experience in both corporate and freelance environments,
@@ -96,9 +87,7 @@ export function About() {
           </motion.div>
         </div>
 
-        {/* =========================================================
-            SECTION 2: EDUCATION (Asymmetric Editorial Grid)
-        ========================================================= */}
+        {/* SECTION 2: EDUCATION */}
         <div className="mx-auto w-full max-w-6xl">
           <div className="mb-10 text-center lg:text-left">
             <div className="mb-3 flex items-center justify-center gap-3 lg:justify-start">
@@ -106,13 +95,12 @@ export function About() {
                 <Icon icon="ph:graduation-cap-duotone" className="text-2xl" />
               </div>
               <h2 className="font-serif text-3xl font-bold text-[#3c232c] sm:text-4xl">
-                Educational Background.
+                Educational Background
               </h2>
             </div>
           </div>
 
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
-            {/* 3:4 Photo Anchor */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -123,7 +111,7 @@ export function About() {
               <div className="aspect-[3/4] w-full overflow-hidden rounded-[2.5rem] border-[8px] border-white shadow-lg shadow-[#3c232c]/5">
                 {!imgErrors.grad ? (
                   <img
-                    src="/src/assets/images/grad-photo.jpg"
+                    src="/src/assets/images/GradPage.png"
                     alt="Graduation"
                     className="h-full w-full object-cover object-top"
                     onError={() => handleError("grad")}
@@ -138,9 +126,7 @@ export function About() {
               </div>
             </motion.div>
 
-            {/* Academic Cards */}
             <div className="flex flex-col gap-6 lg:gap-8">
-              {/* College Card */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -152,7 +138,7 @@ export function About() {
                   <div className="size-12 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm p-1.5">
                     {!imgErrors.college ? (
                       <img
-                        src="/src/assets/images/college-logo.png"
+                        src="/src/assets/images/TSULogo.png"
                         alt="College Logo"
                         className="h-full w-full object-contain"
                         onError={() => handleError("college")}
@@ -199,7 +185,6 @@ export function About() {
                 </ul>
               </motion.div>
 
-              {/* SHS Card */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -211,7 +196,7 @@ export function About() {
                   <div className="size-12 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm p-1.5">
                     {!imgErrors.shs ? (
                       <img
-                        src="/src/assets/images/shs-logo.png"
+                        src="/src/assets/images/SHSLogo.png"
                         alt="SHS Logo"
                         className="h-full w-full object-contain"
                         onError={() => handleError("shs")}
@@ -260,21 +245,18 @@ export function About() {
           </div>
         </div>
 
-        {/* =========================================================
-            SECTION 3: WORK EXPERIENCE (Sleek Vertical Timeline)
-        ========================================================= */}
+        {/* SECTION 3: WORK EXPERIENCE */}
         <div className="mx-auto w-full max-w-4xl">
           <div className="mb-12 flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
             <div className="grid size-12 place-items-center rounded-full bg-[#ad6a6c]/10 text-[#ad6a6c]">
               <Icon icon="ph:briefcase-duotone" className="text-2xl" />
             </div>
             <h2 className="font-serif text-3xl font-bold text-[#3c232c] sm:text-4xl">
-              Professional Journey.
+              Professional Journey
             </h2>
           </div>
 
           <div className="relative border-l-2 border-[#e3d1d1] pl-6 sm:pl-10 lg:ml-8">
-            {/* Infosys Node */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -282,14 +264,12 @@ export function About() {
               transition={{ duration: 0.5 }}
               className="relative mb-12"
             >
-              {/* Timeline Marker */}
               <span className="absolute -left-[35px] top-1 flex size-8 items-center justify-center bg-[#f9f6f3] sm:-left-[51px]">
                 <Icon
                   icon="ph:circle-duotone"
                   className="text-xl text-[#ad6a6c]"
                 />
               </span>
-
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h4 className="font-serif text-2xl font-bold text-[#3c232c]">
@@ -310,7 +290,6 @@ export function About() {
                   </span>
                 </div>
               </div>
-
               <div className="rounded-[1.5rem] border border-[#efdad0] bg-white/60 p-5 shadow-sm backdrop-blur-sm sm:p-6">
                 <ul className="list-inside list-disc space-y-2 text-sm text-[#3c232c]/85 marker:text-[#ad6a6c]">
                   <li>CS100 Top 1 Trainee & Mock Calls Top Trainee</li>
@@ -323,7 +302,6 @@ export function About() {
               </div>
             </motion.div>
 
-            {/* Freelance Node */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -331,14 +309,12 @@ export function About() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="relative"
             >
-              {/* Timeline Marker */}
               <span className="absolute -left-[35px] top-1 flex size-8 items-center justify-center bg-[#f9f6f3] sm:-left-[51px]">
                 <Icon
                   icon="ph:circle-duotone"
                   className="text-xl text-[#ad6a6c]"
                 />
               </span>
-
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h4 className="font-serif text-2xl font-bold text-[#3c232c]">
@@ -359,7 +335,6 @@ export function About() {
                   </span>
                 </div>
               </div>
-
               <div className="rounded-[1.5rem] border border-[#efdad0] bg-white/60 p-5 shadow-sm backdrop-blur-sm sm:p-6">
                 <ul className="list-inside list-disc space-y-2 text-sm text-[#3c232c]/85 marker:text-[#ad6a6c]">
                   <li>

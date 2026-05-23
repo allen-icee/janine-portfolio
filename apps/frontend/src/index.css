@@ -9,6 +9,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* This prevents the fixed header from covering the section heading */
+  scroll-padding-top: 5rem;
 }
 
 body {

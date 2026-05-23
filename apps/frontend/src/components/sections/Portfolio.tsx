@@ -59,7 +59,7 @@ export function Portfolio() {
     <>
       <section
         id="portfolio"
-        className="relative overflow-hidden bg-[#f9f6f3] px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
+        className="relative overflow-hidden bg-[#f9f6f3] px-4 py-10 sm:px-6 lg:px-8 lg:py-15"
       >
         {/* Soft Warm Glows to break up the "gray" feeling */}
         <div className="absolute -left-20 top-20 -z-10 h-[400px] w-[400px] rounded-full bg-[#f8cdb4]/20 blur-[100px]" />
@@ -67,12 +67,12 @@ export function Portfolio() {
 
         <div className="mx-auto max-w-7xl">
           {/* Flipped Typography Hierarchy */}
-          <div className="mb-10 text-center lg:text-left">
+          <div className="mb-10 text-center lg:text-center">
             <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl lg:text-6xl">
               Portfolio
             </h2>
             <p className="mt-3 text-xs font-bold uppercase tracking-[0.2em] text-[#ad6a6c]">
-              Selected works and outcomes.
+              Some of my works and outcomes
             </p>
           </div>
 

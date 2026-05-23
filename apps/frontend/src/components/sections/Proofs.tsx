@@ -60,7 +60,7 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
     <>
       <section
         id="proofs"
-        className="relative overflow-hidden bg-[#f0eeea] px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
+        className="relative overflow-hidden bg-[#efe9e5] px-4 py-10 sm:px-6 lg:px-8 lg:py-15"
       >
         {/* Subtle Background Ambience */}
         <div className="absolute left-1/2 top-0 -z-10 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#f8cdb4]/20 blur-[120px]" />
@@ -68,12 +68,7 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
         <div className="mx-auto max-w-7xl">
           {/* Header Section based on your reference image */}
           <div className="mx-auto max-w-3xl text-center mb-16">
-            <div className="mb-4 flex justify-center">
-              <div className="grid size-12 place-items-center rounded-full bg-[#ad6a6c]/10 text-[#ad6a6c]">
-                <Icon icon="ph:star-duotone" className="text-2xl" />
-              </div>
-            </div>
-            <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl lg:text-6xl">
+            <h2 className="font-serif text-3xl font-bold tracking-tight text-[#3c232c] sm:text-4xl lg:text-5xl">
               Catered over 1,000+ clients.
             </h2>
             <p className="mt-4 font-serif text-lg font-bold italic tracking-wide text-[#ad6a6c] sm:text-xl">

@@ -31,7 +31,7 @@ export function Testimonials() {
     <>
       <section
         id="testimonials"
-        className="relative overflow-hidden bg-[#f0eeea] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
+        className="relative overflow-hidden bg-[#f9f6f3] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
       >
         {/* Background Ambience Elements */}
         <div className="absolute -left-[10%] top-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#f8cdb4]/30 blur-[100px]" />
@@ -41,16 +41,11 @@ export function Testimonials() {
           {/* Header & Actions - Tightened margins for compactness */}
           <div className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              <h2 className="font-serif text-5xl font-bold tracking-tight text-[#3c232c] sm:text-6xl lg:text-7xl">
-                Client Feedback.
+              <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl lg:text-6xl">
+                Client Feedback
               </h2>
               <p className="mt-2 font-serif text-lg font-bold italic tracking-wide text-[#ad6a6c] sm:text-xl">
-                Trust built on measurable results.
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-[#3c232c]/80 sm:text-base">
-                Discover how I have collaborated with entrepreneurs, academics,
-                and global clients to streamline their workflows and elevate
-                their projects.
+                Don't forget to leave a review.
               </p>
             </div>
 
@@ -300,7 +295,7 @@ export function Testimonials() {
                       </label>
                       <input
                         type="text"
-                        placeholder="John Doe"
+                        placeholder="Maria Theresa Yu"
                         className="rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
                       />
                     </div>

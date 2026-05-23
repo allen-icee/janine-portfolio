@@ -14,6 +14,7 @@ const services = [
   "Data Analytics",
   "2D Animation",
   "Documentation",
+  "Others",
 ];
 
 const budgets = [
@@ -124,7 +125,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-[#f9f6f3] px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
+      className="relative overflow-hidden bg-[#f9f6f3] px-4 py-10 sm:px-6 lg:px-8 lg:py-20"
     >
       {/* BACKGROUND GLOW */}
       <div className="absolute -left-[5%] top-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#f8cdb4]/40 blur-[100px]" />
@@ -139,14 +140,11 @@ export function Contact() {
           viewport={{ once: true }}
           className="mb-8 flex flex-col items-center text-center lg:items-start lg:text-left"
         >
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-            Contact
-          </p>
           <h2 className="mt-1 font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl">
-            Get in touch.
+            Contact Me
           </h2>
-          <p className="mt-2 max-w-md text-sm leading-relaxed text-[#3c232c]/80 sm:text-base">
-            Freelance work, collaborations, and project inquiries.
+          <p className="mt-4 font-serif text-lg font-bold italic tracking-wide text-[#ad6a6c] sm:text-xl">
+            Feel free to message me to any of my details.
           </p>
         </motion.div>
 

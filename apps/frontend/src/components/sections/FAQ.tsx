@@ -13,7 +13,7 @@ export function FAQ() {
   return (
     <section
       id="faq"
-      className="relative overflow-hidden bg-[#f9f6f3] px-4 py-20 sm:px-6 lg:px-8 lg:py-32"
+      className="relative overflow-hidden bg-[#efe9e5] px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
     >
       {/* Background Ambience */}
       <div className="absolute left-1/2 top-0 -z-10 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#f8cdb4]/20 blur-[120px]" />
@@ -24,20 +24,11 @@ export function FAQ() {
             HEADER: Centered, Massive, Editorial
         ========================================================= */}
         <div className="mb-16 text-center">
-          <div className="mb-6 flex justify-center">
-            <div className="grid size-14 place-items-center rounded-full bg-[#ad6a6c]/10 text-[#ad6a6c]">
-              <Icon icon="ph:chat-teardrop-text-duotone" className="text-3xl" />
-            </div>
-          </div>
-          <h2 className="font-serif text-5xl font-bold tracking-tight text-[#3c232c] sm:text-7xl lg:text-8xl">
-            FAQ.
+          <h2 className="font-serif text-5xl font-bold tracking-tight text-[#3c232c] sm:text-6xl lg:text-7xl">
+            FAQ
           </h2>
           <p className="mt-4 font-serif text-lg font-bold italic tracking-wide text-[#ad6a6c] sm:text-xl">
-            Clear answers before you reach out.
-          </p>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-[#3c232c]/70 sm:text-base">
-            The goal is to reduce uncertainty. Find quick answers regarding my
-            process, capabilities, and how we can collaborate effectively.
+            Frequently Ask Questions.
           </p>
         </div>
 
@@ -124,21 +115,6 @@ export function FAQ() {
         </motion.div>
 
         {/* CTA at the bottom */}
-        <motion.div layout className="mt-16 text-center">
-          <p className="text-sm font-medium text-[#3c232c]/80 mb-4">
-            Still have a question?
-          </p>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-[#e3d1d1] bg-white/50 px-8 py-3.5 text-sm font-bold text-[#3c232c] transition-all hover:border-[#ad6a6c] hover:bg-white"
-          >
-            <Icon
-              icon="ph:paper-plane-tilt-bold"
-              className="text-lg text-[#ad6a6c]"
-            />
-            Send me a message
-          </a>
-        </motion.div>
       </div>
     </section>
   );
