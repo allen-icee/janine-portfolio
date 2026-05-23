@@ -49,16 +49,16 @@ export function AdminGuard({ children }: AdminGuardProps) {
   }, [])
 
   if (isLoading) {
-    return <main className="grid min-h-screen place-items-center bg-cream text-ink">Checking admin access...</main>
+    return <main className="grid min-h-screen place-items-center bg-[#f9f6f3] text-[#3c232c]">Checking admin access...</main>
   }
 
   if (!isAllowed) {
     return (
-      <main className="grid min-h-screen place-items-center bg-cream px-4">
-        <section className="max-w-md rounded-lg border border-coffee/10 bg-white/50 p-6 text-center shadow-xl">
-          <h1 className="font-serif text-4xl text-ink">Access required</h1>
-          <p className="mt-3 leading-7 text-ink/64">{message}</p>
-          <Link to="/admin/login" className="mt-6 inline-flex rounded-full bg-coffee px-6 py-3 font-semibold text-white">
+      <main className="grid min-h-screen place-items-center bg-[#f9f6f3] px-4">
+        <section className="max-w-md rounded-2xl border border-[#efdad0] bg-white/70 p-6 text-center shadow-xl">
+          <h1 className="font-serif text-4xl font-bold text-[#3c232c]">Access required</h1>
+          <p className="mt-3 leading-7 text-[#3c232c]/64">{message}</p>
+          <Link to="/admin/login" className="mt-6 inline-flex rounded-full bg-[#ad6a6c] px-6 py-3 font-semibold text-white">
             Go to admin login
           </Link>
         </section>

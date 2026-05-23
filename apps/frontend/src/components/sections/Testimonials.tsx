@@ -9,6 +9,10 @@ export function Testimonials() {
     useState<Testimonial | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
+  // States for the Interactive Star Rating in the form
+  const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
@@ -18,7 +22,9 @@ export function Testimonials() {
     }
   };
 
+  // Automatically generates initials from the name (e.g., "John Doe" -> "JD")
   const getInitials = (name: string) => {
+    if (!name) return "JD";
     return name
       .split(" ")
       .map((n) => n[0])
@@ -38,7 +44,7 @@ export function Testimonials() {
         <div className="absolute -right-[5%] bottom-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#e3d1d1]/40 blur-[100px]" />
 
         <div className="mx-auto max-w-7xl">
-          {/* Header & Actions - Tightened margins for compactness */}
+          {/* Header & Actions */}
           <div className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl lg:text-6xl">
@@ -52,7 +58,10 @@ export function Testimonials() {
             {/* Submit Review CTA */}
             <button
               type="button"
-              onClick={() => setIsReviewModalOpen(true)}
+              onClick={() => {
+                setRating(5); // reset rating when opening
+                setIsReviewModalOpen(true);
+              }}
               className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-full border-2 border-[#e3d1d1] bg-white/50 px-6 py-3.5 text-sm font-bold text-[#3c232c] transition-all hover:border-[#ad6a6c] hover:bg-white"
             >
               <Icon
@@ -65,7 +74,6 @@ export function Testimonials() {
 
           {/* Carousel Track & Controls Container */}
           <div className="relative">
-            {/* The Fluid Carousel */}
             <div
               ref={carouselRef}
               className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-6 pt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-6"
@@ -97,8 +105,9 @@ export function Testimonials() {
                       ))}
                     </div>
 
+                    {/* FIXED: Now using item.feedback instead of preview so the text matches perfectly */}
                     <p className="font-serif text-lg italic leading-relaxed text-[#3c232c] line-clamp-4 sm:text-xl">
-                      "{item.preview}"
+                      "{item.feedback}"
                     </p>
                     <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c] opacity-0 transition-opacity group-hover:opacity-100">
                       Click to read full story
@@ -114,7 +123,6 @@ export function Testimonials() {
                         <h4 className="text-sm font-bold text-[#3c232c] sm:text-base">
                           {item.name}
                         </h4>
-                        {/* TypeScript fix applied here: span wrapper for the title attribute */}
                         <span title="Verified Client">
                           <Icon
                             icon="ph:seal-check-fill"
@@ -215,6 +223,7 @@ export function Testimonials() {
                     icon="ph:quotes-fill"
                     className="absolute -left-2 -top-2 text-3xl text-[#f8cdb4]/50 sm:-left-3 sm:-top-3 sm:text-4xl"
                   />
+                  {/* Full feedback matches perfectly */}
                   <p className="relative z-10 font-serif text-lg leading-relaxed text-[#3c232c] sm:text-xl sm:leading-relaxed">
                     "{selectedTestimonial.feedback}"
                   </p>
@@ -315,16 +324,24 @@ export function Testimonials() {
                     <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">
                       Rating
                     </label>
-                    <div className="flex gap-1 text-[#e3d1d1] sm:gap-2">
+                    <div className="flex gap-1 sm:gap-2">
+                      {/* FIXED: Interactive stars that light up correctly */}
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
-                          className="transition hover:scale-110 hover:text-[#ad6a6c]"
+                          onClick={() => setRating(star)}
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          className="transition hover:scale-110"
                         >
                           <Icon
-                            icon="ph:star-fill"
-                            className="text-2xl sm:text-3xl"
+                            icon={
+                              (hoverRating || rating) >= star
+                                ? "ph:star-fill"
+                                : "ph:star"
+                            }
+                            className={`text-2xl sm:text-3xl transition-colors ${(hoverRating || rating) >= star ? "text-[#ad6a6c]" : "text-[#e3d1d1]"}`}
                           />
                         </button>
                       ))}
@@ -345,7 +362,9 @@ export function Testimonials() {
                   <button
                     type="submit"
                     onClick={() => {
-                      alert("This will connect to Supabase backend soon!");
+                      alert(
+                        `Rating saved as: ${rating} Stars! \nThis will connect to Supabase backend soon!`,
+                      );
                       setIsReviewModalOpen(false);
                     }}
                     className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#ad6a6c] px-6 py-3.5 text-sm font-bold tracking-wide text-white transition hover:bg-[#3c232c] hover:shadow-lg hover:shadow-[#3c232c]/20 sm:py-4"

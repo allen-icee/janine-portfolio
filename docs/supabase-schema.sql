@@ -16,6 +16,23 @@ create table if not exists portfolio_items (
   created_at timestamptz default now()
 );
 
+create table if not exists portfolio_categories (
+  id uuid primary key default gen_random_uuid(),
+  name text unique not null,
+  sort_order int default 0,
+  created_at timestamptz default now()
+);
+
+insert into portfolio_categories (name, sort_order)
+values
+  ('Social Media', 0),
+  ('Graphic Design', 1),
+  ('Research', 2),
+  ('Data Analytics', 3),
+  ('Documentation', 4),
+  ('Proofs', 5)
+on conflict (name) do nothing;
+
 create table if not exists site_settings (
   id uuid primary key default gen_random_uuid(),
   setting_key text unique not null,
@@ -178,6 +195,7 @@ create table if not exists admin_profiles (
 );
 
 alter table portfolio_items enable row level security;
+alter table portfolio_categories enable row level security;
 alter table testimonials enable row level security;
 alter table inquiries enable row level security;
 alter table faqs enable row level security;
@@ -192,6 +210,7 @@ alter table financial_records enable row level security;
 
 -- Safely drop all existing policies before recreating them
 drop policy if exists "Public can read portfolio items" on portfolio_items;
+drop policy if exists "Public can read portfolio categories" on portfolio_categories;
 drop policy if exists "Public can read testimonials" on testimonials;
 drop policy if exists "Public can read proof items" on proof_items;
 drop policy if exists "Public can read education items" on education_items;
@@ -201,6 +220,7 @@ drop policy if exists "Public can read active services" on services;
 drop policy if exists "Public can read site settings" on site_settings;
 drop policy if exists "Admins can read own admin profile" on admin_profiles;
 drop policy if exists "Admins can manage portfolio items" on portfolio_items;
+drop policy if exists "Admins can manage portfolio categories" on portfolio_categories;
 drop policy if exists "Admins can manage testimonials" on testimonials;
 drop policy if exists "Admins can manage faqs" on faqs;
 drop policy if exists "Admins can manage services" on services;
@@ -215,6 +235,7 @@ drop policy if exists "Admins can update inquiries" on inquiries;
 
 -- Recreate policies
 create policy "Public can read portfolio items" on portfolio_items for select using (true);
+create policy "Public can read portfolio categories" on portfolio_categories for select using (true);
 create policy "Public can read testimonials" on testimonials for select using (true);
 create policy "Public can read proof items" on proof_items for select using (true);
 create policy "Public can read education items" on education_items for select using (true);
@@ -225,6 +246,7 @@ create policy "Public can read site settings" on site_settings for select using 
 
 create policy "Admins can read own admin profile" on admin_profiles for select to authenticated using (auth.uid() = id);
 create policy "Admins can manage portfolio items" on portfolio_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage portfolio categories" on portfolio_categories for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage testimonials" on testimonials for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage faqs" on faqs for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage services" on services for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
@@ -237,3 +259,27 @@ create policy "Admins can manage financial records" on financial_records for all
 
 create policy "Admins can read inquiries" on inquiries for select to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can update inquiries" on inquiries for update to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'portfolio-assets',
+  'portfolio-assets',
+  true,
+  10485760,
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+)
+on conflict (id) do update
+set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "Public can read portfolio assets" on storage.objects;
+drop policy if exists "Admins can upload portfolio assets" on storage.objects;
+drop policy if exists "Admins can update portfolio assets" on storage.objects;
+drop policy if exists "Admins can delete portfolio assets" on storage.objects;
+
+create policy "Public can read portfolio assets" on storage.objects for select using (bucket_id = 'portfolio-assets');
+create policy "Admins can upload portfolio assets" on storage.objects for insert to authenticated with check (bucket_id = 'portfolio-assets' and exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can update portfolio assets" on storage.objects for update to authenticated using (bucket_id = 'portfolio-assets' and exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (bucket_id = 'portfolio-assets' and exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can delete portfolio assets" on storage.objects for delete to authenticated using (bucket_id = 'portfolio-assets' and exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));

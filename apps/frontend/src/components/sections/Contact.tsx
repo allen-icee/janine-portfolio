@@ -148,7 +148,7 @@ export function Contact() {
           </p>
         </motion.div>
 
-        {/* MAIN GRID - Tighter Gap for Compactness */}
+        {/* MAIN GRID */}
         <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:gap-10 items-start">
           {/* ========================================================================= */}
           {/* LEFT PANEL: Compact Bento Boxes */}
@@ -173,7 +173,9 @@ export function Contact() {
               <div className="flex flex-col gap-2">
                 {/* FACEBOOK */}
                 <a
-                  href="#"
+                  href="https://facebook.com" // Make sure to add your actual URL here
+                  target="_blank" // ADD THIS
+                  rel="noopener noreferrer" // ADD THIS for security
                   className="group flex items-center justify-between rounded-xl border border-transparent bg-white/50 px-4 py-2.5 transition-all hover:border-[#efdad0] hover:bg-white hover:shadow-sm"
                 >
                   <div className="flex items-center gap-3">
@@ -187,6 +189,7 @@ export function Contact() {
                       </p>
                     </div>
                   </div>
+                  {/* The Arrow */}
                   <Icon
                     icon="ph:arrow-up-right-bold"
                     className="text-sm text-[#ad6a6c] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -195,7 +198,9 @@ export function Contact() {
 
                 {/* INSTAGRAM */}
                 <a
-                  href="#"
+                  href="https://www.instagram.com/deminineinks/"
+                  target="_blank" // ADD THIS
+                  rel="noopener noreferrer" // ADD THIS for security
                   className="group flex items-center justify-between rounded-xl border border-transparent bg-white/50 px-4 py-2.5 transition-all hover:border-[#efdad0] hover:bg-white hover:shadow-sm"
                 >
                   <div className="flex items-center gap-3">
@@ -209,6 +214,7 @@ export function Contact() {
                       </p>
                     </div>
                   </div>
+                  {/* The Arrow */}
                   <Icon
                     icon="ph:arrow-up-right-bold"
                     className="text-sm text-[#ad6a6c] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -234,14 +240,22 @@ export function Contact() {
                     Email
                   </p>
                 </div>
-                <div className="space-y-1">
-                  <p className="break-all text-sm font-bold text-[#3c232c]">
-                    janedeqz@gmail.com
-                  </p>
-                  <p className="break-all text-[11px] font-medium text-[#3c232c]/70">
-                    janine.dequiros.18@gmail.com
-                  </p>
-                </div>
+
+                {/* Beautiful Custom Bullets */}
+                <ul className="mt-2 space-y-2.5">
+                  <li className="flex items-center gap-2.5">
+                    <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]" />
+                    <span className="break-all text-sm font-bold text-[#3c232c]">
+                      janedeqz@gmail.com
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]/40" />
+                    <span className="break-all text-[12px] font-medium text-[#3c232c]/80">
+                      janine.dequiros.18@gmail.com
+                    </span>
+                  </li>
+                </ul>
               </motion.div>
 
               {/* PHONE */}
@@ -260,14 +274,22 @@ export function Contact() {
                     Phone
                   </p>
                 </div>
-                <div className="space-y-0.5">
-                  <p className="font-serif text-lg font-bold text-[#3c232c]">
-                    +63 991 688 1778
-                  </p>
-                  <p className="font-serif text-[15px] font-bold text-[#3c232c]/70">
-                    +63 967 278 9012
-                  </p>
-                </div>
+
+                {/* Beautiful Custom Bullets */}
+                <ul className="mt-2 space-y-2.5">
+                  <li className="flex items-center gap-2.5">
+                    <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]" />
+                    <span className="font-serif text-[17px] font-bold tracking-wide text-[#3c232c]">
+                      +63 991 688 1778
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]/40" />
+                    <span className="font-serif text-[15px] font-bold tracking-wide text-[#3c232c]/70">
+                      +63 967 278 9012
+                    </span>
+                  </li>
+                </ul>
               </motion.div>
             </div>
           </div>
@@ -316,7 +338,7 @@ export function Contact() {
                     />
                   </div>
 
-                  {/* SERVICE & BUDGET (Custom Components) */}
+                  {/* SERVICE & BUDGET */}
                   <CustomSelect
                     label="Service"
                     options={services}
@@ -344,30 +366,35 @@ export function Contact() {
 
                 {/* FOOTER */}
                 <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <button
+                  {/* The Premium Gradient */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#ad6a6c] px-8 py-3.5 text-sm font-bold tracking-wide text-white shadow-md transition-all duration-300 hover:bg-[#3c232c] hover:shadow-lg hover:shadow-[#3c232c]/20"
+                    className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] px-8 py-3.5 text-sm font-bold tracking-wide text-white shadow-md transition-all duration-300 hover:shadow-lg hover:opacity-90"
                   >
                     Send Message
                     <Icon
                       icon="ph:paper-plane-right-fill"
                       className="text-base transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                     />
-                  </button>
+                  </motion.button>
                   <p className="text-center text-xs font-medium text-[#3c232c]/60 sm:text-right">
                     Usually replies within 24 hours.
                   </p>
                 </div>
               </motion.form>
             ) : (
+              /* SUCCESS STATE */
               <motion.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex min-h-[440px] flex-col items-center justify-center rounded-[2rem] border border-[#efdad0] bg-white/70 px-6 text-center shadow-sm backdrop-blur-md"
               >
-                <div className="mb-5 grid size-16 place-items-center rounded-full bg-[#ad6a6c]/10 text-[#ad6a6c]">
-                  <Icon icon="ph:check-circle-fill" className="text-4xl" />
+                {/* Gradient applied to success icon */}
+                <div className="mb-5 grid size-16 place-items-center rounded-full bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] text-white shadow-md">
+                  <Icon icon="ph:check-bold" className="text-2xl" />
                 </div>
                 <h3 className="font-serif text-3xl font-bold text-[#3c232c]">
                   Message Sent!

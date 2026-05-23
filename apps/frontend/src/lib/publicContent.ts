@@ -16,6 +16,7 @@ type PublicContent = {
     summary?: string
     mission?: string
   }
+  categories?: PortfolioCategory[]
   services?: PublicService[]
   portfolioItems?: PortfolioItem[]
   testimonials?: Testimonial[]
@@ -35,6 +36,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
 
   const [
     settingsResult,
+    categoriesResult,
     servicesResult,
     portfolioResult,
     testimonialsResult,
@@ -44,6 +46,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
     faqsResult,
   ] = await Promise.all([
     supabase.from('site_settings').select('setting_key, setting_value').in('setting_key', ['profile', 'about']),
+    supabase.from('portfolio_categories').select('name').order('sort_order'),
     supabase.from('services').select('*').eq('is_active', true).order('sort_order'),
     supabase.from('portfolio_items').select('*').order('sort_order'),
     supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
@@ -60,6 +63,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
   return {
     profile: settings.get('profile') as PublicProfile | undefined,
     about: settings.get('about') as PublicContent['about'] | undefined,
+    categories: categoriesResult.data?.map((category) => category.name as PortfolioCategory) ?? undefined,
     services: servicesResult.data?.map((service) => ({
       title: service.name,
       description: service.description,

@@ -46,21 +46,21 @@ export function AdminLogin() {
   }
 
   return (
-    <main className="grid min-h-screen place-items-center bg-cream px-4 py-12">
-      <section className="w-full max-w-md rounded-lg border border-coffee/10 bg-white/45 p-6 shadow-2xl backdrop-blur">
-        <Link to="/" className="mb-8 inline-block text-sm text-ink/58 transition hover:text-ink">
+    <main className="grid min-h-screen place-items-center bg-[#f9f6f3] px-4 py-12">
+      <section className="w-full max-w-md rounded-[2rem] border border-[#efdad0] bg-white/70 p-6 shadow-2xl backdrop-blur">
+        <Link to="/" className="mb-8 inline-block text-sm text-[#3c232c]/58 transition hover:text-[#3c232c]">
           Back to website
         </Link>
-        <div className="mb-6 grid size-12 place-items-center rounded-md bg-taupe/15 text-coffee">
+        <div className="mb-6 grid size-12 place-items-center rounded-2xl bg-[#f8cdb4]/25 text-[#ad6a6c]">
           <LockKeyhole />
         </div>
-        <h1 className="font-serif text-4xl text-ink">Admin login</h1>
-        <p className="mt-3 leading-7 text-ink/64">
+        <h1 className="font-serif text-4xl font-bold text-[#3c232c]">Admin login</h1>
+        <p className="mt-3 leading-7 text-[#3c232c]/64">
           No admin password is stored in this website. Login uses Supabase Auth, then checks your account against
           the approved admin list.
         </p>
         {!isSupabaseConfigured && (
-          <p className="mt-5 rounded-md border border-coffee/15 bg-cream p-3 text-sm text-coffee">
+          <p className="mt-5 rounded-xl border border-[#efdad0] bg-[#f9f6f3] p-3 text-sm text-[#ad6a6c]">
             Supabase is not connected yet, so admin login is intentionally disabled.
           </p>
         )}
@@ -83,7 +83,7 @@ export function AdminLogin() {
           <button
             type="submit"
             disabled={isLoading || !isSupabaseConfigured}
-            className="w-full rounded-full bg-coffee px-5 py-3 font-semibold text-white transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-55"
+            className="w-full rounded-full bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] px-5 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-55"
           >
             {isLoading ? 'Checking access...' : 'Sign in'}
           </button>
