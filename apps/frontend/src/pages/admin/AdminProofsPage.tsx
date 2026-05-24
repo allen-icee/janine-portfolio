@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
@@ -12,7 +12,7 @@ import {
 import { AdminGuard } from "../../components/admin/AdminGuard";
 import { AdminModal, ConfirmModal } from "../../components/admin/AdminModal";
 import { AdminShell } from "../../components/admin/AdminShell";
-import { uploadAdminImage } from "../../lib/adminUploads";
+import { deleteAdminImage, uploadAdminImage } from "../../lib/adminUploads";
 import { supabase } from "../../lib/supabase";
 
 type ProofRow = {
@@ -50,6 +50,10 @@ export function AdminProofsPage() {
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+  const imagePreviewUrl = useMemo(
+    () => (imageFile ? URL.createObjectURL(imageFile) : ""),
+    [imageFile],
+  );
 
   const loadItems = async () => {
     const { data, error } = await supabase!
@@ -85,6 +89,12 @@ export function AdminProofsPage() {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    };
+  }, [imagePreviewUrl]);
 
   // DERIVED STATE for Filtering and Pagination
   const filteredItems = items.filter(
@@ -180,6 +190,7 @@ export function AdminProofsPage() {
       return;
     }
 
+    await deleteAdminImage(deleteTarget.image_url);
     toast.success("Proof deleted.");
     setDeleteTarget(null);
     await loadItems();
@@ -433,15 +444,15 @@ export function AdminProofsPage() {
               </div>
 
               {/* Show current image if editing and no new file selected */}
-              {form.image_url && !imageFile && (
+              {(imagePreviewUrl || form.image_url) && (
                 <div className="mt-3 flex items-center gap-4 rounded-xl border border-[#efdad0] bg-white/50 p-2 pr-4 shadow-sm">
                   <img
-                    src={form.image_url}
-                    alt="Current proof"
+                    src={imagePreviewUrl || form.image_url}
+                    alt={imagePreviewUrl ? "Selected proof preview" : "Current proof"}
                     className="size-12 rounded-lg object-cover"
                   />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-                    Current Image
+                    {imagePreviewUrl ? "Selected Preview" : "Current Image"}
                   </span>
                 </div>
               )}

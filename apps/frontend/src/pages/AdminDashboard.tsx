@@ -4,6 +4,7 @@ import {
   CalendarClock,
   HelpCircle,
   Image,
+  Inbox,
   MessageSquareQuote,
   MoonStar,
   PanelsTopLeft,
@@ -39,6 +40,12 @@ const adminCards = [
       "Create, edit, reorder, and publish frequently asked questions.",
     href: "/admin/faqs",
     icon: HelpCircle,
+  },
+  {
+    title: "Inquiries",
+    description: "Read website messages and mark requests as handled.",
+    href: "/admin/inquiries",
+    icon: Inbox,
   },
 ];
 
@@ -135,7 +142,7 @@ export function AdminDashboard() {
                 </div>
 
                 <p className="mt-1 text-sm text-white/75">
-                  Portfolio, proofs, feedback, and FAQs are ready to manage.
+                  Portfolio, proofs, feedback, FAQs, and inquiries are ready to manage.
                 </p>
               </div>
             </div>
@@ -184,7 +191,7 @@ export function AdminDashboard() {
           Quick Actions
         </h2>
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {adminCards.map((card) => (
             <Link
               key={card.title}

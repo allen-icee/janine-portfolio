@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
@@ -121,6 +121,10 @@ export function PortfolioProjectModal({
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
+  const imagePreviewUrl = useMemo(
+    () => (imageFile ? URL.createObjectURL(imageFile) : ""),
+    [imageFile],
+  );
 
   const updateForm = <K extends keyof PortfolioRow>(
     key: K,
@@ -134,6 +138,12 @@ export function PortfolioProjectModal({
     if (isDirty || imageFile) setShowDiscard(true);
     else onClose();
   };
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    };
+  }, [imagePreviewUrl]);
 
   const saveProject = async (e: FormEvent) => {
     e.preventDefault();
@@ -258,15 +268,15 @@ export function PortfolioProjectModal({
                 </span>
               </label>
             </div>
-            {form.cover_url && !imageFile && (
+            {(imagePreviewUrl || form.cover_url) && (
               <div className="mt-3 flex items-center gap-4 rounded-xl border border-[#efdad0] bg-white/50 p-2 pr-4 shadow-sm">
                 <img
-                  src={form.cover_url}
-                  alt="Current"
+                  src={imagePreviewUrl || form.cover_url}
+                  alt={imagePreviewUrl ? "Selected preview" : "Current"}
                   className="size-12 rounded-lg object-cover"
                 />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-                  Current Image
+                  {imagePreviewUrl ? "Selected Preview" : "Current Image"}
                 </span>
               </div>
             )}

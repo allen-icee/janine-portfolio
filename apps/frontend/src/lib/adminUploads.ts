@@ -30,3 +30,23 @@ export async function uploadAdminImage(file: File, folder: 'portfolio' | 'proofs
   const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path)
   return data.publicUrl
 }
+
+export async function deleteAdminImage(publicUrl?: string) {
+  if (!supabase || !publicUrl) return
+
+  try {
+    const url = new URL(publicUrl)
+    const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`
+    const markerIndex = url.pathname.indexOf(marker)
+
+    if (markerIndex === -1) return
+
+    const path = decodeURIComponent(url.pathname.slice(markerIndex + marker.length))
+    if (!path) return
+
+    const { error } = await supabase.storage.from(STORAGE_BUCKET).remove([path])
+    if (error) throw error
+  } catch (error) {
+    console.warn('Could not delete uploaded image:', error)
+  }
+}

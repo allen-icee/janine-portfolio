@@ -8,6 +8,7 @@ import { AdminShell } from "../../components/admin/AdminShell";
 import { supabase } from "../../lib/supabase";
 import { PortfolioProjectModal } from "../../components/admin/PortfolioProjectModal";
 import { PortfolioCategoryModal } from "../../components/admin/PortfolioCategoryModal";
+import { deleteAdminImage } from "../../lib/adminUploads";
 
 type PortfolioRow = {
   id?: string;
@@ -149,6 +150,7 @@ export function AdminPortfolioPage() {
       return;
     }
 
+    await deleteAdminImage(deleteTarget.cover_url);
     setDeleteTarget(null);
     await loadData();
     toast.success("Project deleted.");

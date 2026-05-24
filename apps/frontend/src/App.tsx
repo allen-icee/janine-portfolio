@@ -1,12 +1,41 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { Toaster } from 'react-hot-toast'
-import { AdminDashboard } from './pages/AdminDashboard'
-import { AdminLogin } from './pages/AdminLogin'
-import { AdminFaqsPage } from './pages/admin/AdminFaqsPage'
-import { AdminPortfolioPage } from './pages/admin/AdminPortfolioPage'
-import { AdminProofsPage } from './pages/admin/AdminProofsPage'
-import { AdminTestimonialsPage } from './pages/admin/AdminTestimonialsPage'
-import { LandingPage } from './pages/LandingPage'
+
+const LandingPage = lazy(() =>
+  import('./pages/LandingPage').then((module) => ({ default: module.LandingPage })),
+)
+const AdminDashboard = lazy(() =>
+  import('./pages/AdminDashboard').then((module) => ({ default: module.AdminDashboard })),
+)
+const AdminLogin = lazy(() =>
+  import('./pages/AdminLogin').then((module) => ({ default: module.AdminLogin })),
+)
+const AdminFaqsPage = lazy(() =>
+  import('./pages/admin/AdminFaqsPage').then((module) => ({ default: module.AdminFaqsPage })),
+)
+const AdminInquiriesPage = lazy(() =>
+  import('./pages/admin/AdminInquiriesPage').then((module) => ({ default: module.AdminInquiriesPage })),
+)
+const AdminPortfolioPage = lazy(() =>
+  import('./pages/admin/AdminPortfolioPage').then((module) => ({ default: module.AdminPortfolioPage })),
+)
+const AdminProofsPage = lazy(() =>
+  import('./pages/admin/AdminProofsPage').then((module) => ({ default: module.AdminProofsPage })),
+)
+const AdminTestimonialsPage = lazy(() =>
+  import('./pages/admin/AdminTestimonialsPage').then((module) => ({ default: module.AdminTestimonialsPage })),
+)
+
+function AppFallback() {
+  return (
+    <main className="grid min-h-screen place-items-center bg-[#f9f6f3] text-[#3c232c]">
+      <div className="rounded-2xl border border-[#efdad0] bg-white/70 px-6 py-4 text-sm font-bold shadow-sm">
+        Loading JaneDesk...
+      </div>
+    </main>
+  )
+}
 
 function App() {
   return (
@@ -21,15 +50,18 @@ function App() {
           },
         }}
       />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/portfolio" element={<AdminPortfolioPage />} />
-        <Route path="/admin/proofs" element={<AdminProofsPage />} />
-        <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
-        <Route path="/admin/faqs" element={<AdminFaqsPage />} />
-      </Routes>
+      <Suspense fallback={<AppFallback />}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/portfolio" element={<AdminPortfolioPage />} />
+          <Route path="/admin/proofs" element={<AdminProofsPage />} />
+          <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
+          <Route path="/admin/faqs" element={<AdminFaqsPage />} />
+          <Route path="/admin/inquiries" element={<AdminInquiriesPage />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

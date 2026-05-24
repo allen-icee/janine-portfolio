@@ -57,6 +57,9 @@ export function Testimonials({
   const submitReview = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const formData = new FormData(event.currentTarget);
+    if (formData.get("company_website")) return;
+
     if (!isSupabaseConfigured || !supabase) {
       toast.error("Reviews are not connected yet. Please send your feedback through the contact form.");
       return;
@@ -76,7 +79,8 @@ export function Testimonials({
       feedback: trimmedFeedback,
       rating,
       project_type: reviewService.trim(),
-      is_verified: true,
+      is_verified: false,
+      is_approved: false,
       feedback_date: new Date().toISOString().slice(0, 10),
     });
 
@@ -87,7 +91,7 @@ export function Testimonials({
       return;
     }
 
-    toast.success("Thank you! Your review was submitted.");
+    toast.success("Thank you! Your review was submitted for approval.");
     resetReviewForm();
     setIsReviewModalOpen(false);
   };
@@ -356,6 +360,14 @@ export function Testimonials({
                   className="flex flex-col gap-4 sm:gap-5"
                   onSubmit={submitReview}
                 >
+                  <input
+                    type="text"
+                    name="company_website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="hidden"
+                  />
+
                   <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
                     <div className="flex flex-col gap-1.5 sm:gap-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">

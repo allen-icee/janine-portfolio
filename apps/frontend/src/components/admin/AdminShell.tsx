@@ -18,6 +18,7 @@ const navItems = [
   { label: 'Proofs', href: '/admin/proofs' },
   { label: 'Testimonials', href: '/admin/testimonials' },
   { label: 'FAQs', href: '/admin/faqs' },
+  { label: 'Inquiries', href: '/admin/inquiries' },
 ]
 
 export function AdminShell({ children }: AdminShellProps) {

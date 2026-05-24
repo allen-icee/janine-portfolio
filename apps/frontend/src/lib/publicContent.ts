@@ -49,7 +49,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
     supabase.from('portfolio_categories').select('name').order('sort_order'),
     supabase.from('services').select('*').eq('is_active', true).order('sort_order'),
     supabase.from('portfolio_items').select('*').order('sort_order'),
-    supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
+    supabase.from('testimonials').select('*').eq('is_approved', true).order('created_at', { ascending: false }),
     supabase.from('proof_items').select('*').order('sort_order'),
     supabase.from('education_items').select('*').order('sort_order'),
     supabase.from('experience_items').select('*').order('sort_order'),

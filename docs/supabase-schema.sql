@@ -89,10 +89,15 @@ create table if not exists testimonials (
   feedback text not null,
   rating int check (rating between 1 and 5),
   project_type text,
-  is_verified boolean default true,
+  is_verified boolean default false,
+  is_approved boolean default false,
   feedback_date date,
   created_at timestamptz default now()
 );
+
+alter table testimonials add column if not exists is_approved boolean default false;
+alter table testimonials alter column is_verified set default false;
+update testimonials set is_approved = true where is_verified = true and is_approved is not true;
 
 create table if not exists proof_items (
   id uuid primary key default gen_random_uuid(),
@@ -234,18 +239,19 @@ drop policy if exists "Admins can manage client records" on client_records;
 drop policy if exists "Admins can manage financial records" on financial_records;
 drop policy if exists "Admins can read inquiries" on inquiries;
 drop policy if exists "Admins can update inquiries" on inquiries;
+drop policy if exists "Admins can delete inquiries" on inquiries;
 
 -- Recreate policies
 create policy "Public can read portfolio items" on portfolio_items for select using (true);
 create policy "Public can read portfolio categories" on portfolio_categories for select using (true);
-create policy "Public can read testimonials" on testimonials for select using (true);
+create policy "Public can read testimonials" on testimonials for select using (is_approved = true);
 create policy "Public can read proof items" on proof_items for select using (true);
 create policy "Public can read education items" on education_items for select using (true);
 create policy "Public can read experience items" on experience_items for select using (true);
 create policy "Public can read active faqs" on faqs for select using (is_active = true);
 create policy "Public can read active services" on services for select using (is_active = true);
 create policy "Public can read site settings" on site_settings for select using (true);
-create policy "Public can create testimonials" on testimonials for insert with check (true);
+create policy "Public can create testimonials" on testimonials for insert with check (is_approved = false and is_verified = false);
 create policy "Public can create inquiries" on inquiries for insert with check (true);
 
 create policy "Admins can read own admin profile" on admin_profiles for select to authenticated using (auth.uid() = id);
@@ -263,6 +269,7 @@ create policy "Admins can manage financial records" on financial_records for all
 
 create policy "Admins can read inquiries" on inquiries for select to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can update inquiries" on inquiries for update to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can delete inquiries" on inquiries for delete to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (

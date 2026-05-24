@@ -21,10 +21,12 @@ const services = [
 ];
 
 const budgets = [
-  "PHP 500 - PHP 1,500",
-  "PHP 1,500 - PHP 3,000",
-  "PHP 3,000 - PHP 6,000",
-  "PHP 6,000+",
+  "Less than ₱ 100",
+  "₱ 100 - ₱ 500",
+  "₱ 500 - ₱ 1,500",
+  "₱ 1,500 - ₱ 3,000",
+  "₱ 3,000 - ₱ 6,000",
+  "₱ 6,000+",
   "Not sure yet",
 ];
 
@@ -74,9 +76,7 @@ function CustomSelect({
         }`}
       >
         <span
-          className={
-            value ? "font-medium text-[#3c232c]" : "text-[#3c232c]/50"
-          }
+          className={value ? "font-medium text-[#3c232c]" : "text-[#3c232c]/50"}
         >
           {value || placeholder}
         </span>
@@ -142,6 +142,9 @@ export function Contact() {
 
   const submitMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    if (formData.get("company_website")) return;
 
     if (!isSupabaseConfigured || !supabase) {
       toast.error("Messages are not connected yet. Please email me directly.");
@@ -363,6 +366,14 @@ export function Contact() {
                 onSubmit={submitMessage}
                 className="rounded-[2rem] border border-[#efdad0] bg-white/60 p-6 shadow-sm backdrop-blur-md sm:p-8"
               >
+                <input
+                  type="text"
+                  name="company_website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="hidden"
+                />
+
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
                   {/* NAME */}
                   <div className="flex flex-col gap-1.5">
@@ -373,7 +384,9 @@ export function Contact() {
                       required
                       type="text"
                       value={form.name}
-                      onChange={(event) => updateForm("name", event.target.value)}
+                      onChange={(event) =>
+                        updateForm("name", event.target.value)
+                      }
                       placeholder="Your name"
                       className="h-11 rounded-xl border border-[#efdad0] bg-white/60 px-4 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
                     />
@@ -425,7 +438,7 @@ export function Contact() {
                     onChange={(event) =>
                       updateForm("message", event.target.value)
                     }
-                    placeholder="Tell me about your project..."
+                    placeholder="Tell me about what you need..."
                     className="resize-none rounded-xl border border-[#efdad0] bg-white/60 px-4 py-3 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
                   />
                 </div>
