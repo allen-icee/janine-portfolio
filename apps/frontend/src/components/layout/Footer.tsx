@@ -71,17 +71,22 @@ export function Footer() {
             />
             {/* Added proper links and security attributes */}
             <SocialButton
-              href="https://www.facebook.com"
+              href={profile.facebookUrl || "https://www.facebook.com"}
               icon={<Icon icon="logos:facebook" className="text-lg" />}
               label="Facebook"
             />
             <SocialButton
-              href="https://www.instagram.com/deminineinks/"
+              href={
+                profile.instagramUrl || "https://www.instagram.com/deminineinks/"
+              }
               icon={<Icon icon="skill-icons:instagram" className="text-lg" />}
               label="Instagram"
             />
             <SocialButton
-              href="https://www.linkedin.com/in/janine-ayven-de-quiros-82770a3a8/"
+              href={
+                profile.linkedinUrl ||
+                "https://www.linkedin.com/in/janine-ayven-de-quiros-82770a3a8/"
+              }
               icon={
                 <Icon icon="mdi:linkedin" className="text-lg text-[#0A66C2]" />
               }

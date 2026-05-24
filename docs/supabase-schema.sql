@@ -218,6 +218,8 @@ drop policy if exists "Public can read experience items" on experience_items;
 drop policy if exists "Public can read active faqs" on faqs;
 drop policy if exists "Public can read active services" on services;
 drop policy if exists "Public can read site settings" on site_settings;
+drop policy if exists "Public can create testimonials" on testimonials;
+drop policy if exists "Public can create inquiries" on inquiries;
 drop policy if exists "Admins can read own admin profile" on admin_profiles;
 drop policy if exists "Admins can manage portfolio items" on portfolio_items;
 drop policy if exists "Admins can manage portfolio categories" on portfolio_categories;
@@ -243,6 +245,8 @@ create policy "Public can read experience items" on experience_items for select 
 create policy "Public can read active faqs" on faqs for select using (is_active = true);
 create policy "Public can read active services" on services for select using (is_active = true);
 create policy "Public can read site settings" on site_settings for select using (true);
+create policy "Public can create testimonials" on testimonials for insert with check (true);
+create policy "Public can create inquiries" on inquiries for insert with check (true);
 
 create policy "Admins can read own admin profile" on admin_profiles for select to authenticated using (auth.uid() = id);
 create policy "Admins can manage portfolio items" on portfolio_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid())) with check (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));

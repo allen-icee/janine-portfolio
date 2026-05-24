@@ -1,10 +1,19 @@
 import { useState, useRef } from "react";
+import type { FormEvent } from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { testimonials } from "../../data/site";
+import toast from "react-hot-toast";
+import { testimonials as fallbackTestimonials } from "../../data/site";
+import { isSupabaseConfigured, supabase } from "../../lib/supabase";
 import type { Testimonial } from "../../types/content";
 
-export function Testimonials() {
+type TestimonialsProps = {
+  testimonials?: Testimonial[];
+};
+
+export function Testimonials({
+  testimonials = fallbackTestimonials,
+}: TestimonialsProps) {
   const [selectedTestimonial, setSelectedTestimonial] =
     useState<Testimonial | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -12,6 +21,10 @@ export function Testimonials() {
   // States for the Interactive Star Rating in the form
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
+  const [reviewName, setReviewName] = useState("");
+  const [reviewService, setReviewService] = useState("");
+  const [reviewFeedback, setReviewFeedback] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +44,52 @@ export function Testimonials() {
       .join("")
       .substring(0, 2)
       .toUpperCase();
+  };
+
+  const resetReviewForm = () => {
+    setRating(5);
+    setHoverRating(0);
+    setReviewName("");
+    setReviewService("");
+    setReviewFeedback("");
+  };
+
+  const submitReview = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!isSupabaseConfigured || !supabase) {
+      toast.error("Reviews are not connected yet. Please send your feedback through the contact form.");
+      return;
+    }
+
+    setIsSubmittingReview(true);
+
+    const trimmedFeedback = reviewFeedback.trim();
+
+    const { error } = await supabase.from("testimonials").insert({
+      client_name: reviewName.trim(),
+      service: reviewService.trim(),
+      preview:
+        trimmedFeedback.length > 120
+          ? `${trimmedFeedback.slice(0, 117)}...`
+          : trimmedFeedback,
+      feedback: trimmedFeedback,
+      rating,
+      project_type: reviewService.trim(),
+      is_verified: true,
+      feedback_date: new Date().toISOString().slice(0, 10),
+    });
+
+    setIsSubmittingReview(false);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.success("Thank you! Your review was submitted.");
+    resetReviewForm();
+    setIsReviewModalOpen(false);
   };
 
   return (
@@ -59,7 +118,7 @@ export function Testimonials() {
             <button
               type="button"
               onClick={() => {
-                setRating(5); // reset rating when opening
+                resetReviewForm();
                 setIsReviewModalOpen(true);
               }}
               className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-full border-2 border-[#e3d1d1] bg-white/50 px-6 py-3.5 text-sm font-bold text-[#3c232c] transition-all hover:border-[#ad6a6c] hover:bg-white"
@@ -295,7 +354,7 @@ export function Testimonials() {
               <div className="overflow-y-auto p-5 sm:p-8">
                 <form
                   className="flex flex-col gap-4 sm:gap-5"
-                  onSubmit={(e) => e.preventDefault()}
+                  onSubmit={submitReview}
                 >
                   <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
                     <div className="flex flex-col gap-1.5 sm:gap-2">
@@ -303,6 +362,9 @@ export function Testimonials() {
                         Full Name
                       </label>
                       <input
+                        value={reviewName}
+                        onChange={(event) => setReviewName(event.target.value)}
+                        required
                         type="text"
                         placeholder="Maria Theresa Yu"
                         className="rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
@@ -313,6 +375,11 @@ export function Testimonials() {
                         Service
                       </label>
                       <input
+                        value={reviewService}
+                        onChange={(event) =>
+                          setReviewService(event.target.value)
+                        }
+                        required
                         type="text"
                         placeholder="e.g. Graphic Design"
                         className="rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
@@ -353,6 +420,11 @@ export function Testimonials() {
                       Your Feedback
                     </label>
                     <textarea
+                      value={reviewFeedback}
+                      onChange={(event) =>
+                        setReviewFeedback(event.target.value)
+                      }
+                      required
                       rows={4}
                       placeholder="How was your experience working with me?"
                       className="resize-none rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
@@ -361,15 +433,10 @@ export function Testimonials() {
 
                   <button
                     type="submit"
-                    onClick={() => {
-                      alert(
-                        `Rating saved as: ${rating} Stars! \nThis will connect to Supabase backend soon!`,
-                      );
-                      setIsReviewModalOpen(false);
-                    }}
+                    disabled={isSubmittingReview}
                     className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#ad6a6c] px-6 py-3.5 text-sm font-bold tracking-wide text-white transition hover:bg-[#3c232c] hover:shadow-lg hover:shadow-[#3c232c]/20 sm:py-4"
                   >
-                    Submit Review{" "}
+                    {isSubmittingReview ? "Submitting..." : "Submit Review"}{" "}
                     <Icon icon="ph:paper-plane-tilt-bold" className="text-lg" />
                   </button>
                 </form>

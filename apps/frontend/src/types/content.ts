@@ -1,16 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 
-export type PortfolioCategory =
-  | "All"
-  | "Social Media"
-  | "Graphic Design"
-  | "Research"
-  | "Data Analytics"
-  | "Documentation"
-  | "Proofs";
+export type PortfolioCategory = "All" | (string & {});
 
 export type PortfolioItem = {
-  id: number;
+  id: number | string;
   title: string;
   category: Exclude<PortfolioCategory, "All">;
   summary: string;
@@ -25,7 +18,7 @@ export type PortfolioItem = {
 };
 
 export type Testimonial = {
-  id: number;
+  id: number | string;
   name: string;
   service: string;
   preview: string;
@@ -81,6 +74,8 @@ export interface PublicService {
   toolFallbacks?: Record<string, string>;
 
   imageUrl?: string;
+
+  priceRange?: string;
 
   iconName?: string;
 

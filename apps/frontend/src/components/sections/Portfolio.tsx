@@ -2,8 +2,11 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { Icon } from "@iconify/react";
-import { categories, portfolioItems } from "../../data/site";
-import type { PortfolioItem } from "../../types/content";
+import {
+  categories as fallbackCategories,
+  portfolioItems as fallbackPortfolioItems,
+} from "../../data/site";
+import type { PortfolioCategory, PortfolioItem } from "../../types/content";
 
 function imageOrPlaceholder(url: string | undefined, label: string) {
   if (url) {
@@ -29,7 +32,15 @@ function imageOrPlaceholder(url: string | undefined, label: string) {
   );
 }
 
-export function Portfolio() {
+type PortfolioProps = {
+  categories?: PortfolioCategory[];
+  portfolioItems?: PortfolioItem[];
+};
+
+export function Portfolio({
+  categories = fallbackCategories,
+  portfolioItems = fallbackPortfolioItems,
+}: PortfolioProps) {
   const [category, setCategory] = useState("All");
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(
     null,
@@ -38,11 +49,19 @@ export function Portfolio() {
   const INITIAL_COUNT = 4;
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
 
+  const portfolioTabs = useMemo(() => {
+    const categoryList = categories.includes("All")
+      ? categories
+      : (["All", ...categories] as PortfolioCategory[]);
+
+    return Array.from(new Set(categoryList));
+  }, [categories]);
+
   const filteredProjects = useMemo(() => {
     return category === "All"
       ? portfolioItems
       : portfolioItems.filter((project) => project.category === category);
-  }, [category]);
+  }, [category, portfolioItems]);
 
   const visibleProjects = filteredProjects.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProjects.length;
@@ -79,7 +98,7 @@ export function Portfolio() {
           {/* Scrollbar-Hidden Tabs */}
           <div className="mb-10 w-full border-b border-[#e3d1d1]/60">
             <div className="flex gap-8 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              {categories.map((item) => {
+              {portfolioTabs.map((item) => {
                 const isActive = category === item;
                 return (
                   <button
@@ -176,11 +195,11 @@ export function Portfolio() {
                   No projects available yet
                 </h3>
                 <p className="mt-2 max-w-sm text-sm text-[#3c232c]/70">
-                  Sample works for{" "}
+                  Projects for{" "}
                   <span className="font-semibold text-[#ad6a6c]">
                     {category}
                   </span>{" "}
-                  will be updated soon. Check out the other categories in the
+                  are not available yet. Check out the other categories in the
                   meantime!
                 </p>
               </motion.div>

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
+import { Toaster } from 'react-hot-toast'
 import { AdminDashboard } from './pages/AdminDashboard'
 import { AdminLogin } from './pages/AdminLogin'
 import { AdminFaqsPage } from './pages/admin/AdminFaqsPage'
@@ -10,6 +11,16 @@ import { LandingPage } from './pages/LandingPage'
 function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            border: '1px solid #efdad0',
+            background: '#fffaf7',
+            color: '#3c232c',
+          },
+        }}
+      />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />

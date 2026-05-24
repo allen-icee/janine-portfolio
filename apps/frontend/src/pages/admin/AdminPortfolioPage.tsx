@@ -67,8 +67,11 @@ export function AdminPortfolioPage() {
         supabase!.from("portfolio_categories").select("*").order("sort_order"),
       ]);
       if (mounted) {
-        if (!itemsRes.error) setItems(itemsRes.data ?? []);
-        if (!catRes.error) setCategoryRows(catRes.data ?? []);
+        if (itemsRes.error) toast.error(itemsRes.error.message);
+        else setItems(itemsRes.data ?? []);
+
+        if (catRes.error) toast.error(catRes.error.message);
+        else setCategoryRows(catRes.data ?? []);
       }
     };
     void fetchInitialData();
@@ -79,12 +82,22 @@ export function AdminPortfolioPage() {
 
   // Standard load data for refreshing after actions
   const loadData = async () => {
-    const [{ data: pData }, { data: cData }] = await Promise.all([
+    const [itemsRes, categoriesRes] = await Promise.all([
       supabase!.from("portfolio_items").select("*").order("sort_order"),
       supabase!.from("portfolio_categories").select("*").order("sort_order"),
     ]);
-    setItems(pData ?? []);
-    setCategoryRows(cData ?? []);
+
+    if (itemsRes.error) {
+      toast.error(itemsRes.error.message);
+    } else {
+      setItems(itemsRes.data ?? []);
+    }
+
+    if (categoriesRes.error) {
+      toast.error(categoriesRes.error.message);
+    } else {
+      setCategoryRows(categoriesRes.data ?? []);
+    }
   };
 
   const categoryNames = useMemo(
@@ -101,7 +114,10 @@ export function AdminPortfolioPage() {
       filtered = filtered.filter(
         (i) =>
           i.title.toLowerCase().includes(q) ||
-          i.category.toLowerCase().includes(q),
+          i.category.toLowerCase().includes(q) ||
+          i.summary.toLowerCase().includes(q) ||
+          i.description.toLowerCase().includes(q) ||
+          (i.technologies ?? []).some((tech) => tech.toLowerCase().includes(q)),
       );
     }
     return filtered;
@@ -122,8 +138,17 @@ export function AdminPortfolioPage() {
   const deleteProject = async () => {
     if (!deleteTarget?.id) return;
     setIsSaving(true);
-    await supabase!.from("portfolio_items").delete().eq("id", deleteTarget.id);
+    const { error } = await supabase!
+      .from("portfolio_items")
+      .delete()
+      .eq("id", deleteTarget.id);
     setIsSaving(false);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
     setDeleteTarget(null);
     await loadData();
     toast.success("Project deleted.");
@@ -131,12 +156,32 @@ export function AdminPortfolioPage() {
 
   const deleteCategory = async () => {
     if (!categoryDeleteTarget?.id) return;
+    const projectsUsingCategory = items.filter(
+      (item) => item.category === categoryDeleteTarget.name,
+    ).length;
+
+    if (projectsUsingCategory > 0) {
+      toast.error(
+        `Move or edit ${projectsUsingCategory} project${
+          projectsUsingCategory === 1 ? "" : "s"
+        } before deleting this category.`,
+      );
+      setCategoryDeleteTarget(null);
+      return;
+    }
+
     setIsSaving(true);
-    await supabase!
+    const { error } = await supabase!
       .from("portfolio_categories")
       .delete()
       .eq("id", categoryDeleteTarget.id);
     setIsSaving(false);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
     if (activeCategory === categoryDeleteTarget.name) setActiveCategory("All");
     setCategoryDeleteTarget(null);
     await loadData();
@@ -216,7 +261,7 @@ export function AdminPortfolioPage() {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {categoryRows.map((category) => (
                 <article
-                  key={category.id}
+                  key={category.id ?? category.name}
                   className="flex items-center justify-between gap-3 rounded-xl border border-[#efdad0] bg-white/70 px-4 py-3 shadow-sm hover:border-[#ad6a6c]/50 hover:bg-white"
                 >
                   <div>

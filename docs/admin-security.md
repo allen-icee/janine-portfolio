@@ -20,9 +20,8 @@ The admin dashboard must not use hardcoded credentials.
 ```txt
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
-VITE_API_BASE_URL=
 ```
 
 Never put the Supabase service role key in React or Vercel frontend variables.
 
-Contact form submissions should go through Laravel so the backend can validate input, rate-limit requests, filter spam, and send notifications.
+Contact form submissions and public client reviews are stored through Supabase using the public insert policies in `docs/supabase-schema.sql`. Add rate limiting or CAPTCHA before launch if spam becomes a concern.

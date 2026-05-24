@@ -142,13 +142,15 @@ export function AdminTestimonialsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#efdad0]/40">
-                {items.length === 0 ? (
+                {filteredItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
                       className="p-8 text-center text-xs font-medium text-[#3c232c]/50"
                     >
-                      No testimonials found.
+                      {searchQuery
+                        ? "No testimonials match your search."
+                        : "No testimonials found."}
                     </td>
                   </tr>
                 ) : (
@@ -237,8 +239,8 @@ export function AdminTestimonialsPage() {
             <div className="flex items-center justify-between border-t border-[#efdad0]/60 bg-white/30 px-5 py-3 text-xs font-bold text-[#3c232c]/60">
               <span>
                 Showing {startIndex + 1} to{" "}
-                {Math.min(startIndex + itemsPerPage, items.length)} of{" "}
-                {items.length}
+                {Math.min(startIndex + itemsPerPage, filteredItems.length)} of{" "}
+                {filteredItems.length}
               </span>
               <div className="flex items-center gap-2">
                 <button

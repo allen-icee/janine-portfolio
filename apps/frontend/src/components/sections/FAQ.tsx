@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { faqs } from "../../data/site";
+import { faqs as fallbackFaqs } from "../../data/site";
 
-export function FAQ() {
+type FAQProps = {
+  faqs?: {
+    question: string;
+    answer: string;
+  }[];
+};
+
+export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {

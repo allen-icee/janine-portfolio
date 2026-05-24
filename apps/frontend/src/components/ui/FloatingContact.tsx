@@ -1,4 +1,5 @@
 import { Mail, MessageCircle } from "lucide-react";
+import { profile } from "../../data/site";
 
 export function FloatingContact() {
   return (
@@ -12,7 +13,7 @@ export function FloatingContact() {
       </a>
 
       <a
-        href="mailto:janedeqz@gmail.com"
+        href={`mailto:${profile.email}`}
         className="grid size-12 place-items-center rounded-full border border-[#efdad0] bg-white/80 text-[#3c232c] shadow-xl backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-[#ad6a6c]/50 hover:bg-white"
         aria-label="Send email"
       >

@@ -188,7 +188,7 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
 
               {/* Modal Image (object-contain ensures NO CROPPING) */}
               <div className="flex-1 overflow-auto bg-[#e3d1d1]/20 p-4 sm:p-8">
-                <img
+                <SafeImage
                   src={selectedProof.imageUrl}
                   alt={selectedProof.title}
                   className="mx-auto max-h-[70svh] w-auto rounded-xl object-contain drop-shadow-xl"

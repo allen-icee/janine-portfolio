@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Icon } from "@iconify/react";
 
 import { AdminModal } from "../ui/AdminModal";
+import logoImage from "../../assets/images/logo.jpeg";
 
 // Navigation ordered to match LandingPage.tsx exactly
 const navItems = [
@@ -77,7 +78,7 @@ export function Header() {
             <div className="size-10 overflow-hidden rounded-full border border-[#ad6a6c]/30 bg-[#e3d1d1]/30 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
               {!imageError ? (
                 <img
-                  src="/src/assets/images/logo.jpeg"
+                  src={logoImage}
                   alt="Janine Logo"
                   className="h-full w-full object-cover"
                   onError={() => setImageError(true)}

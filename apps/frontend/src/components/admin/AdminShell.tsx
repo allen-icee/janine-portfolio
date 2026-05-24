@@ -2,14 +2,13 @@ import { ExternalLink, LogOut, Menu, ShieldCheck, X } from 'lucide-react'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router'
-import { Toaster } from 'react-hot-toast'
 import { supabase } from '../../lib/supabase'
 import { setAdminAccessCache } from '../../lib/adminAccess'
 
 type AdminShellProps = {
   children: ReactNode
-  title: string
-  description: string
+  title?: string
+  description?: string
   eyebrow?: string
 }
 
@@ -33,16 +32,6 @@ export function AdminShell({ children }: AdminShellProps) {
 
   return (
     <main className="min-h-screen bg-[#f9f6f3] text-[#3c232c]">
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            border: '1px solid #efdad0',
-            background: '#fffaf7',
-            color: '#3c232c',
-          },
-        }}
-      />
       <header className="sticky top-0 z-40 w-full px-4 pt-4 sm:px-6 lg:px-8">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[#f9f6f3] via-[#f9f6f3]/95 to-transparent" />
 

@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@iconify/react";
+import toast from "react-hot-toast";
+import { isSupabaseConfigured, supabase } from "../../lib/supabase";
 
 // ============================================================================
 // DATA
@@ -18,10 +21,10 @@ const services = [
 ];
 
 const budgets = [
-  "$50 - $150",
-  "$150 - $300",
-  "$300 - $600",
-  "$600+",
+  "PHP 500 - PHP 1,500",
+  "PHP 1,500 - PHP 3,000",
+  "PHP 3,000 - PHP 6,000",
+  "PHP 6,000+",
   "Not sure yet",
 ];
 
@@ -33,13 +36,16 @@ function CustomSelect({
   label,
   options,
   placeholder,
+  value,
+  onChange,
 }: {
   label: string;
   options: string[];
   placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -69,10 +75,10 @@ function CustomSelect({
       >
         <span
           className={
-            selected ? "font-medium text-[#3c232c]" : "text-[#3c232c]/50"
+            value ? "font-medium text-[#3c232c]" : "text-[#3c232c]/50"
           }
         >
-          {selected || placeholder}
+          {value || placeholder}
         </span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
@@ -96,11 +102,11 @@ function CustomSelect({
                 key={option}
                 type="button"
                 onClick={() => {
-                  setSelected(option);
+                  onChange(option);
                   setIsOpen(false);
                 }}
                 className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-all ${
-                  selected === option
+                  value === option
                     ? "bg-[#ad6a6c]/10 font-bold text-[#ad6a6c]"
                     : "font-medium text-[#3c232c] hover:bg-[#f8cdb4]/20"
                 }`}
@@ -121,6 +127,55 @@ function CustomSelect({
 
 export function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    service: "",
+    budget: "",
+    message: "",
+  });
+
+  const updateForm = (key: keyof typeof form, value: string) => {
+    setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const submitMessage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!isSupabaseConfigured || !supabase) {
+      toast.error("Messages are not connected yet. Please email me directly.");
+      return;
+    }
+
+    setIsSending(true);
+
+    const { error } = await supabase.from("inquiries").insert({
+      name: form.name.trim(),
+      email: form.email.trim(),
+      service_needed: form.service || "Not specified",
+      budget_range: form.budget || "Not specified",
+      message: form.message.trim(),
+      source: "website",
+      status: "new",
+    });
+
+    setIsSending(false);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    setSubmitted(true);
+    setForm({
+      name: "",
+      email: "",
+      service: "",
+      budget: "",
+      message: "",
+    });
+  };
 
   return (
     <section
@@ -173,9 +228,9 @@ export function Contact() {
               <div className="flex flex-col gap-2">
                 {/* FACEBOOK */}
                 <a
-                  href="https://facebook.com" // Make sure to add your actual URL here
-                  target="_blank" // ADD THIS
-                  rel="noopener noreferrer" // ADD THIS for security
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group flex items-center justify-between rounded-xl border border-transparent bg-white/50 px-4 py-2.5 transition-all hover:border-[#efdad0] hover:bg-white hover:shadow-sm"
                 >
                   <div className="flex items-center gap-3">
@@ -199,8 +254,8 @@ export function Contact() {
                 {/* INSTAGRAM */}
                 <a
                   href="https://www.instagram.com/deminineinks/"
-                  target="_blank" // ADD THIS
-                  rel="noopener noreferrer" // ADD THIS for security
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group flex items-center justify-between rounded-xl border border-transparent bg-white/50 px-4 py-2.5 transition-all hover:border-[#efdad0] hover:bg-white hover:shadow-sm"
                 >
                   <div className="flex items-center gap-3">
@@ -305,10 +360,7 @@ export function Contact() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.3 }}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSubmitted(true);
-                }}
+                onSubmit={submitMessage}
                 className="rounded-[2rem] border border-[#efdad0] bg-white/60 p-6 shadow-sm backdrop-blur-md sm:p-8"
               >
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
@@ -320,6 +372,8 @@ export function Contact() {
                     <input
                       required
                       type="text"
+                      value={form.name}
+                      onChange={(event) => updateForm("name", event.target.value)}
                       placeholder="Your name"
                       className="h-11 rounded-xl border border-[#efdad0] bg-white/60 px-4 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
                     />
@@ -333,6 +387,10 @@ export function Contact() {
                     <input
                       required
                       type="email"
+                      value={form.email}
+                      onChange={(event) =>
+                        updateForm("email", event.target.value)
+                      }
                       placeholder="you@example.com"
                       className="h-11 rounded-xl border border-[#efdad0] bg-white/60 px-4 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
                     />
@@ -343,11 +401,15 @@ export function Contact() {
                     label="Service"
                     options={services}
                     placeholder="Select service"
+                    value={form.service}
+                    onChange={(value) => updateForm("service", value)}
                   />
                   <CustomSelect
                     label="Budget"
                     options={budgets}
                     placeholder="Select budget"
+                    value={form.budget}
+                    onChange={(value) => updateForm("budget", value)}
                   />
                 </div>
 
@@ -359,6 +421,10 @@ export function Contact() {
                   <textarea
                     required
                     rows={4}
+                    value={form.message}
+                    onChange={(event) =>
+                      updateForm("message", event.target.value)
+                    }
                     placeholder="Tell me about your project..."
                     className="resize-none rounded-xl border border-[#efdad0] bg-white/60 px-4 py-3 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
                   />
@@ -371,9 +437,10 @@ export function Contact() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
+                    disabled={isSending}
                     className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] px-8 py-3.5 text-sm font-bold tracking-wide text-white shadow-md transition-all duration-300 hover:shadow-lg hover:opacity-90"
                   >
-                    Send Message
+                    {isSending ? "Sending..." : "Send Message"}
                     <Icon
                       icon="ph:paper-plane-right-fill"
                       className="text-base transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"

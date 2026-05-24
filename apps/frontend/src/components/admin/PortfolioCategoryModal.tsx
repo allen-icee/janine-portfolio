@@ -20,8 +20,6 @@ export function PortfolioCategoryModal({
   initialData,
   onSuccess,
 }: Props) {
-  // Since this component is conditionally rendered by the parent,
-  // useState will naturally grab the fresh initialData on mount. No useEffect needed!
   const [form, setForm] = useState<CategoryRow>(initialData);
   const [isSaving, setIsSaving] = useState(false);
   const [isDirty, setIsDirty] = useState(false);

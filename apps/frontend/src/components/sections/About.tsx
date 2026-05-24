@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
+import aboutImage from "../../assets/images/AboutPage.png";
+import gradImage from "../../assets/images/GradPage.png";
+import collegeLogo from "../../assets/images/GJCLogo.png";
+import shsLogo from "../../assets/images/SHSLogo.png";
 
 export function About() {
   const [imgErrors, setImgErrors] = useState({
@@ -36,7 +40,7 @@ export function About() {
             <div className="aspect-[3/4] w-full lg:h-[500px] lg:w-auto">
               {!imgErrors.cutout ? (
                 <img
-                  src="/src/assets/images/AboutPage.png"
+                  src={aboutImage}
                   alt="Janine Portrait"
                   className="h-full w-full object-contain drop-shadow-2xl"
                   onError={() => handleError("cutout")}
@@ -111,7 +115,7 @@ export function About() {
               <div className="aspect-[3/4] w-full overflow-hidden rounded-[2.5rem] border-[8px] border-white shadow-lg shadow-[#3c232c]/5">
                 {!imgErrors.grad ? (
                   <img
-                    src="/src/assets/images/GradPage.png"
+                    src={gradImage}
                     alt="Graduation"
                     className="h-full w-full object-cover object-top"
                     onError={() => handleError("grad")}
@@ -138,7 +142,7 @@ export function About() {
                   <div className="size-12 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm p-1.5">
                     {!imgErrors.college ? (
                       <img
-                        src="/src/assets/images/GJCLogo.png"
+                        src={collegeLogo}
                         alt="College Logo"
                         className="h-full w-full object-contain"
                         onError={() => handleError("college")}
@@ -196,7 +200,7 @@ export function About() {
                   <div className="size-12 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm p-1.5">
                     {!imgErrors.shs ? (
                       <img
-                        src="/src/assets/images/SHSLogo.png"
+                        src={shsLogo}
                         alt="SHS Logo"
                         className="h-full w-full object-contain"
                         onError={() => handleError("shs")}

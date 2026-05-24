@@ -2,9 +2,6 @@ import {
   BookOpen,
   Clock,
   Database,
-  FileText,
-  HandCoins,
-  LayoutDashboard,
   MessageCircle,
   PenTool,
   ShieldCheck,
@@ -103,7 +100,7 @@ export const services: PublicService[] = [
     title: "Graphic Design and Illustrator",
 
     description:
-      "I create high-impact visuals and custom digital art that truly reflect your brand’s personality.",
+      "I create high-impact visuals and custom digital art that truly reflect your brand's personality.",
 
     professionalBackground:
       "Visuals are key to capturing attention and communicating your brand identity. I design custom graphics, logos, marketing materials, and digital illustrations that are both aesthetically appealing and strategically aligned with your goals. Each project is crafted to reflect your brand personality and leave a lasting impression.",
@@ -246,9 +243,9 @@ export const portfolioItems: PortfolioItem[] = [
     summary:
       "Managed a focused TikTok account with content direction and engagement tracking.",
     description:
-      "A modern portfolio and booking experience designed to turn casual visitors into serious inquiries.",
+      "Planned content direction, posting rhythm, and engagement checks for an art-focused TikTok presence.",
     outcome:
-      "Reduced inquiry friction with a direct contact flow and sharper service positioning.",
+      "Improved consistency, clearer creative direction, and stronger audience interaction.",
     technologies: ["TikTok App", "TikTok Studio", "CapCut"],
     image: "Social",
     coverUrl: "",
@@ -260,9 +257,9 @@ export const portfolioItems: PortfolioItem[] = [
     summary:
       "Custom digital illustrations for personal and branded creative use.",
     description:
-      "Created a set of high-retention video cuts for promotional use, including captions and motion accents.",
+      "Created original digital illustrations and reusable branded visuals for personal and promotional use.",
     outcome:
-      "More polished client presentation and reusable content across social channels.",
+      "Delivered polished creative assets that could be reused across social channels and presentations.",
     technologies: ["Canva", "Illustrator", "Procreate"],
     image: "Design",
     coverUrl: "",
@@ -274,8 +271,8 @@ export const portfolioItems: PortfolioItem[] = [
     summary:
       "Survey data analysis with interpretation and results documentation.",
     description:
-      "Designed a clean visual sequence with scene planning, animation timing, and concise storytelling.",
-    outcome: "Made a complex offer easier to understand in less than a minute.",
+      "Cleaned survey data, organized Likert-scale results, and supported ANOVA interpretation for research documentation.",
+    outcome: "Made the findings easier to review, explain, and include in the final paper.",
     technologies: ["Microsoft Excel", "Google Sheets", "SPSS"],
     image: "Analytics",
     coverUrl: "",
@@ -287,8 +284,8 @@ export const portfolioItems: PortfolioItem[] = [
     summary:
       "Proposal development, documentation, revisions, and audit preparation.",
     description:
-      "Reworked a cluttered interface into a calmer, more professional tool surface for repeated use.",
-    outcome: "Improved readability and made key actions easier to find.",
+      "Prepared proposal sections, organized supporting data, and refined documentation for review.",
+    outcome: "Improved readability and helped the proposal feel complete and submission-ready.",
     technologies: ["Microsoft Word", "Microsoft Excel", "Google Workspace"],
     image: "Proposal",
     coverUrl: "",
@@ -300,8 +297,8 @@ export const portfolioItems: PortfolioItem[] = [
     summary:
       "Client feedback, transaction screenshots, and completed work proof gallery.",
     description:
-      "Built a clean documentation set covering system features, usage notes, screenshots, and delivery details.",
-    outcome: "Easier client handoff and fewer repeated support questions.",
+      "Organized proof screenshots, client messages, and completed work references in one archive.",
+    outcome: "Made trust signals easier for new clients to review before starting a project.",
     technologies: ["Testimonials", "Client Feedback", "Proofs"],
     image: "Proofs",
     coverUrl: "",
@@ -506,7 +503,7 @@ export const faqs = [
   {
     question: "What services do you offer?",
     answer:
-      "Research assistance, web development, video editing, animation, UI/UX design, documentation, and academic support.",
+      "Research assistance, social media management, graphic design, illustration, data analytics, documentation, and academic support.",
   },
   {
     question: "Can you revise work?",
@@ -517,34 +514,5 @@ export const faqs = [
     question: "Do you accept rush projects?",
     answer:
       "Rush work may be accepted depending on availability and complexity. Urgent projects should include the deadline in the first message.",
-  },
-];
-
-export const adminCards = [
-  {
-    title: "Portfolio Works",
-    description: "Create, update, and feature selected client projects.",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Testimonials",
-    description: "Manage reviews, ratings, and verified client feedback.",
-    icon: Sparkles,
-  },
-  {
-    title: "Messages",
-    description: "Review inquiries, budgets, services requested, and status.",
-    icon: MessageCircle,
-  },
-  {
-    title: "Services & FAQs",
-    description: "Keep packages, pricing ranges, and common questions current.",
-    icon: FileText,
-  },
-  {
-    title: "Clients & Profit",
-    description:
-      "Audit completed clients, income, expenses, and payment status.",
-    icon: HandCoins,
   },
 ];

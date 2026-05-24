@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
 import { Header } from "../components/layout/Header";
@@ -14,8 +15,28 @@ import { FAQ } from "../components/sections/FAQ";
 import { Contact } from "../components/sections/Contact";
 
 import { FloatingContact } from "../components/ui/FloatingContact";
+import { fetchPublicContent } from "../lib/publicContent";
+import type { PublicContent } from "../lib/publicContent";
 
 export function LandingPage() {
+  const [content, setContent] = useState<PublicContent>({});
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetchPublicContent()
+      .then((data) => {
+        if (mounted) setContent(data);
+      })
+      .catch(() => {
+        if (mounted) setContent({});
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -23,30 +44,35 @@ export function LandingPage() {
 
         <meta
           name="description"
-          content="Janine Ayven Dequiros — Virtual Assistant specializing in social media management, graphic design, illustration, research assistance, and creative support."
+          content="Janine Ayven Dequiros - Virtual Assistant specializing in social media management, graphic design, illustration, research assistance, and creative support."
         />
       </Helmet>
 
-      {/* HEADER */}
       <Header />
 
-      {/* MAIN CONTENT */}
       <main className="overflow-hidden">
         <Hero />
         <Stats />
         <About />
-        <Services />
-        <Portfolio />
-        <Proofs />
-        <Testimonials />
-        <FAQ />
+        <Services services={content.services?.length ? content.services : undefined} />
+        <Portfolio
+          categories={content.categories?.length ? content.categories : undefined}
+          portfolioItems={
+            content.portfolioItems?.length ? content.portfolioItems : undefined
+          }
+        />
+        <Proofs proofs={content.proofItems?.length ? content.proofItems : undefined} />
+        <Testimonials
+          testimonials={
+            content.testimonials?.length ? content.testimonials : undefined
+          }
+        />
+        <FAQ faqs={content.faqs?.length ? content.faqs : undefined} />
         <Contact />
       </main>
 
-      {/* FOOTER */}
       <Footer />
 
-      {/* FLOATING CONTACT BUTTONS */}
       <FloatingContact />
     </>
   );

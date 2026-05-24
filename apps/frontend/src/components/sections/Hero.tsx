@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 import typingAnimation from "../../assets/lottie/typing-animation.json";
+import heroImage from "../../assets/images/HeroPage.png";
 import { profile } from "../../data/site";
 
 const creativeSkills = [
@@ -107,7 +108,7 @@ export function Hero() {
         >
           <div className="relative aspect-[4/5] overflow-hidden rounded-t-[14rem] rounded-b-[3rem] border-[8px] border-white/90 bg-[#f8cdb4]/20 shadow-2xl shadow-[#3c232c]/10">
             <img
-              src="/src/assets/images/HeroPage.png"
+              src={heroImage}
               alt="Janine Ayven Dequiros"
               className="h-full w-full object-cover"
             />

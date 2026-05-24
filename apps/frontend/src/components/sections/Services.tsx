@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { services } from "../../data/site";
+import { services as fallbackServices } from "../../data/site";
 import type { PublicService } from "../../types/content";
 
 /* =========================================================
@@ -83,7 +83,11 @@ function SafeToolIcon({
   );
 }
 
-export function Services() {
+type ServicesProps = {
+  services?: PublicService[];
+};
+
+export function Services({ services = fallbackServices }: ServicesProps) {
   const [activeService, setActiveService] = useState(0);
 
   const editableServices = services as PublicService[];

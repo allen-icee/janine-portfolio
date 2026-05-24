@@ -43,7 +43,6 @@ const toSlug = (val: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-// CUSTOM PREMIUM SELECT TO REPLACE NATIVE DROPDOWN
 function AdminCustomSelect({
   value,
   onChange,
@@ -123,9 +122,6 @@ export function PortfolioProjectModal({
   const [isDirty, setIsDirty] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
 
-  // No useEffect needed here either!
-
-  // Fixed the `any` type error by using Generics
   const updateForm = <K extends keyof PortfolioRow>(
     key: K,
     value: PortfolioRow[K],
