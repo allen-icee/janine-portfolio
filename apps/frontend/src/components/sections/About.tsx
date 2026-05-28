@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import aboutImage from "../../assets/images/AboutPage.png";
 import gradImage from "../../assets/images/GradPage.png";
 import collegeLogo from "../../assets/images/GJCLogo.png";
 import shsLogo from "../../assets/images/SHSLogo.png";
+import { supabase } from "../../lib/supabase";
+import type { ExperienceItem } from "../../types/content";
 
 export function About() {
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
   const [imgErrors, setImgErrors] = useState({
     cutout: false,
     grad: false,
@@ -14,12 +17,23 @@ export function About() {
     shs: false,
   });
 
+  useEffect(() => {
+    async function fetchExperiences() {
+      if (!supabase) return;
+      const { data } = await supabase
+        .from("experience_items")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (data) setExperiences(data);
+    }
+    fetchExperiences();
+  }, []);
+
   const handleError = (key: keyof typeof imgErrors) => {
     setImgErrors((prev) => ({ ...prev, [key]: true }));
   };
 
   return (
-    // Matches the alternating pattern perfectly
     <section
       id="about"
       className="relative overflow-hidden bg-[#f9f6f3] px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
@@ -261,101 +275,50 @@ export function About() {
           </div>
 
           <div className="relative border-l-2 border-[#e3d1d1] pl-6 sm:pl-10 lg:ml-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="relative mb-12"
-            >
-              <span className="absolute -left-[35px] top-1 flex size-8 items-center justify-center bg-[#f9f6f3] sm:-left-[51px]">
-                <Icon
-                  icon="ph:circle-duotone"
-                  className="text-xl text-[#ad6a6c]"
-                />
-              </span>
-              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <h4 className="font-serif text-2xl font-bold text-[#3c232c]">
-                    Infosys BPM
-                  </h4>
-                  <p className="mt-1 text-sm font-bold text-[#ad6a6c]">
-                    Process Executive & Complaints Resolution Specialist
-                  </p>
+            {experiences.map((exp, index) => (
+              <motion.div
+                key={exp.id || index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative mb-12"
+              >
+                <span className="absolute -left-[35px] top-1 flex size-8 items-center justify-center bg-[#f9f6f3] sm:-left-[51px]">
+                  <Icon
+                    icon="ph:circle-duotone"
+                    className="text-xl text-[#ad6a6c]"
+                  />
+                </span>
+                <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <h4 className="font-serif text-2xl font-bold text-[#3c232c]">
+                      {exp.company}
+                    </h4>
+                    <p className="mt-1 text-sm font-bold text-[#ad6a6c]">
+                      {exp.role}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1.5 text-left text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/60 sm:text-right">
+                    <span className="flex items-center gap-1.5 sm:justify-end">
+                      <Icon icon="ph:map-pin-duotone" className="text-sm" />{" "}
+                      {exp.location}
+                    </span>
+                    <span className="flex items-center gap-1.5 sm:justify-end">
+                      <Icon icon="ph:calendar-duotone" className="text-sm" />{" "}
+                      {exp.duration}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-1.5 text-left text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/60 sm:text-right">
-                  <span className="flex items-center gap-1.5 sm:justify-end">
-                    <Icon icon="ph:map-pin-duotone" className="text-sm" /> SM
-                    Clark, Pampanga
-                  </span>
-                  <span className="flex items-center gap-1.5 sm:justify-end">
-                    <Icon icon="ph:calendar-duotone" className="text-sm" /> 1 yr
-                    3 mos (Jan '25 - Feb '26)
-                  </span>
+                <div className="rounded-[1.5rem] border border-[#efdad0] bg-white/60 p-5 shadow-sm backdrop-blur-sm sm:p-6">
+                  <ul className="list-inside list-disc space-y-2 text-sm text-[#3c232c]/85 marker:text-[#ad6a6c]">
+                    {exp.details?.map((detail, idx) => (
+                      <li key={idx}>{detail}</li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-              <div className="rounded-[1.5rem] border border-[#efdad0] bg-white/60 p-5 shadow-sm backdrop-blur-sm sm:p-6">
-                <ul className="list-inside list-disc space-y-2 text-sm text-[#3c232c]/85 marker:text-[#ad6a6c]">
-                  <li>CS100 Top 1 Trainee & Mock Calls Top Trainee</li>
-                  <li>Top Agent spanning January 2025 until February 2026</li>
-                  <li>
-                    Awarded Most Recognizable Agent for consistently doing the
-                    extra mile
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="relative"
-            >
-              <span className="absolute -left-[35px] top-1 flex size-8 items-center justify-center bg-[#f9f6f3] sm:-left-[51px]">
-                <Icon
-                  icon="ph:circle-duotone"
-                  className="text-xl text-[#ad6a6c]"
-                />
-              </span>
-              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <h4 className="font-serif text-2xl font-bold text-[#3c232c]">
-                    Freelancer / Commissioner
-                  </h4>
-                  <p className="mt-1 text-sm font-bold text-[#ad6a6c]">
-                    Academic Research Specialist
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1.5 text-left text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/60 sm:text-right">
-                  <span className="flex items-center gap-1.5 sm:justify-end">
-                    <Icon icon="ph:map-pin-duotone" className="text-sm" /> WFH -
-                    Tarlac City
-                  </span>
-                  <span className="flex items-center gap-1.5 sm:justify-end">
-                    <Icon icon="ph:calendar-duotone" className="text-sm" /> 3
-                    yrs 3 mos
-                  </span>
-                </div>
-              </div>
-              <div className="rounded-[1.5rem] border border-[#efdad0] bg-white/60 p-5 shadow-sm backdrop-blur-sm sm:p-6">
-                <ul className="list-inside list-disc space-y-2 text-sm text-[#3c232c]/85 marker:text-[#ad6a6c]">
-                  <li>
-                    Managed various tasks and projects for diverse clients
-                    across different regions and grade levels.
-                  </li>
-                  <li>
-                    Primary focus on comprehensive Researches and Thesis
-                    documentation.
-                  </li>
-                  <li>
-                    Delivered high-quality art-related commissions, including 2D
-                    animations and custom illustrations.
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>

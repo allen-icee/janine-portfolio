@@ -1,32 +1,52 @@
-import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
-import { Toaster } from 'react-hot-toast'
+import { lazy, Suspense } from "react";
+import { BrowserRouter, Route, Routes } from "react-router";
+import { Toaster } from "react-hot-toast";
 
 const LandingPage = lazy(() =>
-  import('./pages/LandingPage').then((module) => ({ default: module.LandingPage })),
-)
+  import("./pages/LandingPage").then((module) => ({
+    default: module.LandingPage,
+  })),
+);
 const AdminDashboard = lazy(() =>
-  import('./pages/AdminDashboard').then((module) => ({ default: module.AdminDashboard })),
-)
+  import("./pages/AdminDashboard").then((module) => ({
+    default: module.AdminDashboard,
+  })),
+);
 const AdminLogin = lazy(() =>
-  import('./pages/AdminLogin').then((module) => ({ default: module.AdminLogin })),
-)
+  import("./pages/AdminLogin").then((module) => ({
+    default: module.AdminLogin,
+  })),
+);
 const AdminFaqsPage = lazy(() =>
-  import('./pages/admin/AdminFaqsPage').then((module) => ({ default: module.AdminFaqsPage })),
-)
+  import("./pages/admin/AdminFaqsPage").then((module) => ({
+    default: module.AdminFaqsPage,
+  })),
+);
 const AdminInquiriesPage = lazy(() =>
-  import('./pages/admin/AdminInquiriesPage').then((module) => ({ default: module.AdminInquiriesPage })),
-)
+  import("./pages/admin/AdminInquiriesPage").then((module) => ({
+    default: module.AdminInquiriesPage,
+  })),
+);
 const AdminPortfolioPage = lazy(() =>
-  import('./pages/admin/AdminPortfolioPage').then((module) => ({ default: module.AdminPortfolioPage })),
-)
+  import("./pages/admin/AdminPortfolioPage").then((module) => ({
+    default: module.AdminPortfolioPage,
+  })),
+);
 const AdminProofsPage = lazy(() =>
-  import('./pages/admin/AdminProofsPage').then((module) => ({ default: module.AdminProofsPage })),
-)
+  import("./pages/admin/AdminProofsPage").then((module) => ({
+    default: module.AdminProofsPage,
+  })),
+);
 const AdminTestimonialsPage = lazy(() =>
-  import('./pages/admin/AdminTestimonialsPage').then((module) => ({ default: module.AdminTestimonialsPage })),
-)
-
+  import("./pages/admin/AdminTestimonialsPage").then((module) => ({
+    default: module.AdminTestimonialsPage,
+  })),
+);
+const AdminProfilePage = lazy(() =>
+  import("./pages/admin/AdminProfilePage").then((module) => ({
+    default: module.AdminProfilePage,
+  })),
+);
 function AppFallback() {
   return (
     <main className="grid min-h-screen place-items-center bg-[#f9f6f3] text-[#3c232c]">
@@ -34,7 +54,7 @@ function AppFallback() {
         Loading JaneDesk...
       </div>
     </main>
-  )
+  );
 }
 
 function App() {
@@ -44,9 +64,9 @@ function App() {
         position="top-right"
         toastOptions={{
           style: {
-            border: '1px solid #efdad0',
-            background: '#fffaf7',
-            color: '#3c232c',
+            border: "1px solid #efdad0",
+            background: "#fffaf7",
+            color: "#3c232c",
           },
         }}
       />
@@ -57,13 +77,17 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/portfolio" element={<AdminPortfolioPage />} />
           <Route path="/admin/proofs" element={<AdminProofsPage />} />
-          <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
+          <Route
+            path="/admin/testimonials"
+            element={<AdminTestimonialsPage />}
+          />
           <Route path="/admin/faqs" element={<AdminFaqsPage />} />
           <Route path="/admin/inquiries" element={<AdminInquiriesPage />} />
+          <Route path="/admin/profile" element={<AdminProfilePage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,19 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
-import { profile } from "../../data/site";
+import { supabase } from "../../lib/supabase";
+
+// Define the exact type to fix "Unexpected any"
+interface FooterProfileSettings {
+  email_primary?: string;
+  location?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  linkedin_url?: string;
+}
 
 export function Footer() {
   const [copied, setCopied] = useState(false);
+  const [profileSettings, setProfileSettings] = useState<FooterProfileSettings>(
+    {},
+  );
+
+  useEffect(() => {
+    async function loadSettings() {
+      if (!supabase) return;
+      const { data } = await supabase
+        .from("profile_settings")
+        .select("*")
+        .limit(1)
+        .single();
+      if (data) setProfileSettings(data);
+    }
+    loadSettings();
+  }, []);
 
   const copyEmail = async () => {
-    if (profile.email) {
-      await navigator.clipboard.writeText(profile.email);
-      setCopied(true);
-      setTimeout(() => {
-        setCopied(false);
-      }, 1800);
-    }
+    const emailToCopy = profileSettings.email_primary || "janedeqz@gmail.com";
+    await navigator.clipboard.writeText(emailToCopy);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1800);
   };
 
   return (
@@ -34,7 +58,9 @@ export function Footer() {
             <span className="hidden text-[#e3d1d1] sm:block">•</span>
             <div className="flex items-center gap-1 font-medium">
               <Icon icon="ph:map-pin-fill" className="text-sm text-[#ad6a6c]" />
-              <span>Tarlac City, Philippines</span>
+              <span>
+                {profileSettings.location || "Tarlac City, Philippines"}
+              </span>
             </div>
           </div>
         </div>
@@ -60,7 +86,7 @@ export function Footer() {
 
           <div className="flex items-center gap-2">
             <SocialButton
-              href={`mailto:${profile.email}`}
+              href={`mailto:${profileSettings.email_primary || "janedeqz@gmail.com"}`}
               icon={
                 <Icon
                   icon="ph:envelope-simple-fill"
@@ -69,22 +95,22 @@ export function Footer() {
               }
               label="Email"
             />
-            {/* Added proper links and security attributes */}
             <SocialButton
-              href={profile.facebookUrl || "https://www.facebook.com"}
+              href={profileSettings.facebook_url || "https://www.facebook.com"}
               icon={<Icon icon="logos:facebook" className="text-lg" />}
               label="Facebook"
             />
             <SocialButton
               href={
-                profile.instagramUrl || "https://www.instagram.com/deminineinks/"
+                profileSettings.instagram_url ||
+                "https://www.instagram.com/deminineinks/"
               }
               icon={<Icon icon="skill-icons:instagram" className="text-lg" />}
               label="Instagram"
             />
             <SocialButton
               href={
-                profile.linkedinUrl ||
+                profileSettings.linkedin_url ||
                 "https://www.linkedin.com/in/janine-ayven-de-quiros-82770a3a8/"
               }
               icon={
@@ -119,7 +145,7 @@ function SocialButton({
       whileTap={{ scale: 0.96 }}
       href={href}
       target="_blank"
-      rel="noopener noreferrer" // Secure standard for new tabs
+      rel="noopener noreferrer"
       aria-label={label}
       className="grid size-10 place-items-center rounded-xl border border-[#efdad0] bg-white/70 shadow-sm backdrop-blur-xl transition-all duration-300 hover:border-[#ad6a6c] hover:bg-white"
     >

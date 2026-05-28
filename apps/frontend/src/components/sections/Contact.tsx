@@ -5,10 +5,6 @@ import { Icon } from "@iconify/react";
 import toast from "react-hot-toast";
 import { isSupabaseConfigured, supabase } from "../../lib/supabase";
 
-// ============================================================================
-// DATA
-// ============================================================================
-
 const services = [
   "Research Assistance",
   "Social Media Management",
@@ -29,10 +25,6 @@ const budgets = [
   "₱ 6,000+",
   "Not sure yet",
 ];
-
-// ============================================================================
-// CUSTOM SELECT (Polished & Compact)
-// ============================================================================
 
 function CustomSelect({
   label,
@@ -65,7 +57,6 @@ function CustomSelect({
       <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
         {label}
       </label>
-
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
@@ -121,11 +112,19 @@ function CustomSelect({
   );
 }
 
-// ============================================================================
-// MAIN COMPONENT
-// ============================================================================
+// Define the exact type to fix "Unexpected any"
+interface ContactProfileSettings {
+  email_primary?: string;
+  email_secondary?: string;
+  phone_primary?: string;
+  phone_secondary?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+}
 
 export function Contact() {
+  const [profileSettings, setProfileSettings] =
+    useState<ContactProfileSettings>({});
   const [submitted, setSubmitted] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [form, setForm] = useState({
@@ -136,13 +135,25 @@ export function Contact() {
     message: "",
   });
 
+  useEffect(() => {
+    async function loadSettings() {
+      if (!supabase) return;
+      const { data } = await supabase
+        .from("profile_settings")
+        .select("*")
+        .limit(1)
+        .single();
+      if (data) setProfileSettings(data);
+    }
+    loadSettings();
+  }, []);
+
   const updateForm = (key: keyof typeof form, value: string) => {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
   const submitMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const formData = new FormData(event.currentTarget);
     if (formData.get("company_website")) return;
 
@@ -152,7 +163,6 @@ export function Contact() {
     }
 
     setIsSending(true);
-
     const { error } = await supabase.from("inquiries").insert({
       name: form.name.trim(),
       email: form.email.trim(),
@@ -164,20 +174,13 @@ export function Contact() {
     });
 
     setIsSending(false);
-
     if (error) {
       toast.error(error.message);
       return;
     }
 
     setSubmitted(true);
-    setForm({
-      name: "",
-      email: "",
-      service: "",
-      budget: "",
-      message: "",
-    });
+    setForm({ name: "", email: "", service: "", budget: "", message: "" });
   };
 
   return (
@@ -185,12 +188,10 @@ export function Contact() {
       id="contact"
       className="relative overflow-hidden bg-[#f9f6f3] px-4 py-10 sm:px-6 lg:px-8 lg:py-20"
     >
-      {/* BACKGROUND GLOW */}
       <div className="absolute -left-[5%] top-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#f8cdb4]/40 blur-[100px]" />
       <div className="absolute -right-[5%] bottom-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#e3d1d1]/50 blur-[120px]" />
 
       <div className="mx-auto max-w-6xl">
-        {/* HEADER */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -206,13 +207,8 @@ export function Contact() {
           </p>
         </motion.div>
 
-        {/* MAIN GRID */}
         <div className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr] lg:gap-10 items-start">
-          {/* ========================================================================= */}
-          {/* LEFT PANEL: Compact Bento Boxes */}
-          {/* ========================================================================= */}
           <div className="flex flex-col gap-4">
-            {/* SOCIALS */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -229,9 +225,8 @@ export function Contact() {
               </div>
 
               <div className="flex flex-col gap-2">
-                {/* FACEBOOK */}
                 <a
-                  href="https://facebook.com"
+                  href={profileSettings.facebook_url || "https://facebook.com"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center justify-between rounded-xl border border-transparent bg-white/50 px-4 py-2.5 transition-all hover:border-[#efdad0] hover:bg-white hover:shadow-sm"
@@ -247,16 +242,17 @@ export function Contact() {
                       </p>
                     </div>
                   </div>
-                  {/* The Arrow */}
                   <Icon
                     icon="ph:arrow-up-right-bold"
                     className="text-sm text-[#ad6a6c] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                   />
                 </a>
 
-                {/* INSTAGRAM */}
                 <a
-                  href="https://www.instagram.com/deminineinks/"
+                  href={
+                    profileSettings.instagram_url ||
+                    "https://www.instagram.com/deminineinks/"
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center justify-between rounded-xl border border-transparent bg-white/50 px-4 py-2.5 transition-all hover:border-[#efdad0] hover:bg-white hover:shadow-sm"
@@ -272,7 +268,6 @@ export function Contact() {
                       </p>
                     </div>
                   </div>
-                  {/* The Arrow */}
                   <Icon
                     icon="ph:arrow-up-right-bold"
                     className="text-sm text-[#ad6a6c] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -282,7 +277,6 @@ export function Contact() {
             </motion.div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {/* EMAIL */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -299,24 +293,23 @@ export function Contact() {
                   </p>
                 </div>
 
-                {/* Beautiful Custom Bullets */}
                 <ul className="mt-2 space-y-2.5">
                   <li className="flex items-center gap-2.5">
                     <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]" />
                     <span className="break-all text-sm font-bold text-[#3c232c]">
-                      janedeqz@gmail.com
+                      {profileSettings.email_primary || "janedeqz@gmail.com"}
                     </span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]/40" />
                     <span className="break-all text-[12px] font-medium text-[#3c232c]/80">
-                      janine.dequiros.18@gmail.com
+                      {profileSettings.email_secondary ||
+                        "janine.dequiros.18@gmail.com"}
                     </span>
                   </li>
                 </ul>
               </motion.div>
 
-              {/* PHONE */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -333,18 +326,17 @@ export function Contact() {
                   </p>
                 </div>
 
-                {/* Beautiful Custom Bullets */}
                 <ul className="mt-2 space-y-2.5">
                   <li className="flex items-center gap-2.5">
                     <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]" />
                     <span className="font-serif text-[17px] font-bold tracking-wide text-[#3c232c]">
-                      +63 991 688 1778
+                      {profileSettings.phone_primary || "+63 991 688 1778"}
                     </span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <div className="size-1.5 shrink-0 rounded-full bg-[#ad6a6c]/40" />
                     <span className="font-serif text-[15px] font-bold tracking-wide text-[#3c232c]/70">
-                      +63 967 278 9012
+                      {profileSettings.phone_secondary || "+63 967 278 9012"}
                     </span>
                   </li>
                 </ul>
@@ -352,9 +344,6 @@ export function Contact() {
             </div>
           </div>
 
-          {/* ========================================================================= */}
-          {/* RIGHT PANEL: Compact Form */}
-          {/* ========================================================================= */}
           <AnimatePresence mode="wait">
             {!submitted ? (
               <motion.form
@@ -375,7 +364,6 @@ export function Contact() {
                 />
 
                 <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-                  {/* NAME */}
                   <div className="flex flex-col gap-1.5">
                     <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                       Name
@@ -392,7 +380,6 @@ export function Contact() {
                     />
                   </div>
 
-                  {/* EMAIL */}
                   <div className="flex flex-col gap-1.5">
                     <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                       Email
@@ -409,7 +396,6 @@ export function Contact() {
                     />
                   </div>
 
-                  {/* SERVICE & BUDGET */}
                   <CustomSelect
                     label="Service"
                     options={services}
@@ -426,7 +412,6 @@ export function Contact() {
                   />
                 </div>
 
-                {/* MESSAGE */}
                 <div className="mt-5 flex flex-col gap-1.5">
                   <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                     Message
@@ -443,9 +428,7 @@ export function Contact() {
                   />
                 </div>
 
-                {/* FOOTER */}
                 <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  {/* The Premium Gradient */}
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -465,14 +448,12 @@ export function Contact() {
                 </div>
               </motion.form>
             ) : (
-              /* SUCCESS STATE */
               <motion.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex min-h-[440px] flex-col items-center justify-center rounded-[2rem] border border-[#efdad0] bg-white/70 px-6 text-center shadow-sm backdrop-blur-md"
               >
-                {/* Gradient applied to success icon */}
                 <div className="mb-5 grid size-16 place-items-center rounded-full bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] text-white shadow-md">
                   <Icon icon="ph:check-bold" className="text-2xl" />
                 </div>
