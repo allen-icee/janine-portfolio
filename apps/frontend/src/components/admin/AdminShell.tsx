@@ -7,6 +7,8 @@ import { setAdminAccessCache } from "../../lib/adminAccess";
 
 type AdminShellProps = {
   children: ReactNode;
+  title?: string;
+  description?: string;
 };
 
 // Added 'Profile' to the navigation items
@@ -20,7 +22,7 @@ const navItems = [
   { label: "Profile Settings", href: "/admin/profile" },
 ];
 
-export function AdminShell({ children }: AdminShellProps) {
+export function AdminShell({ children, title, description }: AdminShellProps) {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -46,15 +48,17 @@ export function AdminShell({ children }: AdminShellProps) {
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
+                {/* Dynamically display the title prop, default to JaneDesk */}
                 <span className="bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] bg-clip-text text-sm font-bold tracking-wide text-transparent">
-                  JaneDesk
+                  {title || "JaneDesk"}
                 </span>
                 <span className="rounded-full bg-[#f8cdb4]/35 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                   Admin
                 </span>
               </div>
+              {/* Dynamically display the description prop, default to Content Management */}
               <p className="truncate text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/70">
-                Content Management
+                {description || "Content Management"}
               </p>
             </div>
           </Link>
