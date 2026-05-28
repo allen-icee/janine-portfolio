@@ -1,52 +1,89 @@
-import { supabase } from './supabase'
+import { supabase } from "./supabase";
+import imageCompression from "browser-image-compression";
 
-const STORAGE_BUCKET = 'portfolio-assets'
+const STORAGE_BUCKET = "portfolio-assets";
 
 function getFileExtension(file: File) {
-  const extension = file.name.split('.').pop()?.toLowerCase()
-  return extension && extension.length <= 5 ? extension : 'png'
+  const extension = file.name.split(".").pop()?.toLowerCase();
+  return extension && extension.length <= 5 ? extension : "png";
 }
 
 function getUploadPath(folder: string, file: File) {
-  const id = crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
-  return `${folder}/${id}.${getFileExtension(file)}`
+  const id =
+    crypto.randomUUID?.() ??
+    `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  return `${folder}/${id}.${getFileExtension(file)}`;
 }
 
-export async function uploadAdminImage(file: File, folder: 'portfolio' | 'proofs') {
+export async function uploadAdminImage(
+  file: File,
+  folder: "portfolio" | "proofs",
+) {
   if (!supabase) {
-    throw new Error('Supabase is not configured yet.')
+    throw new Error("Supabase is not configured yet.");
   }
 
-  const path = getUploadPath(folder, file)
-  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(path, file, {
-    cacheControl: '3600',
-    upsert: false,
-  })
+  // --- COMPRESSION LOGIC START ---
+  let fileToUpload = file;
+
+  try {
+    const options = {
+      maxSizeMB: 0.5, // Compresses the image to a maximum of 500KB
+      maxWidthOrHeight: 1920, // Resizes the image so the longest side is max 1920px
+      useWebWorker: true, // Speeds up compression by using a background thread
+    };
+
+    // Compress the image
+    fileToUpload = await imageCompression(file, options);
+    console.log(
+      `Original size: ${file.size / 1024 / 1024} MB, Compressed size: ${fileToUpload.size / 1024 / 1024} MB`,
+    );
+  } catch (error) {
+    console.warn(
+      "Image compression failed, falling back to original file:",
+      error,
+    );
+    // If it fails, fileToUpload remains the original uncompressed file
+  }
+  // --- COMPRESSION LOGIC END ---
+
+  // Upload the compressed file to Supabase
+  const path = getUploadPath(folder, fileToUpload);
+  const { error } = await supabase.storage
+    .from(STORAGE_BUCKET)
+    .upload(path, fileToUpload, {
+      cacheControl: "3600",
+      upsert: false,
+    });
 
   if (error) {
-    throw error
+    throw error;
   }
 
-  const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path)
-  return data.publicUrl
+  const { data } = supabase.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
 }
 
 export async function deleteAdminImage(publicUrl?: string) {
-  if (!supabase || !publicUrl) return
+  if (!supabase || !publicUrl) return;
 
   try {
-    const url = new URL(publicUrl)
-    const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`
-    const markerIndex = url.pathname.indexOf(marker)
+    const url = new URL(publicUrl);
+    const marker = `/storage/v1/object/public/${STORAGE_BUCKET}/`;
+    const markerIndex = url.pathname.indexOf(marker);
 
-    if (markerIndex === -1) return
+    if (markerIndex === -1) return;
 
-    const path = decodeURIComponent(url.pathname.slice(markerIndex + marker.length))
-    if (!path) return
+    const path = decodeURIComponent(
+      url.pathname.slice(markerIndex + marker.length),
+    );
+    if (!path) return;
 
-    const { error } = await supabase.storage.from(STORAGE_BUCKET).remove([path])
-    if (error) throw error
+    const { error } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .remove([path]);
+    if (error) throw error;
   } catch (error) {
-    console.warn('Could not delete uploaded image:', error)
+    console.warn("Could not delete uploaded image:", error);
   }
 }
