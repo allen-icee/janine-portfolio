@@ -64,21 +64,16 @@ export const stats = [
 export const services: PublicService[] = [
   {
     title: "Social Media Management",
-
     description:
       "I can help you grow your online presence with meaningful content and real engagement.",
-
     professionalBackground:
       "Social media is the frontline of brand communication. I help businesses grow their online presence by crafting meaningful content, managing communities, and analyzing engagement trends. My approach ensures your brand resonates with the right audience while driving real interactions and measurable results.",
-
     expertise: [
       "Experience creating, scheduling, and managing content for social media platforms.",
       "Skilled in boosting engagement, growing followers, and maintaining consistent brand voice.",
       "Able to analyze metrics and provide actionable insights to improve performance.",
     ],
-
     toolTitle: "Social Media Platforms & Tools:",
-
     tools: [
       "logos:facebook",
       "skill-icons:instagram",
@@ -87,32 +82,26 @@ export const services: PublicService[] = [
       "logos:google-analytics",
       "logos:figma",
     ],
-
     toolFallbacks: {
       "custom-meta": "/tools/meta.png",
     },
-
     iconName: "solar:users-group-rounded-bold-duotone",
     icon: Users,
+    // Added local image path here
+    imageUrl: "/services/social-media.png",
   },
-
   {
     title: "Graphic Design and Illustrator",
-
     description:
       "I create high-impact visuals and custom digital art that truly reflect your brand's personality.",
-
     professionalBackground:
       "Visuals are key to capturing attention and communicating your brand identity. I design custom graphics, logos, marketing materials, and digital illustrations that are both aesthetically appealing and strategically aligned with your goals. Each project is crafted to reflect your brand personality and leave a lasting impression.",
-
     expertise: [
       "Strong foundation in creating original digital graphics, illustrations, and multimedia assets.",
       "Experienced with tools like Canva, Adobe Creative Suite, and Procreate.",
       "Able to produce brand-aligned visuals for marketing, social media, and academic projects.",
     ],
-
     toolTitle: "Design & Illustration Tools:",
-
     tools: [
       "custom-canva",
       "logos:adobe-illustrator",
@@ -121,34 +110,28 @@ export const services: PublicService[] = [
       "custom-ibispaint",
       "logos:figma",
     ],
-
     toolFallbacks: {
       "custom-canva": "/tools/canva.png",
       "custom-procreate": "/tools/procreate.png",
       "custom-ibispaint": "/tools/ibispaint.png",
     },
-
     iconName: "solar:palette-bold-duotone",
     icon: PenTool,
+    // Added local image path here
+    imageUrl: "/services/graphic-design.png",
   },
-
   {
     title: "Virtual Research Consultant",
-
     description:
       "I deliver clear, data-backed insights through thorough market research.",
-
     professionalBackground:
       "Data-driven decisions are crucial for business growth. I provide thorough market research, competitor analysis, and consumer insights that help you understand your industry landscape. My services translate complex data into actionable recommendations for strategy development and business planning.",
-
     expertise: [
       "Experienced in conducting in-depth research for business, academic, and creative projects.",
       "Skilled at compiling, organizing, and summarizing information into actionable insights.",
       "Familiar with online databases, academic journals, and industry-specific sources.",
     ],
-
     toolTitle: "Research & Productivity Tools:",
-
     tools: [
       "custom-google-docs",
       "custom-jstor",
@@ -157,7 +140,6 @@ export const services: PublicService[] = [
       "custom-wps",
       "custom-gmail",
     ],
-
     toolFallbacks: {
       "custom-google-docs": "/tools/google-docs.png",
       "custom-jstor": "/tools/jstor.png",
@@ -166,28 +148,23 @@ export const services: PublicService[] = [
       "custom-wps": "/tools/wps.png",
       "custom-gmail": "/tools/gmail.png",
     },
-
     iconName: "solar:notebook-bookmark-bold-duotone",
     icon: BookOpen,
+    // Added local image path here
+    imageUrl: "/services/virtual-assistant.png",
   },
-
   {
     title: "Data & Analytics Virtual Assistant",
-
     description:
       "I turn complex data into clear insights that help your business grow and aid research data.",
-
     professionalBackground:
       "Data without interpretation is just numbers. I assist in collecting, organizing, and analyzing data to provide meaningful insights that inform business decisions. From dashboards to visual reports, I ensure your data is clear, accurate, and actionable, supporting both operational and strategic goals.",
-
     expertise: [
       "Proficient in collecting, organizing, and analyzing data for business or academic purposes.",
       "Skilled in transforming complex datasets into clear, actionable reports.",
       "Experienced with spreadsheets, reporting tools, and maintaining accuracy under deadlines.",
     ],
-
     toolTitle: "Data Management & Analytics Tools:",
-
     tools: [
       "custom-excel",
       "custom-gsheet",
@@ -196,7 +173,6 @@ export const services: PublicService[] = [
       "custom-mforms",
       "custom-iso",
     ],
-
     toolFallbacks: {
       "custom-excel": "/tools/excel.png",
       "custom-gsheet": "/tools/gsheet.png",
@@ -205,9 +181,10 @@ export const services: PublicService[] = [
       "custom-mforms": "/tools/mforms.png",
       "custom-iso": "/tools/iso.png",
     },
-
     iconName: "solar:chart-2-bold-duotone",
     icon: Database,
+    // Added local image path here
+    imageUrl: "/services/data-analytics.png",
   },
 ];
 
