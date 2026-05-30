@@ -7,31 +7,31 @@ import type {
   PublicProfile,
   PublicService,
   Testimonial,
-} from '../types/content'
-import { isSupabaseConfigured, supabase } from './supabase'
+} from "../types/content";
+import { isSupabaseConfigured, supabase } from "./supabase";
 
 export type PublicContent = {
-  profile?: PublicProfile
+  profile?: PublicProfile;
   about?: {
-    summary?: string
-    mission?: string
-  }
-  categories?: PortfolioCategory[]
-  services?: PublicService[]
-  portfolioItems?: PortfolioItem[]
-  testimonials?: Testimonial[]
-  proofItems?: ProofItem[]
-  educationItems?: EducationItem[]
-  experienceItems?: ExperienceItem[]
+    summary?: string;
+    mission?: string;
+  };
+  categories?: PortfolioCategory[];
+  services?: PublicService[];
+  portfolioItems?: PortfolioItem[];
+  testimonials?: Testimonial[];
+  proofItems?: ProofItem[];
+  educationItems?: EducationItem[];
+  experienceItems?: ExperienceItem[];
   faqs?: {
-    question: string
-    answer: string
-  }[]
-}
+    question: string;
+    answer: string;
+  }[];
+};
 
 export async function fetchPublicContent(): Promise<PublicContent> {
   if (!isSupabaseConfigured || !supabase) {
-    return {}
+    return {};
   }
 
   const [
@@ -45,24 +45,42 @@ export async function fetchPublicContent(): Promise<PublicContent> {
     experienceResult,
     faqsResult,
   ] = await Promise.all([
-    supabase.from('site_settings').select('setting_key, setting_value').in('setting_key', ['profile', 'about']),
-    supabase.from('portfolio_categories').select('name').order('sort_order'),
-    supabase.from('services').select('*').eq('is_active', true).order('sort_order'),
-    supabase.from('portfolio_items').select('*').order('sort_order'),
-    supabase.from('testimonials').select('*').eq('is_approved', true).order('created_at', { ascending: false }),
-    supabase.from('proof_items').select('*').order('sort_order'),
-    supabase.from('education_items').select('*').order('sort_order'),
-    supabase.from('experience_items').select('*').order('sort_order'),
-    supabase.from('faqs').select('question, answer').eq('is_active', true).order('sort_order'),
-  ])
+    supabase
+      .from("site_settings")
+      .select("setting_key, setting_value")
+      .in("setting_key", ["profile", "about"]),
+    supabase.from("portfolio_categories").select("name").order("sort_order"),
+    supabase
+      .from("services")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order"),
+    supabase.from("portfolio_items").select("*").order("sort_order"),
+    supabase
+      .from("testimonials")
+      .select("*")
+      .eq("is_approved", true)
+      .order("created_at", { ascending: false }),
+    supabase.from("proof_items").select("*").order("sort_order"),
+    supabase.from("education_items").select("*").order("sort_order"),
+    supabase.from("experience_items").select("*").order("sort_order"),
+    supabase
+      .from("faqs")
+      .select("question, answer")
+      .eq("is_active", true)
+      .order("sort_order"),
+  ]);
 
   const settings = new Map(
-    settingsResult.data?.map((item) => [item.setting_key, item.setting_value]) ?? [],
-  )
+    settingsResult.data?.map((item) => [
+      item.setting_key,
+      item.setting_value,
+    ]) ?? [],
+  );
 
   return {
-    profile: settings.get('profile') as PublicProfile | undefined,
-    about: settings.get('about') as PublicContent['about'] | undefined,
+    profile: settings.get("profile") as PublicProfile | undefined,
+    about: settings.get("about") as PublicContent["about"] | undefined,
     services: servicesResult.data?.map((service) => ({
       title: service.name,
       description: service.description,
@@ -75,24 +93,25 @@ export async function fetchPublicContent(): Promise<PublicContent> {
     })),
     categories: categoriesResult.data?.length
       ? ([
-          'All',
+          "All",
           ...categoriesResult.data.map((category) => category.name),
         ] as PortfolioCategory[])
       : undefined,
-    portfolioItems: portfolioResult.data?.map((item) => ({
-      id: item.id,
-      title: item.title,
-      category: item.category as Exclude<PortfolioCategory, 'All'>,
-      summary: item.summary,
-      description: item.description ?? item.summary,
-      outcome: item.outcome ?? 'Client-ready project delivery.',
-      technologies: item.technologies ?? [],
-      image: item.category,
-      coverUrl: item.cover_url ?? undefined,
-      mediaUrls: item.media_urls ?? [],
-      beforeUrl: item.before_url ?? undefined,
-      afterUrl: item.after_url ?? undefined,
-    })) ?? undefined,
+    portfolioItems:
+      portfolioResult.data?.map((item) => ({
+        id: item.id,
+        title: item.title,
+        category: item.category as Exclude<PortfolioCategory, "All">,
+        summary: item.summary,
+        description: item.description ?? item.summary,
+        outcome: item.outcome ?? "Client-ready project delivery.",
+        technologies: item.technologies ?? [],
+        image: item.category,
+        coverUrl: item.cover_url ?? undefined,
+        mediaUrls: item.media_urls ?? [],
+        beforeUrl: item.before_url ?? undefined,
+        afterUrl: item.after_url ?? undefined,
+      })) ?? undefined,
     testimonials: testimonialsResult.data?.map((item) => ({
       id: item.id,
       name: item.client_name,
@@ -100,7 +119,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       preview: item.preview,
       feedback: item.feedback,
       rating: item.rating ?? 5,
-      date: item.feedback_date ?? 'Recent',
+      date: item.feedback_date ?? "Recent",
     })),
     proofItems: proofsResult.data?.map((item) => ({
       id: item.id,
@@ -109,6 +128,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       imageUrl: item.image_url ?? undefined,
       category: item.category,
       isFeatured: item.is_featured,
+      sort_order: item.sort_order ?? 0,
     })),
     educationItems: educationResult.data?.map((item) => ({
       id: item.id,
@@ -116,6 +136,7 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       institution: item.institution,
       location: item.location ?? undefined,
       details: item.details ?? [],
+      sort_order: item.sort_order ?? 0,
     })),
     experienceItems: experienceResult.data?.map((item) => ({
       id: item.id,
@@ -124,7 +145,8 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       location: item.location ?? undefined,
       duration: item.duration ?? undefined,
       details: item.details ?? [],
+      sort_order: item.sort_order ?? 0,
     })),
     faqs: faqsResult.data ?? [],
-  }
+  };
 }
