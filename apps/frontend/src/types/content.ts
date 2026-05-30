@@ -83,29 +83,32 @@ export interface PublicService {
 }
 
 export type ProofItem = {
-  id: string;
+  id?: string;
   title: string;
   description?: string;
   imageUrl?: string;
   category: string;
   isFeatured?: boolean;
+  sort_order: number;
 };
 
 export type EducationItem = {
-  id: string;
+  id?: string;
   title: string;
   institution: string;
   location?: string;
   details: string[];
+  sort_order: number;
 };
 
 export type ExperienceItem = {
-  id: string;
+  id?: string;
   company: string;
   role: string;
   location?: string;
   duration?: string;
   details: string[];
+  sort_order: number;
 };
 
 export type ClientRecord = {

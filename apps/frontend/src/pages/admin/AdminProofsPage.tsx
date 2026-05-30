@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   AdminButton,
   Field,
@@ -33,6 +34,80 @@ const emptyProof: ProofRow = {
   is_featured: false,
   sort_order: 0,
 };
+
+// Predefined categories for Proofs
+const PROOF_CATEGORIES = [
+  "Client Feedback",
+  "Analytics & Growth",
+  "Project Results",
+  "Social Media Insights",
+  "Certifications",
+  "Other",
+];
+
+// Custom Select Component (Same style as the Portfolio dropdown)
+function AdminCustomSelect({
+  value,
+  onChange,
+  options,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  options: string[];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setIsOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, []);
+
+  return (
+    <div className="relative flex flex-col gap-1.5" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex h-11 items-center justify-between rounded-xl border bg-white px-4 text-sm shadow-sm transition-all duration-300 ${isOpen ? "border-[#ad6a6c] ring-2 ring-[#ad6a6c]/20" : "border-[#efdad0] hover:border-[#ad6a6c]/50"}`}
+      >
+        <span className="font-medium text-[#3c232c]">
+          {value || "Select Category"}
+        </span>
+        <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
+          <Icon icon="ph:caret-down-bold" className="text-sm text-[#ad6a6c]" />
+        </motion.div>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            className="absolute left-0 right-0 top-[110%] z-50 max-h-60 overflow-y-auto overflow-x-hidden rounded-xl border border-[#efdad0] bg-white p-1.5 shadow-xl"
+          >
+            {options.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => {
+                  onChange(opt);
+                  setIsOpen(false);
+                }}
+                className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-all ${value === opt ? "bg-[#ad6a6c]/10 font-bold text-[#ad6a6c]" : "font-medium text-[#3c232c] hover:bg-[#f8cdb4]/20"}`}
+              >
+                {opt}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function AdminProofsPage() {
   const [items, setItems] = useState<ProofRow[]>([]);
@@ -198,10 +273,7 @@ export function AdminProofsPage() {
 
   return (
     <AdminGuard>
-      <AdminShell
-        title="Proof Gallery"
-        description="Create proof entries, upload screenshots, and manage what appears in the proof section."
-      >
+      <AdminShell title="Proof Gallery" description="Proof Management">
         {/* Top Actions: Search & Add Button */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full max-w-md">
@@ -372,7 +444,7 @@ export function AdminProofsPage() {
         >
           <form onSubmit={saveItem} className="grid gap-5">
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Title">
+              <Field label="Title" hint="The main heading for this proof.">
                 <TextInput
                   value={form.title}
                   onChange={(e) => updateForm("title", e.target.value)}
@@ -380,24 +452,31 @@ export function AdminProofsPage() {
                   placeholder="e.g. Q4 Social Media Report"
                 />
               </Field>
-              <Field label="Category">
-                <TextInput
+
+              {/* FIXED: Changed to a selection dropdown using AdminCustomSelect */}
+              <Field label="Category" hint="Groups similar proofs together.">
+                <AdminCustomSelect
                   value={form.category}
-                  onChange={(e) => updateForm("category", e.target.value)}
-                  placeholder="e.g. Analytics"
+                  onChange={(val) => updateForm("category", val)}
+                  options={PROOF_CATEGORIES}
                 />
               </Field>
             </div>
 
             <div className="grid gap-4 md:grid-cols-[1fr_120px]">
-              <Field label="Image URL (Optional)">
+              <Field
+                label="Image URL (Optional)"
+                hint="Leave blank if uploading below."
+              >
                 <TextInput
                   value={form.image_url}
                   onChange={(e) => updateForm("image_url", e.target.value)}
-                  placeholder="Paste URL or upload below"
+                  placeholder="https://example.com/image.png"
                 />
               </Field>
-              <Field label="Sort Order">
+
+              {/* FIXED: Added a hint to ensure vertical alignment in the grid */}
+              <Field label="Sort Order" hint="0 is first.">
                 <TextInput
                   type="number"
                   min="0"
@@ -408,6 +487,7 @@ export function AdminProofsPage() {
                       Math.max(0, Number(e.target.value)),
                     )
                   }
+                  placeholder="0"
                   required
                 />
               </Field>
@@ -448,7 +528,11 @@ export function AdminProofsPage() {
                 <div className="mt-3 flex items-center gap-4 rounded-xl border border-[#efdad0] bg-white/50 p-2 pr-4 shadow-sm">
                   <img
                     src={imagePreviewUrl || form.image_url}
-                    alt={imagePreviewUrl ? "Selected proof preview" : "Current proof"}
+                    alt={
+                      imagePreviewUrl
+                        ? "Selected proof preview"
+                        : "Current proof"
+                    }
                     className="size-12 rounded-lg object-cover"
                   />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">

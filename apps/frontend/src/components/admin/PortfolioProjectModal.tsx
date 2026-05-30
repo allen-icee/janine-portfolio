@@ -189,6 +189,7 @@ export function PortfolioProjectModal({
               <TextInput
                 value={form.title}
                 onChange={(e) => updateForm("title", e.target.value)}
+                placeholder="e.g., Branding & Social Media Kit"
                 required
               />
             </Field>
@@ -208,7 +209,8 @@ export function PortfolioProjectModal({
                 placeholder="Auto-generated"
               />
             </Field>
-            <Field label="Order">
+            {/* FIXED: Added a hint here to vertically align it with the Slug field */}
+            <Field label="Order" hint="0 is first.">
               <TextInput
                 type="number"
                 min="0"
@@ -216,6 +218,7 @@ export function PortfolioProjectModal({
                 onChange={(e) =>
                   updateForm("sort_order", Math.max(0, Number(e.target.value)))
                 }
+                placeholder="0"
                 required
               />
             </Field>
@@ -230,13 +233,14 @@ export function PortfolioProjectModal({
                 setTechText(e.target.value);
                 setIsDirty(true);
               }}
-              placeholder="Canva, Excel"
+              placeholder="e.g., Canva, Figma, Google Docs"
             />
           </Field>
           <Field label="Cover Image URL" hint="Optional if uploading below.">
             <TextInput
               value={form.cover_url}
               onChange={(e) => updateForm("cover_url", e.target.value)}
+              placeholder="https://example.com/image.png"
             />
           </Field>
 
@@ -286,6 +290,7 @@ export function PortfolioProjectModal({
             <TextArea
               value={form.summary}
               onChange={(e) => updateForm("summary", e.target.value)}
+              placeholder="A brief, catchy 1-2 sentence overview of the project..."
               rows={2}
               required
             />
@@ -294,6 +299,7 @@ export function PortfolioProjectModal({
             <TextArea
               value={form.description}
               onChange={(e) => updateForm("description", e.target.value)}
+              placeholder="Provide full details about the project's goals, your process, and any challenges you overcame..."
               rows={3}
             />
           </Field>
@@ -301,6 +307,7 @@ export function PortfolioProjectModal({
             <TextArea
               value={form.outcome}
               onChange={(e) => updateForm("outcome", e.target.value)}
+              placeholder="e.g., Boosted client engagement by 50% and delivered ahead of schedule..."
               rows={2}
             />
           </Field>

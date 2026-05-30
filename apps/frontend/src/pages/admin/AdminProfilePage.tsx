@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import type { ExperienceItem } from "../../types/content";
+// FIXED: Imported the custom Admin components for consistency
+import { Field, TextInput, TextArea } from "../../components/admin/AdminFields";
 
 interface ProfileSettings {
   id?: string;
@@ -241,95 +243,69 @@ export function AdminProfilePage() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Primary Email
-            </label>
-
-            <input
+          <Field label="Primary Email">
+            <TextInput
               name="email_primary"
               value={contacts?.email_primary || ""}
               onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
+              placeholder="e.g., hello@janedoe.com"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Secondary Email
-            </label>
-
-            <input
+          <Field label="Secondary Email">
+            <TextInput
               name="email_secondary"
               value={contacts?.email_secondary || ""}
               onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
+              placeholder="e.g., backup@janedoe.com"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Primary Phone
-            </label>
-
-            <input
+          <Field label="Primary Phone">
+            <TextInput
               name="phone_primary"
               value={contacts?.phone_primary || ""}
               onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
+              placeholder="e.g., +63 912 345 6789"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Secondary Phone
-            </label>
-
-            <input
+          <Field label="Secondary Phone">
+            <TextInput
               name="phone_secondary"
               value={contacts?.phone_secondary || ""}
               onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
+              placeholder="e.g., +63 998 765 4321"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Facebook URL
-            </label>
-
-            <input
+          <Field label="Facebook URL">
+            <TextInput
               name="facebook_url"
               value={contacts?.facebook_url || ""}
               onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
+              placeholder="e.g., https://facebook.com/yourprofile"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Instagram URL
-            </label>
-
-            <input
+          <Field label="Instagram URL">
+            <TextInput
               name="instagram_url"
               value={contacts?.instagram_url || ""}
               onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
+              placeholder="e.g., https://instagram.com/yourhandle"
             />
-          </div>
+          </Field>
 
           <div className="sm:col-span-2">
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
-              Location
-            </label>
-
-            <input
-              name="location"
-              value={contacts?.location || ""}
-              onChange={handleContactChange}
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2.5 text-sm outline-none focus:border-[#ad6a6c]"
-            />
+            <Field label="Location">
+              <TextInput
+                name="location"
+                value={contacts?.location || ""}
+                onChange={handleContactChange}
+                placeholder="e.g., Tarlac City, Philippines"
+              />
+            </Field>
           </div>
         </div>
       </form>
@@ -342,76 +318,86 @@ export function AdminProfilePage() {
           </h2>
 
           <form onSubmit={handleAddExp} className="flex flex-col gap-4">
-            <input
-              required
-              placeholder="Company"
-              value={expForm.company}
-              onChange={(e) =>
-                setExpForm({
-                  ...expForm,
-                  company: e.target.value,
-                })
-              }
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2 text-sm outline-none"
-            />
+            <Field label="Company / Institution">
+              <TextInput
+                required
+                placeholder="e.g., Infosys BPM"
+                value={expForm.company}
+                onChange={(e) =>
+                  setExpForm({ ...expForm, company: e.target.value })
+                }
+              />
+            </Field>
 
-            <input
-              required
-              placeholder="Role"
-              value={expForm.role}
-              onChange={(e) =>
-                setExpForm({
-                  ...expForm,
-                  role: e.target.value,
-                })
-              }
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2 text-sm outline-none"
-            />
+            <Field label="Role / Title">
+              <TextInput
+                required
+                placeholder="e.g., Process Executive"
+                value={expForm.role}
+                onChange={(e) =>
+                  setExpForm({ ...expForm, role: e.target.value })
+                }
+              />
+            </Field>
 
-            <input
-              required
-              placeholder="Location"
-              value={expForm.location}
-              onChange={(e) =>
-                setExpForm({
-                  ...expForm,
-                  location: e.target.value,
-                })
-              }
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2 text-sm outline-none"
-            />
+            <Field label="Location">
+              <TextInput
+                required
+                placeholder="e.g., SM Clark, Pampanga"
+                value={expForm.location}
+                onChange={(e) =>
+                  setExpForm({ ...expForm, location: e.target.value })
+                }
+              />
+            </Field>
 
-            <input
-              required
-              placeholder="Duration"
-              value={expForm.duration}
-              onChange={(e) =>
-                setExpForm({
-                  ...expForm,
-                  duration: e.target.value,
-                })
-              }
-              className="w-full rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-2 text-sm outline-none"
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Duration">
+                <TextInput
+                  required
+                  placeholder="e.g., Jan '25 - Feb '26"
+                  value={expForm.duration}
+                  onChange={(e) =>
+                    setExpForm({ ...expForm, duration: e.target.value })
+                  }
+                />
+              </Field>
+              <Field label="Sort Order">
+                <TextInput
+                  type="number"
+                  min="0"
+                  required
+                  placeholder="0"
+                  value={expForm.sort_order}
+                  onChange={(e) =>
+                    setExpForm({
+                      ...expForm,
+                      sort_order: Math.max(0, Number(e.target.value)),
+                    })
+                  }
+                />
+              </Field>
+            </div>
 
-            <textarea
-              required
-              rows={4}
-              placeholder="Details"
-              value={expForm.details}
-              onChange={(e) =>
-                setExpForm({
-                  ...expForm,
-                  details: e.target.value,
-                })
-              }
-              className="w-full resize-none rounded-xl border border-[#efdad0] bg-[#f9f6f3] px-4 py-3 text-sm outline-none"
-            />
+            <Field
+              label="Details / Achievements"
+              hint="Enter one achievement per line."
+            >
+              <TextArea
+                required
+                rows={4}
+                placeholder="Top Agent spanning Jan 2025 until Feb 2026...&#10;Awarded Most Recognizable Agent..."
+                value={expForm.details}
+                onChange={(e) =>
+                  setExpForm({ ...expForm, details: e.target.value })
+                }
+              />
+            </Field>
 
             <button
               type="submit"
               disabled={addingExp}
-              className="mt-2 w-full rounded-xl bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] py-3 text-sm font-bold text-white hover:opacity-90"
+              className="mt-2 w-full rounded-xl bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] py-3 text-sm font-bold text-white hover:opacity-90 transition-all"
             >
               {addingExp ? "Adding..." : "Add to Journey"}
             </button>
@@ -419,45 +405,57 @@ export function AdminProfilePage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          {experiences.map((exp) => (
-            <div
-              key={exp.id}
-              className="relative rounded-[1.5rem] border border-[#efdad0] bg-white p-5 shadow-sm"
-            >
-              <button
-                onClick={() => handleDeleteExp(exp.id!)}
-                className="absolute right-4 top-4 text-[#ad6a6c] hover:text-red-600"
-              >
-                <Icon icon="ph:trash-duotone" className="text-xl" />
-              </button>
-
-              <div className="pr-8">
-                <h3 className="font-serif text-xl font-bold text-[#3c232c]">
-                  {exp.company}
-                </h3>
-
-                <p className="text-sm font-bold text-[#ad6a6c]">{exp.role}</p>
-
-                <div className="mt-2 flex gap-4 text-xs font-bold uppercase tracking-wider text-[#3c232c]/60">
-                  <span className="flex items-center gap-1">
-                    <Icon icon="ph:map-pin-duotone" />
-                    {exp.location}
-                  </span>
-
-                  <span className="flex items-center gap-1">
-                    <Icon icon="ph:calendar-duotone" />
-                    {exp.duration}
-                  </span>
-                </div>
-
-                <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-[#3c232c]/80 marker:text-[#ad6a6c]">
-                  {exp.details.map((detail, idx) => (
-                    <li key={idx}>{detail}</li>
-                  ))}
-                </ul>
-              </div>
+          {experiences.length === 0 ? (
+            <div className="rounded-[1.5rem] border border-[#efdad0] bg-white/60 p-8 text-center text-sm font-medium text-[#3c232c]/50">
+              No journey items found. Create one to get started.
             </div>
-          ))}
+          ) : (
+            experiences.map((exp) => (
+              <div
+                key={exp.id}
+                className="relative rounded-[1.5rem] border border-[#efdad0] bg-white p-5 shadow-sm"
+              >
+                <button
+                  onClick={() => handleDeleteExp(exp.id!)}
+                  className="absolute right-4 top-4 text-[#ad6a6c] hover:text-red-600 transition-colors"
+                  title="Delete"
+                >
+                  <Icon icon="ph:trash-duotone" className="text-xl" />
+                </button>
+
+                <div className="pr-8">
+                  <div className="flex items-center gap-3">
+                    <h3 className="font-serif text-xl font-bold text-[#3c232c]">
+                      {exp.company}
+                    </h3>
+                    <span className="rounded-full bg-[#f8cdb4]/35 px-2 py-0.5 text-[10px] font-bold text-[#ad6a6c]">
+                      Order: {exp.sort_order}
+                    </span>
+                  </div>
+
+                  <p className="text-sm font-bold text-[#ad6a6c]">{exp.role}</p>
+
+                  <div className="mt-2 flex gap-4 text-xs font-bold uppercase tracking-wider text-[#3c232c]/60">
+                    <span className="flex items-center gap-1">
+                      <Icon icon="ph:map-pin-duotone" />
+                      {exp.location}
+                    </span>
+
+                    <span className="flex items-center gap-1">
+                      <Icon icon="ph:calendar-duotone" />
+                      {exp.duration}
+                    </span>
+                  </div>
+
+                  <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-[#3c232c]/80 marker:text-[#ad6a6c]">
+                    {exp.details.map((detail, idx) => (
+                      <li key={idx}>{detail}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </AdminShell>

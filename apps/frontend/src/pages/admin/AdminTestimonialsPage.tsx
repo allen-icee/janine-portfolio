@@ -139,7 +139,7 @@ export function AdminTestimonialsPage() {
     <AdminGuard>
       <AdminShell
         title="Client Feedback"
-        description="Review testimonials and remove entries that should no longer appear publicly."
+        description="Client Feedback Management"
       >
         {/* ===================================================================== */}
         {/* COMPACT DATA TABLE */}

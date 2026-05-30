@@ -68,14 +68,15 @@ export function PortfolioCategoryModal({
         widthClassName="max-w-xl"
       >
         <form onSubmit={saveCategory} className="grid gap-5">
-          <Field label="Category Name">
+          <Field label="Category Name" hint="Appears as a filter tab button.">
             <TextInput
               value={form.name}
               onChange={(e) => updateForm("name", e.target.value)}
+              placeholder="e.g., Social Media, Graphic Design..."
               required
             />
           </Field>
-          <Field label="Order">
+          <Field label="Order" hint="0 is first (the leftmost tab).">
             <TextInput
               type="number"
               min="0"
@@ -83,9 +84,10 @@ export function PortfolioCategoryModal({
               onChange={(e) =>
                 updateForm("sort_order", Math.max(0, Number(e.target.value)))
               }
+              placeholder="0"
             />
           </Field>
-          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <AdminButton
               type="button"
               variant="secondary"

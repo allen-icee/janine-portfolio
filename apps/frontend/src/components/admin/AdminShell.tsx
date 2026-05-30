@@ -11,7 +11,7 @@ type AdminShellProps = {
   description?: string;
 };
 
-// Added 'Profile' to the navigation items
+// Navigation items
 const navItems = [
   { label: "Dashboard", href: "/admin/dashboard" },
   { label: "Portfolio", href: "/admin/portfolio" },
@@ -38,32 +38,32 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[#f9f6f3] via-[#f9f6f3]/95 to-transparent" />
 
         <div className="relative mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 rounded-2xl border border-[#efdad0] bg-white/75 px-4 py-3 shadow-sm backdrop-blur-xl">
+          {/* Left Side: Logo & Title (flex-1 allows it to take up left-side space) */}
           <Link
             to="/admin/dashboard"
-            className="group flex min-w-0 shrink-0 items-center gap-3"
+            className="group flex min-w-0 flex-1 items-center gap-3 pr-2"
           >
-            <div className="grid size-10 place-items-center rounded-full border border-[#ad6a6c]/30 bg-[#e3d1d1]/30 text-[#ad6a6c] transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
+            <div className="grid size-10 shrink-0 place-items-center rounded-full border border-[#ad6a6c]/30 bg-[#e3d1d1]/30 text-[#ad6a6c] transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
               <ShieldCheck size={20} />
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                {/* Dynamically display the title prop, default to JaneDesk */}
-                <span className="bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] bg-clip-text text-sm font-bold tracking-wide text-transparent">
+                <span className="truncate bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] bg-clip-text text-sm font-bold tracking-wide text-transparent">
                   {title || "JaneDesk"}
                 </span>
-                <span className="rounded-full bg-[#f8cdb4]/35 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[#ad6a6c]">
+                <span className="shrink-0 rounded-full bg-[#f8cdb4]/35 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                   Admin
                 </span>
               </div>
-              {/* Dynamically display the description prop, default to Content Management */}
-              <p className="truncate text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/70">
+              <p className="hidden truncate text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/70 sm:block">
                 {description || "Content Management"}
               </p>
             </div>
           </Link>
 
-          <nav className="hidden items-center gap-6 lg:flex">
+          {/* Center: Desktop Navigation (Now perfectly centered) */}
+          <nav className="hidden shrink-0 items-center gap-6 lg:flex">
             {navItems.map((item) => (
               <NavLink
                 key={item.href}
@@ -80,7 +80,9 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
                   <>
                     {item.label}
                     <span
-                      className={`absolute -bottom-1.5 left-0 h-[2px] rounded-full bg-[#ad6a6c] transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
+                      className={`absolute -bottom-1.5 left-0 h-[2px] rounded-full bg-[#ad6a6c] transition-all duration-300 ${
+                        isActive ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
                     />
                   </>
                 )}
@@ -88,7 +90,9 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          {/* Right Side: Desktop Actions 
+              FIXED: Added 'flex-1 justify-end' to balance the left side and force the tabs to the center */}
+          <div className="hidden flex-1 items-center justify-end gap-3 lg:flex">
             <Link
               to="/"
               className="group inline-flex items-center gap-2 rounded-full border border-[#efdad0] bg-white/60 px-4 py-2.5 text-xs font-bold tracking-wide text-[#3c232c]/75 transition-all hover:border-[#ad6a6c] hover:bg-white hover:text-[#ad6a6c]"
@@ -104,6 +108,7 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
             </button>
           </div>
 
+          {/* Mobile Menu Toggle Button */}
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -114,6 +119,7 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
           </button>
         </div>
 
+        {/* Mobile Navigation Dropdown */}
         {isMobileMenuOpen && (
           <div className="mx-auto mt-2 max-w-7xl rounded-[1.5rem] border border-[#efdad0] bg-white/95 p-5 shadow-xl backdrop-blur-xl lg:hidden">
             <nav className="flex flex-col gap-2">
@@ -123,12 +129,35 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
                   to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={({ isActive }) =>
-                    `rounded-xl px-4 py-3 text-sm font-bold ${isActive ? "bg-[#f8cdb4]/25 text-[#ad6a6c]" : "text-[#3c232c]"}`
+                    `rounded-xl px-4 py-3 text-sm font-bold ${
+                      isActive
+                        ? "bg-[#f8cdb4]/25 text-[#ad6a6c]"
+                        : "text-[#3c232c]"
+                    }`
                   }
                 >
                   {item.label}
                 </NavLink>
               ))}
+
+              {/* Divider for Mobile Menu */}
+              <div className="my-2 h-px w-full bg-[#efdad0]" />
+
+              {/* Mobile Actions */}
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-bold text-[#3c232c] hover:bg-[#f8cdb4]/25 hover:text-[#ad6a6c] transition-colors"
+              >
+                <ExternalLink size={18} /> View Site
+              </Link>
+              <button
+                type="button"
+                onClick={signOut}
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors text-left"
+              >
+                <LogOut size={18} /> Sign out
+              </button>
             </nav>
           </div>
         )}

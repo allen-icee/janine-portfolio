@@ -94,7 +94,9 @@ export function AdminInquiriesPage() {
       return;
     }
 
-    toast.success(status === "handled" ? "Inquiry marked handled." : "Inquiry reopened.");
+    toast.success(
+      status === "handled" ? "Inquiry marked handled." : "Inquiry reopened.",
+    );
     await loadItems();
   };
 
@@ -122,7 +124,7 @@ export function AdminInquiriesPage() {
 
   return (
     <AdminGuard>
-      <AdminShell title="Inquiries" description="Read and handle website messages.">
+      <AdminShell title="Inquiries" description="Inquiries Management">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full max-w-sm">
             <Icon
@@ -147,7 +149,9 @@ export function AdminInquiriesPage() {
               <button
                 key={status.value}
                 type="button"
-                onClick={() => setStatusFilter(status.value as typeof statusFilter)}
+                onClick={() =>
+                  setStatusFilter(status.value as typeof statusFilter)
+                }
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   statusFilter === status.value
                     ? "border-[#ad6a6c] bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] text-white shadow-md"
@@ -188,9 +192,14 @@ export function AdminInquiriesPage() {
                   </tr>
                 ) : (
                   filteredItems.map((item) => (
-                    <tr key={item.id} className="transition-colors hover:bg-white/50">
+                    <tr
+                      key={item.id}
+                      className="transition-colors hover:bg-white/50"
+                    >
                       <td className="px-5 py-3.5">
-                        <div className="font-bold text-[#3c232c]">{item.name}</div>
+                        <div className="font-bold text-[#3c232c]">
+                          {item.name}
+                        </div>
                         <a
                           href={`mailto:${item.email}`}
                           className="mt-0.5 block text-[11px] font-medium text-[#ad6a6c] hover:underline"

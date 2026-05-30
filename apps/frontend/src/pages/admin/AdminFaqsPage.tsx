@@ -78,11 +78,13 @@ export function AdminFaqsPage() {
       mounted = false;
     };
   }, []);
+
   const filteredItems = items.filter(
     (i) =>
       i.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
       i.answer.toLowerCase().includes(searchQuery.toLowerCase()),
   );
+
   const totalPages = Math.max(
     1,
     Math.ceil(filteredItems.length / itemsPerPage),
@@ -166,10 +168,7 @@ export function AdminFaqsPage() {
 
   return (
     <AdminGuard>
-      <AdminShell
-        title="FAQs"
-        description="Create, edit, reorder, publish, or remove frequently asked questions."
-      >
+      <AdminShell title="FAQs" description="FAQs Management">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full max-w-sm">
             <Icon
@@ -322,7 +321,8 @@ export function AdminFaqsPage() {
         >
           <form onSubmit={saveItem} className="grid gap-5">
             <div className="grid gap-5 md:grid-cols-[1fr_120px]">
-              <Field label="Question">
+              {/* FIXED: Added a hint here to align perfectly with Sort Order */}
+              <Field label="Question" hint="The main question being asked.">
                 <TextInput
                   value={form.question}
                   onChange={(e) => updateForm("question", e.target.value)}
@@ -330,7 +330,9 @@ export function AdminFaqsPage() {
                   placeholder="e.g. What are your working hours?"
                 />
               </Field>
-              <Field label="Sort Order">
+
+              {/* FIXED: Added a hint here to push the input down and match the left side */}
+              <Field label="Sort Order" hint="0 is first.">
                 <TextInput
                   type="number"
                   min="0" // Added minimum attribute constraint
@@ -343,6 +345,7 @@ export function AdminFaqsPage() {
                     )
                   }
                   required
+                  placeholder="0"
                 />
               </Field>
             </div>

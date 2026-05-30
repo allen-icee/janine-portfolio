@@ -118,10 +118,7 @@ export function AdminDashboard() {
 
   return (
     <AdminGuard>
-      <AdminShell
-        title="Dashboard"
-        description="Manage portfolio entries, proof images, client feedback, and FAQs."
-      >
+      <AdminShell title="Dashboard" description="Dashboard Management">
         {/* TOP HEADER */}
         <div className="mb-6 overflow-hidden rounded-2xl border border-[#efdad0] bg-gradient-to-r from-[#3c232c] to-[#ad6a6c] text-white shadow-sm">
           <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
@@ -142,7 +139,8 @@ export function AdminDashboard() {
                 </div>
 
                 <p className="mt-1 text-sm text-white/75">
-                  Portfolio, proofs, feedback, FAQs, and inquiries are ready to manage.
+                  Portfolio, proofs, feedback, FAQs, and inquiries are ready to
+                  manage.
                 </p>
               </div>
             </div>
