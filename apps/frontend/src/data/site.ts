@@ -272,7 +272,8 @@ export const portfolioItems: PortfolioItem[] = [
       "Survey data analysis with interpretation and results documentation.",
     description:
       "Cleaned survey data, organized Likert-scale results, and supported ANOVA interpretation for research documentation.",
-    outcome: "Made the findings easier to review, explain, and include in the final paper.",
+    outcome:
+      "Made the findings easier to review, explain, and include in the final paper.",
     technologies: ["Microsoft Excel", "Google Sheets", "SPSS"],
     image: "Analytics",
     coverUrl: "",
@@ -285,7 +286,8 @@ export const portfolioItems: PortfolioItem[] = [
       "Proposal development, documentation, revisions, and audit preparation.",
     description:
       "Prepared proposal sections, organized supporting data, and refined documentation for review.",
-    outcome: "Improved readability and helped the proposal feel complete and submission-ready.",
+    outcome:
+      "Improved readability and helped the proposal feel complete and submission-ready.",
     technologies: ["Microsoft Word", "Microsoft Excel", "Google Workspace"],
     image: "Proposal",
     coverUrl: "",
@@ -298,7 +300,8 @@ export const portfolioItems: PortfolioItem[] = [
       "Client feedback, transaction screenshots, and completed work proof gallery.",
     description:
       "Organized proof screenshots, client messages, and completed work references in one archive.",
-    outcome: "Made trust signals easier for new clients to review before starting a project.",
+    outcome:
+      "Made trust signals easier for new clients to review before starting a project.",
     technologies: ["Testimonials", "Client Feedback", "Proofs"],
     image: "Proofs",
     coverUrl: "",
@@ -314,6 +317,7 @@ export const proofItems: ProofItem[] = [
     category: "Client Feedback",
     imageUrl: "",
     isFeatured: true,
+    sort_order: 0,
   },
   {
     id: "proof-2",
@@ -323,6 +327,7 @@ export const proofItems: ProofItem[] = [
     category: "Completed Work",
     imageUrl: "",
     isFeatured: true,
+    sort_order: 1,
   },
 ];
 
@@ -338,6 +343,7 @@ export const educationItems: EducationItem[] = [
       "Highest GWA - 1.41",
       "Overall Best in Research Presentation, Manuscript, Defense and Final Paper",
     ],
+    sort_order: 0,
   },
   {
     id: "education-2",
@@ -350,6 +356,7 @@ export const educationItems: EducationItem[] = [
       "Highest Grade - 94",
       "Champion in Animation (Division Level)",
     ],
+    sort_order: 1,
   },
   {
     id: "education-3",
@@ -357,6 +364,7 @@ export const educationItems: EducationItem[] = [
     institution: "Corazon C. Aquino High School",
     location: "Gerona, Tarlac City",
     details: ["Graduated WITH HONORS", "Highest Grade - 93"],
+    sort_order: 2,
   },
   {
     id: "education-4",
@@ -368,6 +376,7 @@ export const educationItems: EducationItem[] = [
       "Graduated SALUTATORIAN",
       "1st Place in Cartooning (Division Level)",
     ],
+    sort_order: 3,
   },
 ];
 
@@ -384,6 +393,7 @@ export const experienceItems: ExperienceItem[] = [
       "Top Agent since January 2025 until February 2026",
       "Most Recognizable Agent for doing extra mile",
     ],
+    sort_order: 0,
   },
   {
     id: "experience-2",
@@ -396,6 +406,7 @@ export const experienceItems: ExperienceItem[] = [
       "Mostly focusing on Researches / Thesis",
       "Doing art related commissions such as 2D animations and cute illustrations.",
     ],
+    sort_order: 1,
   },
 ];
 
