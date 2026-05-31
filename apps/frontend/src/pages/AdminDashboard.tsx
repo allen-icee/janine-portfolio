@@ -8,6 +8,7 @@ import {
   MessageSquareQuote,
   MoonStar,
   PanelsTopLeft,
+  CircleDollarSign,
   Sparkles,
   Sun,
   Sunrise,
@@ -27,6 +28,12 @@ const adminCards = [
     description: "Upload client proof screenshots and organize proof entries.",
     href: "/admin/proofs",
     icon: Image,
+  },
+  {
+    title: "Rates",
+    description: "Manage service categories, groups, and public rate rows.",
+    href: "/admin/rates",
+    icon: CircleDollarSign,
   },
   {
     title: "Testimonials",
@@ -139,8 +146,8 @@ export function AdminDashboard() {
                 </div>
 
                 <p className="mt-1 text-sm text-white/75">
-                  Portfolio, proofs, feedback, FAQs, and inquiries are ready to
-                  manage.
+                  Portfolio, rates, proofs, feedback, FAQs, and inquiries are
+                  ready to manage.
                 </p>
               </div>
             </div>
@@ -189,7 +196,7 @@ export function AdminDashboard() {
           Quick Actions
         </h2>
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {adminCards.map((card) => (
             <Link
               key={card.title}

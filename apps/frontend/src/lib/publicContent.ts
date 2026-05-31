@@ -6,6 +6,7 @@ import type {
   ProofItem,
   PublicProfile,
   PublicService,
+  RateCategory,
   Testimonial,
 } from "../types/content";
 import { isSupabaseConfigured, supabase } from "./supabase";
@@ -27,6 +28,7 @@ export type PublicContent = {
     question: string;
     answer: string;
   }[];
+  rateCategories?: RateCategory[];
 };
 
 export async function fetchPublicContent(): Promise<PublicContent> {
@@ -44,6 +46,9 @@ export async function fetchPublicContent(): Promise<PublicContent> {
     educationResult,
     experienceResult,
     faqsResult,
+    rateCategoriesResult,
+    rateGroupsResult,
+    rateItemsResult,
   ] = await Promise.all([
     supabase
       .from("site_settings")
@@ -69,6 +74,21 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       .select("question, answer")
       .eq("is_active", true)
       .order("sort_order"),
+    supabase
+      .from("rate_categories")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order"),
+    supabase
+      .from("rate_service_groups")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order"),
+    supabase
+      .from("rate_items")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order"),
   ]);
 
   const settings = new Map(
@@ -77,6 +97,34 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       item.setting_value,
     ]) ?? [],
   );
+
+  const rateItemsByGroup = new Map<string, RateCategory["groups"][number]["rates"]>();
+  rateItemsResult.data?.forEach((item) => {
+    const groupRates = rateItemsByGroup.get(item.group_id) ?? [];
+    groupRates.push({
+      id: item.id,
+      name: item.name,
+      rate: item.rate_text,
+      sortOrder: item.sort_order ?? 0,
+      isActive: item.is_active,
+    });
+    rateItemsByGroup.set(item.group_id, groupRates);
+  });
+
+  const rateGroupsByCategory = new Map<string, RateCategory["groups"]>();
+  rateGroupsResult.data?.forEach((group) => {
+    const categoryGroups = rateGroupsByCategory.get(group.category_id) ?? [];
+    categoryGroups.push({
+      id: group.id,
+      title: group.title,
+      description: group.description ?? undefined,
+      note: group.note ?? undefined,
+      sortOrder: group.sort_order ?? 0,
+      isActive: group.is_active,
+      rates: rateItemsByGroup.get(group.id) ?? [],
+    });
+    rateGroupsByCategory.set(group.category_id, categoryGroups);
+  });
 
   return {
     profile: settings.get("profile") as PublicProfile | undefined,
@@ -148,5 +196,16 @@ export async function fetchPublicContent(): Promise<PublicContent> {
       sort_order: item.sort_order ?? 0,
     })),
     faqs: faqsResult.data ?? [],
+    rateCategories: rateCategoriesResult.data?.map((category) => ({
+      id: category.id,
+      title: category.title,
+      description: category.description ?? undefined,
+      iconName: category.icon_name ?? undefined,
+      note: category.note ?? undefined,
+      inclusions: category.inclusions ?? [],
+      sortOrder: category.sort_order ?? 0,
+      isActive: category.is_active,
+      groups: rateGroupsByCategory.get(category.id) ?? [],
+    })),
   };
 }

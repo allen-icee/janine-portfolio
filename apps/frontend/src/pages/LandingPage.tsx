@@ -8,6 +8,7 @@ import { Hero } from "../components/sections/Hero";
 import { Stats } from "../components/sections/Stats";
 import { About } from "../components/sections/About";
 import { Services } from "../components/sections/Services";
+import { Rates } from "../components/sections/Rates";
 import { Portfolio } from "../components/sections/Portfolio";
 import { Proofs } from "../components/sections/Proofs";
 import { Testimonials } from "../components/sections/Testimonials";
@@ -55,6 +56,11 @@ export function LandingPage() {
         <Stats />
         <About />
         <Services services={content.services?.length ? content.services : undefined} />
+        <Rates
+          rateCategories={
+            content.rateCategories?.length ? content.rateCategories : undefined
+          }
+        />
         <Portfolio
           categories={content.categories?.length ? content.categories : undefined}
           portfolioItems={

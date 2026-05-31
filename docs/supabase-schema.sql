@@ -89,6 +89,43 @@ create table if not exists services (
   is_active boolean default true
 );
 
+create table if not exists rate_categories (
+  id uuid primary key default gen_random_uuid(),
+  title text not null unique,
+  description text,
+  icon_name text,
+  note text,
+  inclusions text[] default '{}',
+  sort_order int default 0,
+  is_active boolean default true,
+  created_at timestamptz default now()
+);
+
+alter table rate_categories add column if not exists inclusions text[] default '{}';
+
+create table if not exists rate_service_groups (
+  id uuid primary key default gen_random_uuid(),
+  category_id uuid references rate_categories(id) on delete restrict,
+  title text not null,
+  description text,
+  note text,
+  sort_order int default 0,
+  is_active boolean default true,
+  created_at timestamptz default now(),
+  unique (category_id, title)
+);
+
+create table if not exists rate_items (
+  id uuid primary key default gen_random_uuid(),
+  group_id uuid references rate_service_groups(id) on delete restrict,
+  name text not null,
+  rate_text text not null,
+  sort_order int default 0,
+  is_active boolean default true,
+  created_at timestamptz default now(),
+  unique (group_id, name)
+);
+
 create table if not exists education_items (
   id uuid primary key default gen_random_uuid(),
   title text not null,
@@ -203,6 +240,9 @@ alter table testimonials enable row level security;
 alter table inquiries enable row level security;
 alter table faqs enable row level security;
 alter table services enable row level security;
+alter table rate_categories enable row level security;
+alter table rate_service_groups enable row level security;
+alter table rate_items enable row level security;
 alter table admin_profiles enable row level security;
 alter table profile_settings enable row level security;
 alter table proof_items enable row level security;
@@ -224,6 +264,9 @@ drop policy if exists "Public can read education items" on education_items;
 drop policy if exists "Public can read experience items" on experience_items;
 drop policy if exists "Public can read active faqs" on faqs;
 drop policy if exists "Public can read active services" on services;
+drop policy if exists "Public can read active rate categories" on rate_categories;
+drop policy if exists "Public can read active rate groups" on rate_service_groups;
+drop policy if exists "Public can read active rate items" on rate_items;
 drop policy if exists "Public can read profile settings" on profile_settings;
 drop policy if exists "Public can create testimonials" on testimonials;
 drop policy if exists "Public can create inquiries" on inquiries;
@@ -234,6 +277,9 @@ drop policy if exists "Admins can manage portfolio categories" on portfolio_cate
 drop policy if exists "Admins can manage testimonials" on testimonials;
 drop policy if exists "Admins can manage faqs" on faqs;
 drop policy if exists "Admins can manage services" on services;
+drop policy if exists "Admins can manage rate categories" on rate_categories;
+drop policy if exists "Admins can manage rate groups" on rate_service_groups;
+drop policy if exists "Admins can manage rate items" on rate_items;
 drop policy if exists "Admins can manage profile settings" on profile_settings;
 drop policy if exists "Admins can manage proof items" on proof_items;
 drop policy if exists "Admins can manage education items" on education_items;
@@ -258,6 +304,9 @@ create policy "Public can read education items" on education_items for select us
 create policy "Public can read experience items" on experience_items for select using (true);
 create policy "Public can read active faqs" on faqs for select using (is_active = true);
 create policy "Public can read active services" on services for select using (is_active = true);
+create policy "Public can read active rate categories" on rate_categories for select using (is_active = true);
+create policy "Public can read active rate groups" on rate_service_groups for select using (is_active = true);
+create policy "Public can read active rate items" on rate_items for select using (is_active = true);
 create policy "Public can read profile settings" on profile_settings for select using (true);
 create policy "Public can create testimonials" on testimonials for insert with check (is_approved = false and is_verified = false);
 create policy "Public can create inquiries" on inquiries for insert with check (true);
@@ -269,6 +318,9 @@ create policy "Admins can manage portfolio categories" on portfolio_categories f
 create policy "Admins can manage testimonials" on testimonials for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage faqs" on faqs for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage services" on services for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage rate categories" on rate_categories for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage rate groups" on rate_service_groups for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
+create policy "Admins can manage rate items" on rate_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage profile settings" on profile_settings for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage proof items" on proof_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage education items" on education_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));

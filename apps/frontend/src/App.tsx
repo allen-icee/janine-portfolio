@@ -32,6 +32,11 @@ const AdminPortfolioPage = lazy(() =>
     default: module.AdminPortfolioPage,
   })),
 );
+const AdminRatesPage = lazy(() =>
+  import("./pages/admin/AdminRatesPage").then((module) => ({
+    default: module.AdminRatesPage,
+  })),
+);
 const AdminProofsPage = lazy(() =>
   import("./pages/admin/AdminProofsPage").then((module) => ({
     default: module.AdminProofsPage,
@@ -76,6 +81,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/portfolio" element={<AdminPortfolioPage />} />
+          <Route path="/admin/rates" element={<AdminRatesPage />} />
           <Route path="/admin/proofs" element={<AdminProofsPage />} />
           <Route
             path="/admin/testimonials"

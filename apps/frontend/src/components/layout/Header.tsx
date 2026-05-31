@@ -8,6 +8,7 @@ import logoImage from "../../assets/images/logo.jpeg";
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
+  { label: "Rates", href: "#rates" },
   { label: "Portfolio", href: "#portfolio" },
   { label: "Proofs", href: "#proofs" },
   { label: "Testimonials", href: "#testimonials" },

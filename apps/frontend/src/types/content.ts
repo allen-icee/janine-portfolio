@@ -139,3 +139,33 @@ export type TrustCard = {
   description: string;
   icon: LucideIcon;
 };
+
+export type RateItem = {
+  id?: string;
+  name: string;
+  rate: string;
+  sortOrder: number;
+  isActive?: boolean;
+};
+
+export type RateServiceGroup = {
+  id?: string;
+  title: string;
+  description?: string;
+  note?: string;
+  sortOrder: number;
+  isActive?: boolean;
+  rates: RateItem[];
+};
+
+export type RateCategory = {
+  id?: string;
+  title: string;
+  description?: string;
+  iconName?: string;
+  note?: string;
+  inclusions?: string[];
+  sortOrder: number;
+  isActive?: boolean;
+  groups: RateServiceGroup[];
+};
