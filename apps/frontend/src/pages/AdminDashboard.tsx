@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\AdminDashboard.tsx
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import {
@@ -126,10 +127,8 @@ export function AdminDashboard() {
   return (
     <AdminGuard>
       <AdminShell title="Dashboard" description="Dashboard Management">
-        {/* TOP HEADER */}
         <div className="mb-6 overflow-hidden rounded-2xl border border-[#efdad0] bg-gradient-to-r from-[#3c232c] to-[#ad6a6c] text-white shadow-sm">
           <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-            {/* LEFT SIDE */}
             <div className="flex items-center gap-4">
               <div className="hidden size-12 place-items-center rounded-full bg-white/12 text-white sm:grid">
                 <Sparkles size={24} />
@@ -152,7 +151,6 @@ export function AdminDashboard() {
               </div>
             </div>
 
-            {/* CLOCK CARD */}
             <div className="rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-left shadow-lg backdrop-blur-md sm:text-right">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
                 {manilaDate.dateLabel}
@@ -170,7 +168,6 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        {/* GREETING CARD */}
         <div className="mb-6 rounded-2xl border-l-4 border-[#ad6a6c] bg-white/70 p-5 shadow-sm backdrop-blur">
           <div className="flex items-center justify-between gap-5">
             <div>
@@ -191,7 +188,6 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        {/* QUICK ACTIONS */}
         <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-[#3c232c]/60">
           Quick Actions
         </h2>

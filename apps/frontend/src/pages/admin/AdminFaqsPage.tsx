@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminFaqsPage.tsx
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
@@ -41,7 +42,6 @@ export function AdminFaqsPage() {
   const [deleteTarget, setDeleteTarget] = useState<FaqRow | null>(null);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
 
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
 
   const loadItems = async () => {
@@ -56,7 +56,6 @@ export function AdminFaqsPage() {
     setItems(data ?? []);
   };
 
-  // Safe Initial Load - avoids linter warnings for cascading renders
   useEffect(() => {
     let mounted = true;
 
@@ -86,7 +85,6 @@ export function AdminFaqsPage() {
       i.answer.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  // Pagination Logic
   const totalItems = filteredItems.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   const paginatedItems = filteredItems.slice(
@@ -162,7 +160,6 @@ export function AdminFaqsPage() {
     toast.success("FAQ deleted.");
     setDeleteTarget(null);
 
-    // Safety check: if deleting the last item on a page, go back a page
     if (paginatedItems.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -185,7 +182,7 @@ export function AdminFaqsPage() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1); // Reset page on search
+                setCurrentPage(1);
               }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
@@ -199,9 +196,6 @@ export function AdminFaqsPage() {
           </div>
         </div>
 
-        {/* ===================================================================== */}
-        {/* COMPACT DATA TABLE */}
-        {/* ===================================================================== */}
         <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
@@ -282,9 +276,6 @@ export function AdminFaqsPage() {
             </table>
           </div>
 
-          {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS (Matched Style) */}
-          {/* ===================================================================== */}
           {totalItems > 0 && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
               <span className="text-[11px] font-medium text-[#3c232c]/60">
@@ -317,9 +308,6 @@ export function AdminFaqsPage() {
           )}
         </div>
 
-        {/* ===================================================================== */}
-        {/* MODALS */}
-        {/* ===================================================================== */}
         <AdminModal
           open={isModalOpen}
           title={form.id ? "Edit FAQ" : "Create FAQ"}
@@ -412,7 +400,6 @@ export function AdminFaqsPage() {
           </form>
         </AdminModal>
 
-        {/* Delete Confirmation */}
         <ConfirmModal
           open={Boolean(deleteTarget)}
           title="Delete FAQ?"
@@ -426,7 +413,6 @@ export function AdminFaqsPage() {
           onConfirm={deleteItem}
         />
 
-        {/* Discard Confirmation */}
         <ConfirmModal
           open={showDiscardConfirm}
           title="Discard unsaved changes?"

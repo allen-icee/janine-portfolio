@@ -67,7 +67,6 @@ export interface PublicService {
   expertise?: string[];
   tools?: string[];
   toolTitle?: string;
-  /* BETTER FALLBACK SYSTEM */
   toolFallbacks?: Record<string, string>;
   imageUrl?: string;
   priceRange?: string;
@@ -133,7 +132,6 @@ export type TrustCard = {
   icon: LucideIcon;
 };
 
-// These are used by your static rate.ts file
 export type RateItem = {
   id?: string;
   name: string;

@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminProfilePage.tsx
 import { useEffect, useState } from "react";
 import { AdminShell } from "../../components/admin/AdminShell";
 import { supabase, isSupabaseConfigured } from "../../lib/supabase";
@@ -5,7 +6,6 @@ import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import type { ExperienceItem } from "../../types/content";
-// FIXED: Imported the custom Admin components for consistency
 import { Field, TextInput, TextArea } from "../../components/admin/AdminFields";
 
 interface ProfileSettings {
@@ -22,11 +22,9 @@ interface ProfileSettings {
 export function AdminProfilePage() {
   const [loading, setLoading] = useState(true);
 
-  // Contacts State
   const [savingContacts, setSavingContacts] = useState(false);
   const [contacts, setContacts] = useState<ProfileSettings | null>(null);
 
-  // Experiences State
   const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
   const [addingExp, setAddingExp] = useState(false);
 
@@ -39,7 +37,6 @@ export function AdminProfilePage() {
     sort_order: 0,
   });
 
-  // FIXED EFFECT
   useEffect(() => {
     let mounted = true;
 
@@ -84,7 +81,6 @@ export function AdminProfilePage() {
     };
   }, []);
 
-  // --- HANDLERS FOR CONTACTS ---
   const handleSaveContacts = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -124,7 +120,6 @@ export function AdminProfilePage() {
     }
   };
 
-  // --- HANDLERS FOR EXPERIENCE ---
   const handleAddExp = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -221,7 +216,6 @@ export function AdminProfilePage() {
         </p>
       </div>
 
-      {/* CONTACTS */}
       <form
         onSubmit={handleSaveContacts}
         className="mb-10 rounded-[1.5rem] border border-[#efdad0] bg-white p-6 shadow-sm sm:p-8"
@@ -310,7 +304,6 @@ export function AdminProfilePage() {
         </div>
       </form>
 
-      {/* EXPERIENCE */}
       <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr]">
         <div className="rounded-[1.5rem] border border-[#efdad0] bg-white p-6 shadow-sm h-fit">
           <h2 className="mb-6 font-serif text-xl font-bold text-[#3c232c]">

@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminPortfolioPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
@@ -47,13 +48,11 @@ export function AdminPortfolioPage() {
   const [items, setItems] = useState<PortfolioRow[]>([]);
   const [categoryRows, setCategoryRows] = useState<CategoryRow[]>([]);
 
-  // UI & Target States
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Modal Targets
   const [projectTarget, setProjectTarget] = useState<PortfolioRow | null>(null);
   const [categoryTarget, setCategoryTarget] = useState<CategoryRow | null>(
     null,
@@ -62,7 +61,6 @@ export function AdminPortfolioPage() {
   const [categoryDeleteTarget, setCategoryDeleteTarget] =
     useState<CategoryRow | null>(null);
 
-  // Safe Initial Load for linter
   useEffect(() => {
     let mounted = true;
     const fetchInitialData = async () => {
@@ -84,7 +82,6 @@ export function AdminPortfolioPage() {
     };
   }, []);
 
-  // Standard load data for refreshing after actions
   const loadData = async () => {
     const [itemsRes, categoriesRes] = await Promise.all([
       supabase!.from("portfolio_items").select("*").order("sort_order"),
@@ -127,7 +124,6 @@ export function AdminPortfolioPage() {
     return filtered;
   }, [activeCategory, items, searchQuery]);
 
-  // Derived Pagination State
   const totalItems = filteredItems.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
@@ -154,7 +150,6 @@ export function AdminPortfolioPage() {
     await deleteAdminImage(deleteTarget.cover_url);
     setDeleteTarget(null);
 
-    // Safety check: if deleting the last item on a page, go back a page
     if (paginatedItems.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -200,7 +195,6 @@ export function AdminPortfolioPage() {
   return (
     <AdminGuard>
       <AdminShell title="Portfolio" description="Project Management">
-        {/* Header Controls */}
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {["All", ...categoryNames].map((category) => (
@@ -209,7 +203,7 @@ export function AdminPortfolioPage() {
                 type="button"
                 onClick={() => {
                   setActiveCategory(category);
-                  setCurrentPage(1); // Reset page on category change
+                  setCurrentPage(1);
                 }}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   activeCategory === category
@@ -249,7 +243,6 @@ export function AdminPortfolioPage() {
           </div>
         </div>
 
-        {/* Categories Grid */}
         <section className="mb-8 rounded-[1.5rem] border border-[#efdad0] bg-white/40 p-5 shadow-sm backdrop-blur-md">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="font-serif text-lg font-bold text-[#3c232c]">
@@ -303,7 +296,6 @@ export function AdminPortfolioPage() {
           )}
         </section>
 
-        {/* Search Input */}
         <div className="mb-4 relative w-full max-w-sm">
           <Icon
             icon="ph:magnifying-glass-bold"
@@ -315,13 +307,12 @@ export function AdminPortfolioPage() {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1); // Reset page on search
+              setCurrentPage(1);
             }}
             className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm outline-none transition focus:border-[#ad6a6c] focus:bg-white"
           />
         </div>
 
-        {/* Projects Table */}
         <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
@@ -418,9 +409,6 @@ export function AdminPortfolioPage() {
             </table>
           </div>
 
-          {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS (Standardized Style) */}
-          {/* ===================================================================== */}
           {totalItems > 0 && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
               <span className="text-[11px] font-medium text-[#3c232c]/60">
@@ -455,7 +443,6 @@ export function AdminPortfolioPage() {
           )}
         </div>
 
-        {/* Separated Modals */}
         {projectTarget && (
           <PortfolioProjectModal
             open={!!projectTarget}

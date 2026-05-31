@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\Portfolio.tsx
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
@@ -80,12 +81,10 @@ export function Portfolio({
         id="portfolio"
         className="relative overflow-hidden bg-[#f9f6f3] px-4 py-10 sm:px-6 lg:px-8 lg:py-15"
       >
-        {/* Soft Warm Glows to break up the "gray" feeling */}
         <div className="absolute -left-20 top-20 -z-10 h-[400px] w-[400px] rounded-full bg-[#f8cdb4]/20 blur-[100px]" />
         <div className="absolute -right-20 bottom-20 -z-10 h-[400px] w-[400px] rounded-full bg-[#e3d1d1]/30 blur-[120px]" />
 
         <div className="mx-auto max-w-7xl">
-          {/* Flipped Typography Hierarchy */}
           <div className="mb-10 text-center lg:text-center">
             <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl lg:text-6xl">
               Portfolio
@@ -95,7 +94,6 @@ export function Portfolio({
             </p>
           </div>
 
-          {/* Scrollbar-Hidden Tabs */}
           <div className="mb-10 w-full border-b border-[#e3d1d1]/60">
             <div className="flex gap-8 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {portfolioTabs.map((item) => {
@@ -129,7 +127,6 @@ export function Portfolio({
             </div>
           </div>
 
-          {/* Grid or Empty State */}
           <AnimatePresence mode="wait">
             {visibleProjects.length > 0 ? (
               <motion.div
@@ -179,7 +176,6 @@ export function Portfolio({
                 ))}
               </motion.div>
             ) : (
-              /* Beautiful Empty State */
               <motion.div
                 key={`empty-${category}`}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -206,7 +202,6 @@ export function Portfolio({
             )}
           </AnimatePresence>
 
-          {/* Expand / Collapse Actions */}
           {visibleProjects.length > 0 && (
             <div className="mt-12 flex justify-center gap-4">
               {hasMore && (
@@ -233,7 +228,6 @@ export function Portfolio({
         </div>
       </section>
 
-      {/* Embedded Project Modal */}
       <AnimatePresence>
         {selectedProject && (
           <ProjectModal
@@ -246,7 +240,6 @@ export function Portfolio({
   );
 }
 
-// Modal Component
 function ProjectModal({
   project,
   onClose,

@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\About.tsx
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
@@ -42,7 +43,6 @@ export function About() {
       <div className="absolute bottom-0 right-0 -z-10 h-96 w-96 rounded-full bg-[#e3d1d1]/40 blur-[120px]" />
 
       <div className="mx-auto flex max-w-7xl flex-col gap-16 lg:gap-24">
-        {/* SECTION 1: THE BIO */}
         <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:items-end">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -105,7 +105,6 @@ export function About() {
           </motion.div>
         </div>
 
-        {/* SECTION 2: EDUCATION */}
         <div className="mx-auto w-full max-w-6xl">
           <div className="mb-10 text-center lg:text-left">
             <div className="mb-3 flex items-center justify-center gap-3 lg:justify-start">
@@ -263,7 +262,6 @@ export function About() {
           </div>
         </div>
 
-        {/* SECTION 3: WORK EXPERIENCE */}
         <div className="mx-auto w-full max-w-4xl">
           <div className="mb-12 flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
             <div className="grid size-12 place-items-center rounded-full bg-[#ad6a6c]/10 text-[#ad6a6c]">

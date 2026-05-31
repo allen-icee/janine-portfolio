@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\Stats.tsx
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import { stats } from "../../data/site";
@@ -13,10 +14,8 @@ export function Stats() {
   if (!stats?.length) return null;
 
   return (
-    // Updated to #f0eeea to maintain the alternating pattern
     <section className="relative bg-[#efe9e5] px-4 py-10 sm:px-6 lg:px-8">
       {" "}
-      {/* Background Glow */}
       <div className="absolute inset-0 -z-10 flex justify-center">
         <div className="h-[240px] w-[240px] rounded-full bg-[#f8cdb4]/30 blur-[100px]" />
       </div>

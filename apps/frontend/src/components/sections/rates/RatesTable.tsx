@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\rates\RatesTable.tsx
 import { Icon } from "@iconify/react";
 import type { RateServiceGroup } from "../../../types/content";
 

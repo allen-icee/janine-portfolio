@@ -1,3 +1,4 @@
+// apps\frontend\src\data\rates.ts
 import type { RateCategory } from "../types/content";
 
 const researchPackageInclusions = [
@@ -117,10 +118,26 @@ export const rateCategories: RateCategory[] = [
         sortOrder: 2,
         isActive: true,
         rates: [
-          { name: "Related Literature (Local)", rate: "₱100.00 each", sortOrder: 1 },
-          { name: "Related Literature (Foreign)", rate: "₱100.00 each", sortOrder: 2 },
-          { name: "Related Studies (Local)", rate: "₱100.00 each", sortOrder: 3 },
-          { name: "Related Studies (Foreign)", rate: "₱100.00 each", sortOrder: 4 },
+          {
+            name: "Related Literature (Local)",
+            rate: "₱100.00 each",
+            sortOrder: 1,
+          },
+          {
+            name: "Related Literature (Foreign)",
+            rate: "₱100.00 each",
+            sortOrder: 2,
+          },
+          {
+            name: "Related Studies (Local)",
+            rate: "₱100.00 each",
+            sortOrder: 3,
+          },
+          {
+            name: "Related Studies (Foreign)",
+            rate: "₱100.00 each",
+            sortOrder: 4,
+          },
           { name: "Synthesis of the Study", rate: "₱100.00", sortOrder: 5 },
         ],
       },
@@ -164,7 +181,11 @@ export const rateCategories: RateCategory[] = [
           { name: "Chapter 5 Complete", rate: "₱1,200.00", sortOrder: 5 },
           { name: "Chapter 1-3 Bundle", rate: "₱5,800.00", sortOrder: 6 },
           { name: "Chapter 4-5 Bundle", rate: "₱5,300.00", sortOrder: 7 },
-          { name: "Premium Package (Whole Paper)", rate: "₱11,500.00", sortOrder: 8 },
+          {
+            name: "Premium Package (Whole Paper)",
+            rate: "₱11,500.00",
+            sortOrder: 8,
+          },
         ],
       },
     ],
@@ -183,15 +204,47 @@ export const rateCategories: RateCategory[] = [
         sortOrder: 1,
         isActive: true,
         rates: [
-          { name: "Quantitative Research (Full)", rate: "₱15,000.00", sortOrder: 1 },
-          { name: "Qualitative Research (Full)", rate: "₱20,000.00", sortOrder: 2 },
+          {
+            name: "Quantitative Research (Full)",
+            rate: "₱15,000.00",
+            sortOrder: 1,
+          },
+          {
+            name: "Qualitative Research (Full)",
+            rate: "₱20,000.00",
+            sortOrder: 2,
+          },
           { name: "Mixed Research (Full)", rate: "₱25,000.00", sortOrder: 3 },
-          { name: "Chapter 1 to 3 (Proposal)", rate: "₱8,000.00", sortOrder: 4 },
-          { name: "Chapter 4 to 5 (Results & Discussion - No Stats)", rate: "₱7,500.00", sortOrder: 5 },
-          { name: "Proofreading (w/ certification)", rate: "₱1,800.00", sortOrder: 6 },
-          { name: "Grammarian / Grammar Editing (w/ certification)", rate: "₱2,200.00", sortOrder: 7 },
-          { name: "Statistician Service (w/ certification)", rate: "₱4,000.00", sortOrder: 8 },
-          { name: "Research Validator / Instrument Validation", rate: "₱1,800.00", sortOrder: 9 },
+          {
+            name: "Chapter 1 to 3 (Proposal)",
+            rate: "₱8,000.00",
+            sortOrder: 4,
+          },
+          {
+            name: "Chapter 4 to 5 (Results & Discussion - No Stats)",
+            rate: "₱7,500.00",
+            sortOrder: 5,
+          },
+          {
+            name: "Proofreading (w/ certification)",
+            rate: "₱1,800.00",
+            sortOrder: 6,
+          },
+          {
+            name: "Grammarian / Grammar Editing (w/ certification)",
+            rate: "₱2,200.00",
+            sortOrder: 7,
+          },
+          {
+            name: "Statistician Service (w/ certification)",
+            rate: "₱4,000.00",
+            sortOrder: 8,
+          },
+          {
+            name: "Research Validator / Instrument Validation",
+            rate: "₱1,800.00",
+            sortOrder: 9,
+          },
         ],
       },
       {
@@ -199,15 +252,47 @@ export const rateCategories: RateCategory[] = [
         sortOrder: 2,
         isActive: true,
         rates: [
-          { name: "Quantitative Research (Full)", rate: "₱25,000.00", sortOrder: 1 },
-          { name: "Qualitative Research (Full)", rate: "₱30,000.00", sortOrder: 2 },
+          {
+            name: "Quantitative Research (Full)",
+            rate: "₱25,000.00",
+            sortOrder: 1,
+          },
+          {
+            name: "Qualitative Research (Full)",
+            rate: "₱30,000.00",
+            sortOrder: 2,
+          },
           { name: "Mixed Research (Full)", rate: "₱35,000.00", sortOrder: 3 },
-          { name: "Chapter 1 to 3 (Proposal)", rate: "₱15,000.00", sortOrder: 4 },
-          { name: "Chapter 4 to 5 (Results & Discussion - No Stats)", rate: "₱13,000.00", sortOrder: 5 },
-          { name: "Proofreading (w/ certification)", rate: "₱2,500.00", sortOrder: 6 },
-          { name: "Grammarian / Grammar Editing (w/ certification)", rate: "₱3,500.00", sortOrder: 7 },
-          { name: "Statistician Service (w/ certification)", rate: "₱6,000.00", sortOrder: 8 },
-          { name: "Research Validator / Instrument Validation", rate: "₱3,000.00", sortOrder: 9 },
+          {
+            name: "Chapter 1 to 3 (Proposal)",
+            rate: "₱15,000.00",
+            sortOrder: 4,
+          },
+          {
+            name: "Chapter 4 to 5 (Results & Discussion - No Stats)",
+            rate: "₱13,000.00",
+            sortOrder: 5,
+          },
+          {
+            name: "Proofreading (w/ certification)",
+            rate: "₱2,500.00",
+            sortOrder: 6,
+          },
+          {
+            name: "Grammarian / Grammar Editing (w/ certification)",
+            rate: "₱3,500.00",
+            sortOrder: 7,
+          },
+          {
+            name: "Statistician Service (w/ certification)",
+            rate: "₱6,000.00",
+            sortOrder: 8,
+          },
+          {
+            name: "Research Validator / Instrument Validation",
+            rate: "₱3,000.00",
+            sortOrder: 9,
+          },
         ],
       },
       {
@@ -215,9 +300,21 @@ export const rateCategories: RateCategory[] = [
         sortOrder: 3,
         isActive: true,
         rates: [
-          { name: "Quantitative Research (Full)", rate: "₱30,000.00", sortOrder: 1 },
-          { name: "Qualitative Research (Full)", rate: "₱40,000.00", sortOrder: 2 },
-          { name: "Chapter 1 to 3 (Proposal)", rate: "₱20,000.00", sortOrder: 3 },
+          {
+            name: "Quantitative Research (Full)",
+            rate: "₱30,000.00",
+            sortOrder: 1,
+          },
+          {
+            name: "Qualitative Research (Full)",
+            rate: "₱40,000.00",
+            sortOrder: 2,
+          },
+          {
+            name: "Chapter 1 to 3 (Proposal)",
+            rate: "₱20,000.00",
+            sortOrder: 3,
+          },
         ],
       },
     ],
@@ -236,7 +333,11 @@ export const rateCategories: RateCategory[] = [
         isActive: true,
         rates: [
           { name: "Title Proposal", rate: "₱1,000.00", sortOrder: 1 },
-          { name: "Baby Thesis / Mini Research", rate: "₱2,500.00", sortOrder: 2 },
+          {
+            name: "Baby Thesis / Mini Research",
+            rate: "₱2,500.00",
+            sortOrder: 2,
+          },
           { name: "IMRAD Paper", rate: "₱5,000.00", sortOrder: 3 },
           { name: "Action Research", rate: "₱7,000.00", sortOrder: 4 },
           { name: "Case Study Analysis", rate: "₱3,000.00", sortOrder: 5 },

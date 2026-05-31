@@ -1,3 +1,4 @@
+// apps\frontend\src\data\site.ts
 import {
   BookOpen,
   Clock,
@@ -87,7 +88,6 @@ export const services: PublicService[] = [
     },
     iconName: "solar:users-group-rounded-bold-duotone",
     icon: Users,
-    // Added local image path here
     imageUrl: "/services/social-media.png",
   },
   {
@@ -117,7 +117,6 @@ export const services: PublicService[] = [
     },
     iconName: "solar:palette-bold-duotone",
     icon: PenTool,
-    // Added local image path here
     imageUrl: "/services/graphic-design.png",
   },
   {
@@ -150,7 +149,6 @@ export const services: PublicService[] = [
     },
     iconName: "solar:notebook-bookmark-bold-duotone",
     icon: BookOpen,
-    // Added local image path here
     imageUrl: "/services/virtual-assistant.png",
   },
   {
@@ -183,7 +181,7 @@ export const services: PublicService[] = [
     },
     iconName: "solar:chart-2-bold-duotone",
     icon: Database,
-    // Added local image path here
+
     imageUrl: "/services/data-analytics.png",
   },
 ];

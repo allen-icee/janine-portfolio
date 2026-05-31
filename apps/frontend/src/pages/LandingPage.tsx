@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\LandingPage.tsx
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 
@@ -55,19 +56,25 @@ export function LandingPage() {
         <Hero />
         <Stats />
         <About />
-        <Services services={content.services?.length ? content.services : undefined} />
+        <Services
+          services={content.services?.length ? content.services : undefined}
+        />
         <Rates
           rateCategories={
             content.rateCategories?.length ? content.rateCategories : undefined
           }
         />
         <Portfolio
-          categories={content.categories?.length ? content.categories : undefined}
+          categories={
+            content.categories?.length ? content.categories : undefined
+          }
           portfolioItems={
             content.portfolioItems?.length ? content.portfolioItems : undefined
           }
         />
-        <Proofs proofs={content.proofItems?.length ? content.proofItems : undefined} />
+        <Proofs
+          proofs={content.proofItems?.length ? content.proofItems : undefined}
+        />
         <Testimonials
           testimonials={
             content.testimonials?.length ? content.testimonials : undefined

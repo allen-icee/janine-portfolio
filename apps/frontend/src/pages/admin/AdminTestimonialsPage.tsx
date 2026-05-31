@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminTestimonialsPage.tsx
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
@@ -44,7 +45,6 @@ export function AdminTestimonialsPage() {
     setItems(data ?? []);
   };
 
-  // Safe Initial Load - avoids linter warnings for cascading renders
   useEffect(() => {
     let mounted = true;
 
@@ -82,7 +82,6 @@ export function AdminTestimonialsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  // Standardized Pagination Logic
   const totalItems = filteredItems.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
@@ -110,7 +109,6 @@ export function AdminTestimonialsPage() {
     toast.success("Client feedback removed.");
     setDeleteTarget(null);
 
-    // Safety check: if deleting the last item on a page, go back a page
     if (paginatedItems.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -127,7 +125,7 @@ export function AdminTestimonialsPage() {
       .from("testimonials")
       .update({
         is_approved: isApproved,
-        is_verified: isApproved, // Auto-verify if manually approved by admin
+        is_verified: isApproved,
       })
       .eq("id", item.id);
 
@@ -160,7 +158,7 @@ export function AdminTestimonialsPage() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1); // Reset page on search
+                setCurrentPage(1);
               }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
@@ -177,7 +175,7 @@ export function AdminTestimonialsPage() {
                 type="button"
                 onClick={() => {
                   setStatusFilter(status.value as typeof statusFilter);
-                  setCurrentPage(1); // Reset page on filter
+                  setCurrentPage(1);
                 }}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   statusFilter === status.value
@@ -191,9 +189,6 @@ export function AdminTestimonialsPage() {
           </div>
         </div>
 
-        {/* ===================================================================== */}
-        {/* DATA TABLE */}
-        {/* ===================================================================== */}
         <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
@@ -229,7 +224,6 @@ export function AdminTestimonialsPage() {
                       key={item.id}
                       className="transition-colors hover:bg-white/50"
                     >
-                      {/* Client Name & Verification */}
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-1.5 font-bold text-[#3c232c]">
                           {item.client_name}
@@ -250,7 +244,6 @@ export function AdminTestimonialsPage() {
                         </div>
                       </td>
 
-                      {/* Details (Service & Date) */}
                       <td className="hidden px-5 py-3.5 md:table-cell">
                         <div className="font-semibold text-[#ad6a6c]">
                           {item.service}
@@ -260,7 +253,6 @@ export function AdminTestimonialsPage() {
                         </div>
                       </td>
 
-                      {/* Rating (Stars) */}
                       <td className="px-5 py-3.5">
                         <div className="flex gap-0.5 text-[#ad6a6c]">
                           {Array.from({ length: 5 }).map((_, index) => (
@@ -287,14 +279,12 @@ export function AdminTestimonialsPage() {
                         </span>
                       </td>
 
-                      {/* Truncated Feedback */}
                       <td className="hidden px-5 py-3.5 lg:table-cell">
                         <p className="max-w-[300px] truncate text-xs font-medium text-[#3c232c]/70">
                           "{item.feedback}"
                         </p>
                       </td>
 
-                      {/* Actions */}
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex justify-end gap-1.5">
                           <button
@@ -334,9 +324,6 @@ export function AdminTestimonialsPage() {
             </table>
           </div>
 
-          {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS (Matched Style) */}
-          {/* ===================================================================== */}
           {totalItems > 0 && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
               <span className="text-[11px] font-medium text-[#3c232c]/60">
@@ -371,9 +358,6 @@ export function AdminTestimonialsPage() {
           )}
         </div>
 
-        {/* ===================================================================== */}
-        {/* MODALS */}
-        {/* ===================================================================== */}
         <ConfirmModal
           open={Boolean(deleteTarget)}
           title="Remove feedback?"

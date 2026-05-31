@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminRatesPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import toast from "react-hot-toast";
@@ -52,7 +53,6 @@ export function AdminRatesPage() {
     [groups],
   );
 
-  // Used for refreshing data after creates/updates/deletes
   const loadData = async () => {
     const [categoryRes, groupRes, rateRes] = await Promise.all([
       supabase!.from("rate_categories").select("*").order("sort_order"),
@@ -76,7 +76,6 @@ export function AdminRatesPage() {
     else setRates(rateRes.data ?? []);
   };
 
-  // Used for the initial page load (Satisfies the strict linter rule)
   useEffect(() => {
     let mounted = true;
 

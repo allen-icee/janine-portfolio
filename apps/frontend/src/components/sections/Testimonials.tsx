@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\Testimonials.tsx
 import { useState, useRef } from "react";
 import type { FormEvent } from "react";
 import { Icon } from "@iconify/react";
@@ -18,7 +19,6 @@ export function Testimonials({
     useState<Testimonial | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  // States for the Interactive Star Rating in the form
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [reviewName, setReviewName] = useState("");
@@ -35,7 +35,6 @@ export function Testimonials({
     }
   };
 
-  // Automatically generates initials from the name (e.g., "John Doe" -> "JD")
   const getInitials = (name: string) => {
     if (!name) return "JD";
     return name
@@ -61,7 +60,9 @@ export function Testimonials({
     if (formData.get("company_website")) return;
 
     if (!isSupabaseConfigured || !supabase) {
-      toast.error("Reviews are not connected yet. Please send your feedback through the contact form.");
+      toast.error(
+        "Reviews are not connected yet. Please send your feedback through the contact form.",
+      );
       return;
     }
 
@@ -102,12 +103,10 @@ export function Testimonials({
         id="testimonials"
         className="relative overflow-hidden bg-[#f9f6f3] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
       >
-        {/* Background Ambience Elements */}
         <div className="absolute -left-[10%] top-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#f8cdb4]/30 blur-[100px]" />
         <div className="absolute -right-[5%] bottom-0 -z-10 h-[400px] w-[400px] rounded-full bg-[#e3d1d1]/40 blur-[100px]" />
 
         <div className="mx-auto max-w-7xl">
-          {/* Header & Actions */}
           <div className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 className="font-serif text-4xl font-bold tracking-tight text-[#3c232c] sm:text-5xl lg:text-6xl">
@@ -118,7 +117,6 @@ export function Testimonials({
               </p>
             </div>
 
-            {/* Submit Review CTA */}
             <button
               type="button"
               onClick={() => {
@@ -135,7 +133,6 @@ export function Testimonials({
             </button>
           </div>
 
-          {/* Carousel Track & Controls Container */}
           <div className="relative">
             <div
               ref={carouselRef}
@@ -168,7 +165,6 @@ export function Testimonials({
                       ))}
                     </div>
 
-                    {/* FIXED: Now using item.feedback instead of preview so the text matches perfectly */}
                     <p className="font-serif text-lg italic leading-relaxed text-[#3c232c] line-clamp-4 sm:text-xl">
                       "{item.feedback}"
                     </p>
@@ -202,7 +198,6 @@ export function Testimonials({
               ))}
             </div>
 
-            {/* Carousel Navigation Arrows */}
             <div className="mt-2 flex items-center justify-end gap-3 pr-2">
               <button
                 type="button"
@@ -229,9 +224,6 @@ export function Testimonials({
         </div>
       </section>
 
-      {/* =========================================================
-          READ FULL REVIEW MODAL
-      ========================================================= */}
       <AnimatePresence>
         {selectedTestimonial && (
           <motion.div
@@ -286,7 +278,6 @@ export function Testimonials({
                     icon="ph:quotes-fill"
                     className="absolute -left-2 -top-2 text-3xl text-[#f8cdb4]/50 sm:-left-3 sm:-top-3 sm:text-4xl"
                   />
-                  {/* Full feedback matches perfectly */}
                   <p className="relative z-10 font-serif text-lg leading-relaxed text-[#3c232c] sm:text-xl sm:leading-relaxed">
                     "{selectedTestimonial.feedback}"
                   </p>
@@ -318,9 +309,6 @@ export function Testimonials({
         )}
       </AnimatePresence>
 
-      {/* =========================================================
-          SUBMIT REVIEW PORTAL MODAL
-      ========================================================= */}
       <AnimatePresence>
         {isReviewModalOpen && (
           <motion.div
@@ -404,7 +392,6 @@ export function Testimonials({
                       Rating
                     </label>
                     <div className="flex gap-1 sm:gap-2">
-                      {/* FIXED: Interactive stars that light up correctly */}
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}

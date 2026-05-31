@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\FAQ.tsx
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,14 +23,10 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
       id="faq"
       className="relative overflow-hidden bg-[#efe9e5] px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
     >
-      {/* Background Ambience */}
       <div className="absolute left-1/2 top-0 -z-10 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#f8cdb4]/20 blur-[120px]" />
       <div className="absolute bottom-10 right-10 -z-10 h-[400px] w-[400px] rounded-full bg-[#e3d1d1]/30 blur-[100px]" />
 
       <div className="mx-auto max-w-7xl">
-        {/* =========================================================
-            HEADER: Centered, Massive, Editorial
-        ========================================================= */}
         <div className="mb-16 text-center">
           <h2 className="font-serif text-5xl font-bold tracking-tight text-[#3c232c] sm:text-6xl lg:text-7xl">
             FAQ
@@ -39,10 +36,6 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
           </p>
         </div>
 
-        {/* =========================================================
-            THE MAGIC GRID: Dynamic Expanding Bento Layout
-        ========================================================= */}
-        {/* items-start prevents sibling cards from stretching awkwardly */}
         <motion.div
           layout
           className="grid grid-cols-1 items-start gap-6 sm:grid-cols-2 lg:grid-cols-3"
@@ -53,7 +46,7 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
             return (
               <motion.button
                 key={faq.question}
-                layout // This tells Framer Motion to automatically animate size changes
+                layout
                 onClick={() => toggleFaq(index)}
                 className={`group relative flex w-full flex-col overflow-hidden rounded-[2.5rem] border p-6 text-left shadow-sm backdrop-blur-md transition-all duration-500 sm:p-8 ${
                   isOpen
@@ -61,7 +54,6 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
                     : "border-[#efdad0] bg-white/50 hover:-translate-y-1 hover:bg-white/80 hover:shadow-md"
                 }`}
               >
-                {/* Decorative Watermark Icon */}
                 <Icon
                   icon="ph:question-duotone"
                   className={`absolute -bottom-6 -right-6 text-8xl transition-all duration-500 ${
@@ -81,7 +73,6 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
                     {faq.question}
                   </motion.h3>
 
-                  {/* Plus/Minus Indicator */}
                   <motion.div
                     layout="position"
                     animate={{ rotate: isOpen ? 180 : 0 }}
@@ -99,7 +90,6 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
                   </motion.div>
                 </div>
 
-                {/* The Expanding Answer Content */}
                 <AnimatePresence>
                   {isOpen && (
                     <motion.div
@@ -120,8 +110,6 @@ export function FAQ({ faqs = fallbackFaqs }: FAQProps) {
             );
           })}
         </motion.div>
-
-        {/* CTA at the bottom */}
       </div>
     </section>
   );

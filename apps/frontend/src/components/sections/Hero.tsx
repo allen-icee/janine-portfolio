@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\Hero.tsx
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -17,13 +18,11 @@ const creativeSkills = [
 
 export function Hero() {
   return (
-    // Beautiful subtle dark-to-light gradient
     <section className="relative overflow-hidden bg-gradient-to-b from-[#e3d1d1]/50 via-[#f9f6f3] to-[#efe9e5] px-4 pb-10 pt-28 sm:px-6 lg:px-8 lg:pb-24 lg:pt-36">
       {" "}
       <div className="absolute -left-[5%] top-0 -z-10 h-[600px] w-[600px] rounded-full bg-[#f8cdb4]/50 blur-[130px]" />
       <div className="absolute -right-[5%] bottom-10 -z-10 h-[700px] w-[700px] rounded-full bg-[#e3d1d1]/60 blur-[160px]" />
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
-        {/* LEFT SIDE */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,7 +98,6 @@ export function Hero() {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}

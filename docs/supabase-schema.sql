@@ -208,7 +208,6 @@ values
   ('Data Analytics', 3), ('Documentation', 4), ('Proofs', 5)
 on conflict (name) do nothing;
 
--- Insert Profile Settings if empty
 insert into profile_settings (
   email_primary, email_secondary, phone_primary, phone_secondary, 
   facebook_url, instagram_url, location
@@ -220,7 +219,6 @@ select
   'Tarlac City, Philippines'
 where not exists (select 1 from profile_settings);
 
--- Insert Experience Items if empty
 insert into experience_items (company, role, location, duration, details, sort_order)
 select 'Infosys BPM', 'Process Executive & Complaints Resolution Specialist', 'SM Clark, Pampanga', '1 yr 3 mos (Jan ''25 - Feb ''26)', ARRAY['CS100 Top 1 Trainee & Mock Calls Top Trainee', 'Top Agent spanning January 2025 until February 2026', 'Awarded Most Recognizable Agent for consistently doing the extra mile'], 0
 where not exists (select 1 from experience_items where company = 'Infosys BPM');
@@ -325,7 +323,6 @@ create policy "Admins can manage profile settings" on profile_settings for all t
 create policy "Admins can manage proof items" on proof_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage education items" on education_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage experience items" on experience_items for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
--- FIXED: "client_records" instead of "client records"
 create policy "Admins can manage client records" on client_records for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can manage financial records" on financial_records for all to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));
 create policy "Admins can read inquiries" on inquiries for select to authenticated using (exists (select 1 from admin_profiles where admin_profiles.id = auth.uid()));

@@ -1,3 +1,4 @@
+// apps\frontend\src\components\ui\FloatingContact.tsx
 import { Mail, MessageCircle } from "lucide-react";
 import { profile } from "../../data/site";
 

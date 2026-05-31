@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminProofsPage.tsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
@@ -37,7 +38,6 @@ const emptyProof: ProofRow = {
 
 const ITEMS_PER_PAGE = 8;
 
-// Predefined categories for Proofs
 const PROOF_CATEGORIES = [
   "Client Feedback",
   "Analytics & Growth",
@@ -47,7 +47,6 @@ const PROOF_CATEGORIES = [
   "Other",
 ];
 
-// Custom Select Component (Styled to match the new unified UI)
 function AdminCustomSelect({
   value,
   onChange,
@@ -142,10 +141,8 @@ export function AdminProofsPage() {
   const [deleteTarget, setDeleteTarget] = useState<ProofRow | null>(null);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
 
-  // Search State
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
 
   const imagePreviewUrl = useMemo(
@@ -194,7 +191,6 @@ export function AdminProofsPage() {
     };
   }, [imagePreviewUrl]);
 
-  // Filtering and Pagination
   const filteredItems = items.filter(
     (item) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -290,7 +286,6 @@ export function AdminProofsPage() {
     toast.success("Proof deleted.");
     setDeleteTarget(null);
 
-    // Safety check: if deleting the last item on a page, go back a page
     if (paginatedItems.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -301,7 +296,6 @@ export function AdminProofsPage() {
   return (
     <AdminGuard>
       <AdminShell title="Proof Gallery" description="Proof Management">
-        {/* Top Actions: Search & Add Button */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative w-full max-w-sm">
             <Icon
@@ -314,7 +308,7 @@ export function AdminProofsPage() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1); // Reset to page 1 while searching
+                setCurrentPage(1);
               }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
@@ -327,9 +321,6 @@ export function AdminProofsPage() {
           </div>
         </div>
 
-        {/* ===================================================================== */}
-        {/* COMPACT DATA TABLE */}
-        {/* ===================================================================== */}
         <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
@@ -362,12 +353,10 @@ export function AdminProofsPage() {
                       key={item.id}
                       className="transition-colors hover:bg-white/50"
                     >
-                      {/* Sort Order */}
                       <td className="px-5 py-3.5 font-bold text-[#3c232c]/70">
                         {item.sort_order}
                       </td>
 
-                      {/* Title & Category */}
                       <td className="px-5 py-3.5">
                         <div className="font-bold text-[#3c232c] max-w-[200px] truncate">
                           {item.title}
@@ -377,14 +366,12 @@ export function AdminProofsPage() {
                         </div>
                       </td>
 
-                      {/* Truncated Description */}
                       <td className="hidden px-5 py-3.5 lg:table-cell">
                         <p className="max-w-[300px] truncate text-xs font-medium text-[#3c232c]/60 xl:max-w-[400px]">
                           {item.description}
                         </p>
                       </td>
 
-                      {/* Featured Status */}
                       <td className="px-5 py-3.5">
                         <span
                           className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${
@@ -398,7 +385,6 @@ export function AdminProofsPage() {
                         </span>
                       </td>
 
-                      {/* Actions */}
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex justify-end gap-1.5">
                           <button
@@ -427,9 +413,6 @@ export function AdminProofsPage() {
             </table>
           </div>
 
-          {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS (Standardized Style) */}
-          {/* ===================================================================== */}
           {totalItems > 0 && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
               <span className="text-[11px] font-medium text-[#3c232c]/60">
@@ -464,9 +447,6 @@ export function AdminProofsPage() {
           )}
         </div>
 
-        {/* ===================================================================== */}
-        {/* COMPACT MODAL */}
-        {/* ===================================================================== */}
         <AdminModal
           open={isModalOpen}
           title={form.id ? "Edit Proof" : "Create Proof"}
@@ -522,7 +502,6 @@ export function AdminProofsPage() {
               </Field>
             </div>
 
-            {/* CUSTOM PREMIUM FILE UPLOAD */}
             <Field label="Upload Image">
               <div className="relative flex w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#ad6a6c]/30 bg-[#f8cdb4]/5 p-6 transition-colors hover:bg-[#f8cdb4]/10">
                 <input
@@ -552,7 +531,6 @@ export function AdminProofsPage() {
                 </label>
               </div>
 
-              {/* Show current image if editing and no new file selected */}
               {(imagePreviewUrl || form.image_url) && (
                 <div className="mt-3 flex items-center gap-4 rounded-xl border border-[#efdad0] bg-white/50 p-2 pr-4 shadow-sm">
                   <img
@@ -580,7 +558,6 @@ export function AdminProofsPage() {
               />
             </Field>
 
-            {/* CUSTOM PREMIUM TOGGLE SWITCH */}
             <label className="flex w-fit cursor-pointer items-center gap-3">
               <div className="relative flex items-center">
                 <input

@@ -1,3 +1,4 @@
+// apps\frontend\src\lib\adminUploads.ts
 import { supabase } from "./supabase";
 import imageCompression from "browser-image-compression";
 
@@ -23,17 +24,15 @@ export async function uploadAdminImage(
     throw new Error("Supabase is not configured yet.");
   }
 
-  // --- COMPRESSION LOGIC START ---
   let fileToUpload = file;
 
   try {
     const options = {
-      maxSizeMB: 0.5, // Compresses the image to a maximum of 500KB
-      maxWidthOrHeight: 1920, // Resizes the image so the longest side is max 1920px
-      useWebWorker: true, // Speeds up compression by using a background thread
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
     };
 
-    // Compress the image
     fileToUpload = await imageCompression(file, options);
     console.log(
       `Original size: ${file.size / 1024 / 1024} MB, Compressed size: ${fileToUpload.size / 1024 / 1024} MB`,
@@ -43,11 +42,8 @@ export async function uploadAdminImage(
       "Image compression failed, falling back to original file:",
       error,
     );
-    // If it fails, fileToUpload remains the original uncompressed file
   }
-  // --- COMPRESSION LOGIC END ---
 
-  // Upload the compressed file to Supabase
   const path = getUploadPath(folder, fileToUpload);
   const { error } = await supabase.storage
     .from(STORAGE_BUCKET)

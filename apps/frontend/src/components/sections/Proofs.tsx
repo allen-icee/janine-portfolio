@@ -1,10 +1,10 @@
+// apps\frontend\src\components\sections\Proofs.tsx
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { proofItems } from "../../data/site";
 import type { ProofItem } from "../../types/content";
 
-// Crash-proof image handler with your exact palette
 function SafeImage({
   src,
   alt,
@@ -43,11 +43,9 @@ function SafeImage({
 }
 
 export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
-  // Pagination State
   const INITIAL_COUNT = 8;
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
 
-  // Modal State for reading screenshots
   const [selectedProof, setSelectedProof] = useState<ProofItem | null>(null);
 
   if (!proofs?.length) return null;
@@ -62,11 +60,9 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
         id="proofs"
         className="relative overflow-hidden bg-[#efe9e5] px-4 py-10 sm:px-6 lg:px-8 lg:py-15"
       >
-        {/* Subtle Background Ambience */}
         <div className="absolute left-1/2 top-0 -z-10 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#f8cdb4]/20 blur-[120px]" />
 
         <div className="mx-auto max-w-7xl">
-          {/* Header Section based on your reference image */}
           <div className="mx-auto max-w-3xl text-center mb-16">
             <h2 className="font-serif text-3xl font-bold tracking-tight text-[#3c232c] sm:text-4xl lg:text-5xl">
               Catered over 1,000+ clients.
@@ -76,7 +72,6 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
             </p>
           </div>
 
-          {/* Scalable, Perfectly Aligned Grid */}
           <motion.div
             layout
             className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -94,11 +89,9 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
                   onClick={() => setSelectedProof(proof)}
                   className="group relative flex w-full flex-col overflow-hidden rounded-3xl border border-[#efdad0] bg-white/60 text-left shadow-sm backdrop-blur-sm transition-all hover:-translate-y-1 hover:bg-white hover:shadow-lg hover:shadow-[#3c232c]/5"
                 >
-                  {/* Fixed Aspect Ratio forces perfect alignment */}
                   <div className="aspect-[4/3] w-full overflow-hidden border-b border-[#efdad0]/50 bg-white">
                     <SafeImage src={proof.imageUrl} alt={proof.title} />
 
-                    {/* Hover Overlay to indicate it can be clicked/expanded */}
                     <div className="absolute inset-0 flex items-center justify-center bg-[#3c232c]/0 opacity-0 transition-all duration-300 group-hover:bg-[#3c232c]/20 group-hover:opacity-100">
                       <div className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm font-bold text-[#3c232c] shadow-sm backdrop-blur-md">
                         <Icon
@@ -123,7 +116,6 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
             </AnimatePresence>
           </motion.div>
 
-          {/* Pagination Controls */}
           <div className="mt-12 flex justify-center gap-4">
             {hasMore && (
               <button
@@ -148,9 +140,6 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
         </div>
       </section>
 
-      {/* =========================================================
-          THE LIGHTBOX MODAL (For reading full, uncropped screenshots)
-      ========================================================= */}
       <AnimatePresence>
         {selectedProof && (
           <motion.div
@@ -158,16 +147,15 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-[#3c232c]/80 p-4 backdrop-blur-md sm:p-8"
-            onClick={() => setSelectedProof(null)} // Close when clicking outside
+            onClick={() => setSelectedProof(null)}
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image
+              onClick={(e) => e.stopPropagation()}
               className="relative flex max-h-[90svh] w-full max-w-5xl flex-col overflow-hidden rounded-[2rem] bg-[#f9f6f3] shadow-2xl"
             >
-              {/* Modal Header */}
               <div className="flex items-center justify-between border-b border-[#efdad0] bg-white/50 px-6 py-4 backdrop-blur-md">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
@@ -186,7 +174,6 @@ export function Proofs({ proofs = proofItems }: { proofs?: ProofItem[] }) {
                 </button>
               </div>
 
-              {/* Modal Image (object-contain ensures NO CROPPING) */}
               <div className="flex-1 overflow-auto bg-[#e3d1d1]/20 p-4 sm:p-8">
                 <SafeImage
                   src={selectedProof.imageUrl}

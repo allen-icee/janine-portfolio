@@ -1,10 +1,10 @@
+// apps\frontend\src\components\layout\Header.tsx
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 
 import { AdminModal } from "../ui/AdminModal";
 import logoImage from "../../assets/images/logo.jpeg";
 
-// Navigation ordered to match LandingPage.tsx exactly
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
@@ -24,7 +24,6 @@ export function Header() {
 
   const [adminOpen, setAdminOpen] = useState(false);
 
-  // Secret admin trigger
   const handleSecretClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
@@ -40,7 +39,6 @@ export function Header() {
     setTimeout(() => setClickCount(0), 2000);
   };
 
-  // Smooth scroll handler
   const handleScroll = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -64,18 +62,14 @@ export function Header() {
   return (
     <>
       <header className="fixed top-0 z-50 w-full px-4 pt-4 transition-all duration-300 sm:px-6 lg:px-8">
-        {/* TOP GRADIENT */}
         <div className="pointer-events-none absolute inset-0 -z-10 h-28 bg-gradient-to-b from-[#f9f6f3] to-transparent opacity-90" />
 
-        {/* CONTAINER */}
         <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between rounded-2xl border border-[#efdad0] bg-white/70 px-4 shadow-sm backdrop-blur-xl">
-          {/* BRAND */}
           <button
             onClick={handleSecretClick}
             className="group flex shrink-0 cursor-pointer items-center gap-3 outline-none"
             aria-label="Home"
           >
-            {/* LOGO */}
             <div className="size-10 overflow-hidden rounded-full border border-[#ad6a6c]/30 bg-[#e3d1d1]/30 transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
               {!imageError ? (
                 <img
@@ -91,7 +85,6 @@ export function Header() {
               )}
             </div>
 
-            {/* TEXT */}
             <div className="flex flex-col items-start justify-center text-left">
               <span className="bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] bg-clip-text text-sm font-bold tracking-wide text-transparent transition-transform duration-300 group-hover:scale-[1.02]">
                 JaneDesk
@@ -103,7 +96,6 @@ export function Header() {
             </div>
           </button>
 
-          {/* DESKTOP NAV */}
           <nav className="hidden items-center gap-7 lg:flex">
             {navItems.map((item) => (
               <a
@@ -119,7 +111,6 @@ export function Header() {
             ))}
           </nav>
 
-          {/* DESKTOP ACTION */}
           <div className="hidden items-center gap-4 lg:flex">
             <a
               href="#contact"
@@ -134,7 +125,6 @@ export function Header() {
             </a>
           </div>
 
-          {/* MOBILE TOGGLE */}
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -148,7 +138,6 @@ export function Header() {
           </button>
         </div>
 
-        {/* MOBILE MENU */}
         {isMobileMenuOpen && (
           <div className="mx-auto mt-2 max-w-7xl rounded-[1.5rem] border border-[#efdad0] bg-white/95 p-5 shadow-xl backdrop-blur-xl lg:hidden">
             <nav className="flex flex-col gap-3">
@@ -178,7 +167,6 @@ export function Header() {
         )}
       </header>
 
-      {/* ADMIN MODAL */}
       <AdminModal open={adminOpen} onClose={() => setAdminOpen(false)} />
     </>
   );

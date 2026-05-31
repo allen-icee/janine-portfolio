@@ -1,3 +1,4 @@
+// apps\frontend\src\components\ui\AdminModal.tsx
 import { useState } from "react";
 import type { FormEvent } from "react";
 
@@ -75,7 +76,6 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
     <AnimatePresence>
       {open && (
         <>
-          {/* BACKDROP */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -84,7 +84,6 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
             className="fixed inset-0 z-[90] bg-black/40 backdrop-blur-sm"
           />
 
-          {/* MODAL */}
           <motion.div
             initial={{
               opacity: 0,
@@ -107,12 +106,10 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
             className="fixed left-1/2 top-1/2 z-[100] w-[92%] max-w-md -translate-x-1/2 -translate-y-1/2"
           >
             <div className="relative overflow-hidden rounded-[2rem] border border-[#efdad0] bg-white/80 p-8 shadow-2xl backdrop-blur-xl">
-              {/* GLOW EFFECTS */}
               <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#f8cdb4]/30 blur-3xl" />
 
               <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-[#e3d1d1]/40 blur-3xl" />
 
-              {/* CLOSE BUTTON */}
               <button
                 type="button"
                 onClick={onClose}
@@ -122,12 +119,10 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
               </button>
 
               <div className="relative z-10">
-                {/* ICON */}
                 <div className="mb-5 grid size-14 place-items-center rounded-2xl bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] text-white shadow-md">
                   <Icon icon="ph:lock-key-fill" className="text-2xl" />
                 </div>
 
-                {/* HEADER */}
                 <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#ad6a6c]">
                   Restricted Access
                 </p>
@@ -146,9 +141,7 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
                   </div>
                 )}
 
-                {/* FORM */}
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                  {/* EMAIL */}
                   <div className="flex flex-col gap-1.5">
                     <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                       Email
@@ -164,7 +157,6 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
                     />
                   </div>
 
-                  {/* PASSWORD */}
                   <div className="flex flex-col gap-1.5">
                     <label className="ml-1 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
                       Password
@@ -180,14 +172,12 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
                     />
                   </div>
 
-                  {/* ERROR */}
                   {error && (
                     <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                       {error}
                     </div>
                   )}
 
-                  {/* BUTTON */}
                   <motion.button
                     whileHover={{
                       scale: 1.01,

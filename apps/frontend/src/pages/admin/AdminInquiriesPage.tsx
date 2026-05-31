@@ -1,3 +1,4 @@
+// apps\frontend\src\pages\admin\AdminInquiriesPage.tsx
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
@@ -29,7 +30,6 @@ export function AdminInquiriesPage() {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
 
   const loadItems = async () => {
@@ -82,7 +82,6 @@ export function AdminInquiriesPage() {
     return matchesSearch && matchesStatus;
   });
 
-  // Pagination Logic
   const totalItems = filteredItems.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   const paginatedItems = filteredItems.slice(
@@ -133,7 +132,6 @@ export function AdminInquiriesPage() {
     toast.success("Inquiry deleted.");
     setDeleteTarget(null);
 
-    // Safety check: if deleting the last item on a page, go back a page
     if (paginatedItems.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -156,7 +154,7 @@ export function AdminInquiriesPage() {
               value={searchQuery}
               onChange={(event) => {
                 setSearchQuery(event.target.value);
-                setCurrentPage(1); // Reset to page 1 on search
+                setCurrentPage(1);
               }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
@@ -173,7 +171,7 @@ export function AdminInquiriesPage() {
                 type="button"
                 onClick={() => {
                   setStatusFilter(status.value as typeof statusFilter);
-                  setCurrentPage(1); // Reset to page 1 on filter change
+                  setCurrentPage(1);
                 }}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   statusFilter === status.value
@@ -299,7 +297,6 @@ export function AdminInquiriesPage() {
             </table>
           </div>
 
-          {/* Pagination Footer */}
           {totalItems > 0 && totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
               <span className="text-[11px] font-medium text-[#3c232c]/60">

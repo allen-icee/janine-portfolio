@@ -1,3 +1,4 @@
+// apps\frontend\src\lib\publicContent.ts
 import type {
   EducationItem,
   ExperienceItem,
@@ -98,7 +99,10 @@ export async function fetchPublicContent(): Promise<PublicContent> {
     ]) ?? [],
   );
 
-  const rateItemsByGroup = new Map<string, RateCategory["groups"][number]["rates"]>();
+  const rateItemsByGroup = new Map<
+    string,
+    RateCategory["groups"][number]["rates"]
+  >();
   rateItemsResult.data?.forEach((item) => {
     const groupRates = rateItemsByGroup.get(item.group_id) ?? [];
     groupRates.push({

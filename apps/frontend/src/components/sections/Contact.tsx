@@ -1,3 +1,4 @@
+// apps\frontend\src\components\sections\Contact.tsx
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -111,8 +112,6 @@ function CustomSelect({
     </div>
   );
 }
-
-// Define the exact type to fix "Unexpected any"
 interface ContactProfileSettings {
   email_primary?: string;
   email_secondary?: string;

@@ -1,3 +1,4 @@
+// apps\frontend\src\App.tsx
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Toaster } from "react-hot-toast";
