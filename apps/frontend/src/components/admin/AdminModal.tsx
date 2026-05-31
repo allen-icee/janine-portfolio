@@ -1,3 +1,4 @@
+// apps\frontend\src\components\admin\AdminModal.tsx
 import type { ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,7 +19,7 @@ export function AdminModal({
   description,
   children,
   onClose,
-  widthClassName = "max-w-2xl", // Slightly more compact default
+  widthClassName = "max-w-2xl",
 }: AdminModalProps) {
   return (
     <AnimatePresence>

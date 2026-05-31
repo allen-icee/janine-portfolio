@@ -19,6 +19,8 @@ type TestimonialRow = {
   is_approved: boolean;
 };
 
+const ITEMS_PER_PAGE = 8;
+
 export function AdminTestimonialsPage() {
   const [items, setItems] = useState<TestimonialRow[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<TestimonialRow | null>(null);
@@ -29,7 +31,6 @@ export function AdminTestimonialsPage() {
     "all" | "pending" | "approved"
   >("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
 
   const loadItems = async () => {
     const { data, error } = await supabase!
@@ -66,6 +67,7 @@ export function AdminTestimonialsPage() {
       mounted = false;
     };
   }, []);
+
   const filteredItems = items.filter((item) => {
     const q = searchQuery.toLowerCase();
     const matchesSearch =
@@ -80,15 +82,14 @@ export function AdminTestimonialsPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredItems.length / itemsPerPage),
-  );
+  // Standardized Pagination Logic
+  const totalItems = filteredItems.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
+  const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedItems = filteredItems.slice(
     startIndex,
-    startIndex + itemsPerPage,
+    startIndex + ITEMS_PER_PAGE,
   );
 
   const deleteItem = async () => {
@@ -108,6 +109,12 @@ export function AdminTestimonialsPage() {
 
     toast.success("Client feedback removed.");
     setDeleteTarget(null);
+
+    // Safety check: if deleting the last item on a page, go back a page
+    if (paginatedItems.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+
     await loadItems();
   };
 
@@ -120,7 +127,7 @@ export function AdminTestimonialsPage() {
       .from("testimonials")
       .update({
         is_approved: isApproved,
-        is_verified: isApproved,
+        is_verified: isApproved, // Auto-verify if manually approved by admin
       })
       .eq("id", item.id);
 
@@ -141,9 +148,6 @@ export function AdminTestimonialsPage() {
         title="Client Feedback"
         description="Client Feedback Management"
       >
-        {/* ===================================================================== */}
-        {/* COMPACT DATA TABLE */}
-        {/* ===================================================================== */}
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full max-w-sm">
             <Icon
@@ -156,11 +160,12 @@ export function AdminTestimonialsPage() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(1); // Reset page on search
               }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
           </div>
+
           <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {[
               { label: "All", value: "all" },
@@ -172,7 +177,7 @@ export function AdminTestimonialsPage() {
                 type="button"
                 onClick={() => {
                   setStatusFilter(status.value as typeof statusFilter);
-                  setCurrentPage(1);
+                  setCurrentPage(1); // Reset page on filter
                 }}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   statusFilter === status.value
@@ -185,7 +190,11 @@ export function AdminTestimonialsPage() {
             ))}
           </div>
         </div>
-        <div className="overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
+
+        {/* ===================================================================== */}
+        {/* DATA TABLE */}
+        {/* ===================================================================== */}
+        <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[#efdad0]/60 bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c]">
@@ -203,7 +212,7 @@ export function AdminTestimonialsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#efdad0]/40">
-                {filteredItems.length === 0 ? (
+                {paginatedItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={6}
@@ -215,7 +224,7 @@ export function AdminTestimonialsPage() {
                     </td>
                   </tr>
                 ) : (
-                  currentItems.map((item) => (
+                  paginatedItems.map((item) => (
                     <tr
                       key={item.id}
                       className="transition-colors hover:bg-white/50"
@@ -326,32 +335,34 @@ export function AdminTestimonialsPage() {
           </div>
 
           {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS */}
+          {/* PAGINATION CONTROLS (Matched Style) */}
           {/* ===================================================================== */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-[#efdad0]/60 bg-white/30 px-5 py-3 text-xs font-bold text-[#3c232c]/60">
-              <span>
+          {totalItems > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
+              <span className="text-[11px] font-medium text-[#3c232c]/60">
                 Showing {startIndex + 1} to{" "}
-                {Math.min(startIndex + itemsPerPage, filteredItems.length)} of{" "}
-                {filteredItems.length}
+                {Math.min(startIndex + ITEMS_PER_PAGE, totalItems)} of{" "}
+                {totalItems} entries
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex gap-1.5">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  type="button"
                   disabled={safeCurrentPage === 1}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:opacity-50 disabled:hover:border-[#efdad0] disabled:hover:text-[#3c232c]/60"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-left-bold" />
                 </button>
-                <span className="min-w-[2rem] text-center text-[#ad6a6c]">
+                <div className="flex items-center px-2 text-xs font-bold text-[#3c232c]/70">
                   {safeCurrentPage} / {totalPages}
-                </span>
+                </div>
                 <button
+                  type="button"
+                  disabled={safeCurrentPage === totalPages}
                   onClick={() =>
                     setCurrentPage((p) => Math.min(totalPages, p + 1))
                   }
-                  disabled={safeCurrentPage === totalPages}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:opacity-50 disabled:hover:border-[#efdad0] disabled:hover:text-[#3c232c]/60"
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-right-bold" />
                 </button>

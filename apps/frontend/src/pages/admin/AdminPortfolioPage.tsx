@@ -23,6 +23,7 @@ type PortfolioRow = {
   sort_order: number;
   featured: boolean;
 };
+
 type CategoryRow = { id?: string; name: string; sort_order: number };
 
 const emptyPortfolio: PortfolioRow = {
@@ -37,7 +38,10 @@ const emptyPortfolio: PortfolioRow = {
   sort_order: 0,
   featured: false,
 };
+
 const emptyCategory: CategoryRow = { name: "", sort_order: 0 };
+
+const ITEMS_PER_PAGE = 8;
 
 export function AdminPortfolioPage() {
   const [items, setItems] = useState<PortfolioRow[]>([]);
@@ -47,7 +51,6 @@ export function AdminPortfolioPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
   const [isSaving, setIsSaving] = useState(false);
 
   // Modal Targets
@@ -125,15 +128,13 @@ export function AdminPortfolioPage() {
   }, [activeCategory, items, searchQuery]);
 
   // Derived Pagination State
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredItems.length / itemsPerPage),
-  );
+  const totalItems = filteredItems.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage; // Restored startIndex!
-  const currentItems = filteredItems.slice(
+  const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedItems = filteredItems.slice(
     startIndex,
-    startIndex + itemsPerPage,
+    startIndex + ITEMS_PER_PAGE,
   );
 
   const deleteProject = async () => {
@@ -152,6 +153,12 @@ export function AdminPortfolioPage() {
 
     await deleteAdminImage(deleteTarget.cover_url);
     setDeleteTarget(null);
+
+    // Safety check: if deleting the last item on a page, go back a page
+    if (paginatedItems.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+
     await loadData();
     toast.success("Project deleted.");
   };
@@ -202,7 +209,7 @@ export function AdminPortfolioPage() {
                 type="button"
                 onClick={() => {
                   setActiveCategory(category);
-                  setCurrentPage(1);
+                  setCurrentPage(1); // Reset page on category change
                 }}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   activeCategory === category
@@ -214,7 +221,7 @@ export function AdminPortfolioPage() {
               </button>
             ))}
           </div>
-          <div className="flex flex-wrap gap-2 lg:shrink-0">
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:w-auto [&_button]:w-full sm:[&_button]:w-auto lg:shrink-0">
             <AdminButton
               type="button"
               variant="secondary"
@@ -275,16 +282,19 @@ export function AdminPortfolioPage() {
                     <button
                       type="button"
                       onClick={() => setCategoryTarget(category)}
-                      className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] hover:bg-[#ad6a6c]/10"
+                      className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition-colors hover:bg-[#ad6a6c]/10"
                     >
-                      <Icon icon="ph:pencil-simple-bold" />
+                      <Icon
+                        icon="ph:pencil-simple-bold"
+                        className="text-base"
+                      />
                     </button>
                     <button
                       type="button"
                       onClick={() => setCategoryDeleteTarget(category)}
-                      className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] hover:bg-red-500/10 hover:text-red-600"
+                      className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition-colors hover:bg-red-500/10 hover:text-red-600"
                     >
-                      <Icon icon="ph:trash-bold" />
+                      <Icon icon="ph:trash-bold" className="text-base" />
                     </button>
                   </div>
                 </article>
@@ -305,38 +315,45 @@ export function AdminPortfolioPage() {
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1);
+              setCurrentPage(1); // Reset page on search
             }}
-            className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm outline-none focus:border-[#ad6a6c]"
+            className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm outline-none transition focus:border-[#ad6a6c] focus:bg-white"
           />
         </div>
 
         {/* Projects Table */}
-        <div className="overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
-              <thead className="bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c] border-b border-[#efdad0]/60">
+              <thead className="border-b border-[#efdad0]/60 bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c]">
                 <tr>
-                  <th className="p-4">Title</th>
-                  <th className="p-4 hidden md:table-cell">Technologies</th>
-                  <th className="p-4">Featured</th>
-                  <th className="p-4 text-right">Actions</th>
+                  <th className="px-5 py-4 font-bold">Title</th>
+                  <th className="hidden px-5 py-4 font-bold md:table-cell">
+                    Technologies
+                  </th>
+                  <th className="px-5 py-4 font-bold">Featured</th>
+                  <th className="px-5 py-4 text-right font-bold">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#efdad0]/40">
-                {filteredItems.length === 0 ? (
+                {paginatedItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={4}
                       className="p-8 text-center text-xs font-medium text-[#3c232c]/50"
                     >
-                      No projects match.
+                      {searchQuery
+                        ? "No projects match your search."
+                        : "No projects found."}
                     </td>
                   </tr>
                 ) : (
-                  currentItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-white/50">
-                      <td className="p-4">
+                  paginatedItems.map((item) => (
+                    <tr
+                      key={item.id}
+                      className="transition-colors hover:bg-white/50"
+                    >
+                      <td className="px-5 py-3.5">
                         <div className="font-bold text-[#3c232c] max-w-[200px] truncate">
                           {item.title}
                         </div>
@@ -344,7 +361,7 @@ export function AdminPortfolioPage() {
                           {item.category} • Order: {item.sort_order}
                         </div>
                       </td>
-                      <td className="p-4 hidden md:table-cell">
+                      <td className="hidden px-5 py-3.5 md:table-cell">
                         <div className="flex flex-wrap gap-1 max-w-[250px]">
                           {(item.technologies ?? []).slice(0, 3).map((tech) => (
                             <span
@@ -361,19 +378,24 @@ export function AdminPortfolioPage() {
                           )}
                         </div>
                       </td>
-                      <td className="p-4">
+                      <td className="px-5 py-3.5">
                         <span
-                          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${item.featured ? "bg-[#ad6a6c]/10 text-[#ad6a6c]" : "bg-[#e3d1d1]/30 text-[#3c232c]/50"}`}
+                          className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${
+                            item.featured
+                              ? "bg-[#ad6a6c]/10 text-[#ad6a6c]"
+                              : "bg-[#e3d1d1]/30 text-[#3c232c]/50"
+                          }`}
                         >
                           {item.featured && <Icon icon="ph:star-fill" />}
                           {item.featured ? "Featured" : "Standard"}
                         </span>
                       </td>
-                      <td className="p-4 text-right">
+                      <td className="px-5 py-3.5 text-right">
                         <div className="flex justify-end gap-1.5">
                           <button
                             onClick={() => setProjectTarget(item)}
-                            className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] hover:bg-[#ad6a6c]/10"
+                            className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition-colors hover:bg-[#ad6a6c]/10"
+                            title="Edit"
                           >
                             <Icon
                               icon="ph:pencil-simple-bold"
@@ -382,7 +404,8 @@ export function AdminPortfolioPage() {
                           </button>
                           <button
                             onClick={() => setDeleteTarget(item)}
-                            className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] hover:bg-red-500/10 hover:text-red-600"
+                            className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition-colors hover:bg-red-500/10 hover:text-red-600"
+                            title="Delete"
                           >
                             <Icon icon="ph:trash-bold" className="text-base" />
                           </button>
@@ -394,27 +417,36 @@ export function AdminPortfolioPage() {
               </tbody>
             </table>
           </div>
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-[#efdad0]/60 px-5 py-3 text-xs font-bold text-[#3c232c]/60">
-              <span>
-                {startIndex + 1} to{" "}
-                {Math.min(startIndex + itemsPerPage, filteredItems.length)} of{" "}
-                {filteredItems.length}
+
+          {/* ===================================================================== */}
+          {/* PAGINATION CONTROLS (Standardized Style) */}
+          {/* ===================================================================== */}
+          {totalItems > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
+              <span className="text-[11px] font-medium text-[#3c232c]/60">
+                Showing {startIndex + 1} to{" "}
+                {Math.min(startIndex + ITEMS_PER_PAGE, totalItems)} of{" "}
+                {totalItems} entries
               </span>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  type="button"
                   disabled={safeCurrentPage === 1}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white disabled:opacity-50"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-left-bold" />
                 </button>
+                <div className="flex items-center px-2 text-xs font-bold text-[#3c232c]/70">
+                  {safeCurrentPage} / {totalPages}
+                </div>
                 <button
+                  type="button"
+                  disabled={safeCurrentPage === totalPages}
                   onClick={() =>
                     setCurrentPage((p) => Math.min(totalPages, p + 1))
                   }
-                  disabled={safeCurrentPage === totalPages}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white disabled:opacity-50"
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-right-bold" />
                 </button>

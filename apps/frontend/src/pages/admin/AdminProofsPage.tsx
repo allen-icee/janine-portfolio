@@ -35,6 +35,8 @@ const emptyProof: ProofRow = {
   sort_order: 0,
 };
 
+const ITEMS_PER_PAGE = 8;
+
 // Predefined categories for Proofs
 const PROOF_CATEGORIES = [
   "Client Feedback",
@@ -45,7 +47,7 @@ const PROOF_CATEGORIES = [
   "Other",
 ];
 
-// Custom Select Component (Same style as the Portfolio dropdown)
+// Custom Select Component (Styled to match the new unified UI)
 function AdminCustomSelect({
   value,
   onChange,
@@ -68,17 +70,28 @@ function AdminCustomSelect({
   }, []);
 
   return (
-    <div className="relative flex flex-col gap-1.5" ref={ref}>
+    <div className="relative flex w-full flex-col" ref={ref}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex h-11 items-center justify-between rounded-xl border bg-white px-4 text-sm shadow-sm transition-all duration-300 ${isOpen ? "border-[#ad6a6c] ring-2 ring-[#ad6a6c]/20" : "border-[#efdad0] hover:border-[#ad6a6c]/50"}`}
+        className={`flex w-full items-center justify-between rounded-xl border bg-white/70 px-4 py-3 text-sm outline-none transition focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/15 ${
+          isOpen
+            ? "border-[#ad6a6c]"
+            : "border-[#efdad0] hover:border-[#ad6a6c]"
+        }`}
       >
-        <span className="font-medium text-[#3c232c]">
+        <span
+          className={`truncate pr-4 ${
+            value ? "text-[#3c232c]" : "text-[#3c232c]/50"
+          }`}
+        >
           {value || "Select Category"}
         </span>
         <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
-          <Icon icon="ph:caret-down-bold" className="text-sm text-[#ad6a6c]" />
+          <Icon
+            icon="ph:caret-down-bold"
+            className="shrink-0 text-[#ad6a6c]/70 text-base"
+          />
         </motion.div>
       </button>
       <AnimatePresence>
@@ -87,7 +100,7 @@ function AdminCustomSelect({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            className="absolute left-0 right-0 top-[110%] z-50 max-h-60 overflow-y-auto overflow-x-hidden rounded-xl border border-[#efdad0] bg-white p-1.5 shadow-xl"
+            className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-50 max-h-60 overflow-y-auto rounded-xl border border-[#efdad0] bg-white p-1.5 shadow-xl backdrop-blur-md [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#efdad0] [&::-webkit-scrollbar-track]:bg-transparent"
           >
             {options.map((opt) => (
               <button
@@ -97,9 +110,19 @@ function AdminCustomSelect({
                   onChange(opt);
                   setIsOpen(false);
                 }}
-                className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-all ${value === opt ? "bg-[#ad6a6c]/10 font-bold text-[#ad6a6c]" : "font-medium text-[#3c232c] hover:bg-[#f8cdb4]/20"}`}
+                className={`flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                  value === opt
+                    ? "bg-[#ad6a6c]/10 font-bold text-[#ad6a6c]"
+                    : "text-[#3c232c] hover:bg-[#efdad0]/40"
+                }`}
               >
-                {opt}
+                <span className="truncate">{opt}</span>
+                {value === opt && (
+                  <Icon
+                    icon="ph:check-bold"
+                    className="ml-auto shrink-0 text-base text-[#ad6a6c]"
+                  />
+                )}
               </button>
             ))}
           </motion.div>
@@ -124,7 +147,7 @@ export function AdminProofsPage() {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+
   const imagePreviewUrl = useMemo(
     () => (imageFile ? URL.createObjectURL(imageFile) : ""),
     [imageFile],
@@ -171,22 +194,20 @@ export function AdminProofsPage() {
     };
   }, [imagePreviewUrl]);
 
-  // DERIVED STATE for Filtering and Pagination
+  // Filtering and Pagination
   const filteredItems = items.filter(
     (item) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.category.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredItems.length / itemsPerPage),
-  );
+  const totalItems = filteredItems.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
+  const startIndex = (safeCurrentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedItems = filteredItems.slice(
     startIndex,
-    startIndex + itemsPerPage,
+    startIndex + ITEMS_PER_PAGE,
   );
 
   const updateForm = <Key extends keyof ProofRow>(
@@ -268,6 +289,12 @@ export function AdminProofsPage() {
     await deleteAdminImage(deleteTarget.image_url);
     toast.success("Proof deleted.");
     setDeleteTarget(null);
+
+    // Safety check: if deleting the last item on a page, go back a page
+    if (paginatedItems.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+
     await loadItems();
   };
 
@@ -276,7 +303,7 @@ export function AdminProofsPage() {
       <AdminShell title="Proof Gallery" description="Proof Management">
         {/* Top Actions: Search & Add Button */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative w-full max-w-md">
+          <div className="relative w-full max-w-sm">
             <Icon
               icon="ph:magnifying-glass-bold"
               className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ad6a6c]"
@@ -289,19 +316,21 @@ export function AdminProofsPage() {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1); // Reset to page 1 while searching
               }}
-              className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition-all focus:border-[#ad6a6c] focus:bg-white focus:ring-1 focus:ring-[#ad6a6c]/20"
+              className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
           </div>
-          <AdminButton type="button" onClick={openCreate}>
-            <Icon icon="ph:plus-bold" className="text-base" />
-            Add Proof
-          </AdminButton>
+          <div className="w-full sm:w-auto [&_button]:w-full">
+            <AdminButton type="button" onClick={openCreate}>
+              <Icon icon="ph:plus-bold" className="text-base" />
+              Add Proof
+            </AdminButton>
+          </div>
         </div>
 
         {/* ===================================================================== */}
-        {/* COMPACT DATA TABLE (Image column removed) */}
+        {/* COMPACT DATA TABLE */}
         {/* ===================================================================== */}
-        <div className="overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[#efdad0]/60 bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c]">
@@ -316,7 +345,7 @@ export function AdminProofsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#efdad0]/40">
-                {filteredItems.length === 0 ? (
+                {paginatedItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
@@ -328,7 +357,7 @@ export function AdminProofsPage() {
                     </td>
                   </tr>
                 ) : (
-                  currentItems.map((item) => (
+                  paginatedItems.map((item) => (
                     <tr
                       key={item.id}
                       className="transition-colors hover:bg-white/50"
@@ -399,32 +428,34 @@ export function AdminProofsPage() {
           </div>
 
           {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS */}
+          {/* PAGINATION CONTROLS (Standardized Style) */}
           {/* ===================================================================== */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-[#efdad0]/60 bg-white/30 px-5 py-3 text-xs font-bold text-[#3c232c]/60">
-              <span>
+          {totalItems > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
+              <span className="text-[11px] font-medium text-[#3c232c]/60">
                 Showing {startIndex + 1} to{" "}
-                {Math.min(startIndex + itemsPerPage, filteredItems.length)} of{" "}
-                {filteredItems.length}
+                {Math.min(startIndex + ITEMS_PER_PAGE, totalItems)} of{" "}
+                {totalItems} entries
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex gap-1.5">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  type="button"
                   disabled={safeCurrentPage === 1}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:opacity-50 disabled:hover:border-[#efdad0] disabled:hover:text-[#3c232c]/60"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-left-bold" />
                 </button>
-                <span className="min-w-[2rem] text-center text-[#ad6a6c]">
+                <div className="flex items-center px-2 text-xs font-bold text-[#3c232c]/70">
                   {safeCurrentPage} / {totalPages}
-                </span>
+                </div>
                 <button
+                  type="button"
+                  disabled={safeCurrentPage === totalPages}
                   onClick={() =>
                     setCurrentPage((p) => Math.min(totalPages, p + 1))
                   }
-                  disabled={safeCurrentPage === totalPages}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:opacity-50 disabled:hover:border-[#efdad0] disabled:hover:text-[#3c232c]/60"
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-right-bold" />
                 </button>
@@ -453,7 +484,6 @@ export function AdminProofsPage() {
                 />
               </Field>
 
-              {/* FIXED: Changed to a selection dropdown using AdminCustomSelect */}
               <Field label="Category" hint="Groups similar proofs together.">
                 <AdminCustomSelect
                   value={form.category}
@@ -475,7 +505,6 @@ export function AdminProofsPage() {
                 />
               </Field>
 
-              {/* FIXED: Added a hint to ensure vertical alignment in the grid */}
               <Field label="Sort Order" hint="0 is first.">
                 <TextInput
                   type="number"
@@ -552,7 +581,7 @@ export function AdminProofsPage() {
             </Field>
 
             {/* CUSTOM PREMIUM TOGGLE SWITCH */}
-            <label className="flex cursor-pointer items-center gap-3">
+            <label className="flex w-fit cursor-pointer items-center gap-3">
               <div className="relative flex items-center">
                 <input
                   type="checkbox"
@@ -563,28 +592,40 @@ export function AdminProofsPage() {
                 <div className="h-6 w-11 rounded-full bg-[#e3d1d1] transition-colors peer-checked:bg-[#ad6a6c]"></div>
                 <div className="absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-5"></div>
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[#3c232c]/80 flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-[#3c232c]/80">
                 Feature this proof{" "}
                 <Icon icon="ph:star-fill" className="text-[#ad6a6c]" />
               </span>
             </label>
 
-            <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <AdminButton
-                type="button"
-                variant="secondary"
-                onClick={requestCloseModal}
-                disabled={isSaving}
-              >
-                Cancel
-              </AdminButton>
-              <SaveButton disabled={isSaving}>
-                {isSaving
-                  ? "Saving..."
-                  : form.id
-                    ? "Update Proof"
-                    : "Create Proof"}
-              </SaveButton>
+            <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <div className="w-full sm:w-auto [&_button]:w-full">
+                <AdminButton
+                  type="button"
+                  variant="secondary"
+                  onClick={requestCloseModal}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </AdminButton>
+              </div>
+              <div className="w-full sm:w-auto [&_button]:w-full">
+                <SaveButton disabled={isSaving}>
+                  {isSaving ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Icon
+                        icon="ph:spinner-gap-bold"
+                        className="animate-spin text-base"
+                      />
+                      Saving...
+                    </span>
+                  ) : form.id ? (
+                    "Update Proof"
+                  ) : (
+                    "Create Proof"
+                  )}
+                </SaveButton>
+              </div>
             </div>
           </form>
         </AdminModal>
@@ -592,7 +633,9 @@ export function AdminProofsPage() {
         <ConfirmModal
           open={Boolean(deleteTarget)}
           title="Delete proof?"
-          description={`Are you sure you want to delete "${deleteTarget?.title ?? "this proof"}"? This action cannot be undone.`}
+          description={`Are you sure you want to delete "${
+            deleteTarget?.title ?? "this proof"
+          }"? This action cannot be undone.`}
           confirmLabel="Delete Proof"
           danger
           isLoading={isSaving}

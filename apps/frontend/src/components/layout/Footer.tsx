@@ -1,9 +1,8 @@
+// apps\frontend\src\components\layout\Footer.tsx
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { supabase } from "../../lib/supabase";
-
-// Define the exact type to fix "Unexpected any"
 interface FooterProfileSettings {
   email_primary?: string;
   location?: string;
@@ -42,12 +41,10 @@ export function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t border-[#efdad0] bg-[#f9f6f3] px-4 py-6 sm:px-6 lg:px-8">
-      {/* BACKGROUND GLOW */}
       <div className="absolute left-[-5%] top-[-50%] -z-10 h-[200px] w-[200px] rounded-full bg-[#f8cdb4]/30 blur-[80px]" />
       <div className="absolute bottom-[-50%] right-[-5%] -z-10 h-[200px] w-[200px] rounded-full bg-[#e3d1d1]/40 blur-[80px]" />
 
       <div className="mx-auto flex max-w-7xl flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        {/* LEFT: Branding & Location */}
         <div className="flex flex-col">
           <h3 className="font-serif text-xl font-bold tracking-tight text-[#3c232c] sm:text-2xl">
             Janine Ayven Dequiros
@@ -65,7 +62,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* RIGHT: Compact Actions */}
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <motion.button
             whileHover={{ y: -1 }}

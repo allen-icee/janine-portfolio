@@ -1,3 +1,4 @@
+// apps\frontend\src\components\admin\AdminShell.tsx
 import { ExternalLink, LogOut, Menu, ShieldCheck, X } from "lucide-react";
 import { useState } from "react";
 import type { ReactNode } from "react";
@@ -11,7 +12,6 @@ type AdminShellProps = {
   description?: string;
 };
 
-// Navigation items
 const navItems = [
   { label: "Dashboard", href: "/admin/dashboard" },
   { label: "Portfolio", href: "/admin/portfolio" },
@@ -39,7 +39,6 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-[#f9f6f3] via-[#f9f6f3]/95 to-transparent" />
 
         <div className="relative mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4 rounded-2xl border border-[#efdad0] bg-white/75 px-4 py-3 shadow-sm backdrop-blur-xl">
-          {/* Left Side: Logo & Title (flex-1 allows it to take up left-side space) */}
           <Link
             to="/admin/dashboard"
             className="group flex min-w-0 flex-1 items-center gap-3 pr-2"
@@ -63,7 +62,6 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
             </div>
           </Link>
 
-          {/* Center: Desktop Navigation (Now perfectly centered) */}
           <nav className="hidden shrink-0 items-center gap-6 lg:flex">
             {navItems.map((item) => (
               <NavLink
@@ -91,8 +89,6 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
             ))}
           </nav>
 
-          {/* Right Side: Desktop Actions 
-              FIXED: Added 'flex-1 justify-end' to balance the left side and force the tabs to the center */}
           <div className="hidden flex-1 items-center justify-end gap-3 lg:flex">
             <Link
               to="/"
@@ -109,7 +105,6 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
             </button>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -120,7 +115,6 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
           </button>
         </div>
 
-        {/* Mobile Navigation Dropdown */}
         {isMobileMenuOpen && (
           <div className="mx-auto mt-2 max-w-7xl rounded-[1.5rem] border border-[#efdad0] bg-white/95 p-5 shadow-xl backdrop-blur-xl lg:hidden">
             <nav className="flex flex-col gap-2">
@@ -141,10 +135,8 @@ export function AdminShell({ children, title, description }: AdminShellProps) {
                 </NavLink>
               ))}
 
-              {/* Divider for Mobile Menu */}
               <div className="my-2 h-px w-full bg-[#efdad0]" />
 
-              {/* Mobile Actions */}
               <Link
                 to="/"
                 onClick={() => setIsMobileMenuOpen(false)}

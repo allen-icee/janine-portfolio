@@ -2,48 +2,20 @@ import { useEffect, useMemo, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
-import {
-  AdminButton,
-  Field,
-  SaveButton,
-  TextArea,
-  TextInput,
-} from "../../components/admin/AdminFields";
+import { AdminButton } from "../../components/admin/AdminFields";
 import { AdminGuard } from "../../components/admin/AdminGuard";
-import { AdminModal, ConfirmModal } from "../../components/admin/AdminModal";
+import { ConfirmModal } from "../../components/admin/AdminModal";
 import { AdminShell } from "../../components/admin/AdminShell";
 import { rateCategories as defaultRateCategories } from "../../data/rates";
 import { supabase } from "../../lib/supabase";
 
-type CategoryRow = {
-  id?: string;
-  title: string;
-  description: string;
-  icon_name: string;
-  note: string;
-  inclusions: string[];
-  sort_order: number;
-  is_active: boolean;
-};
-
-type GroupRow = {
-  id?: string;
-  category_id: string;
-  title: string;
-  description: string;
-  note: string;
-  sort_order: number;
-  is_active: boolean;
-};
-
-type RateRow = {
-  id?: string;
-  group_id: string;
-  name: string;
-  rate_text: string;
-  sort_order: number;
-  is_active: boolean;
-};
+import type { CategoryRow, GroupRow, RateRow } from "../../types/adminRates";
+import { emptyCategory, emptyGroup, emptyRate } from "../../types/adminRates";
+import {
+  CategoryModal,
+  GroupModal,
+  RateModal,
+} from "../../components/admin/rates/RateModals";
 
 type ActiveTab = "categories" | "services" | "rates";
 type DeleteTarget =
@@ -51,42 +23,21 @@ type DeleteTarget =
   | { type: "group"; item: GroupRow }
   | { type: "rate"; item: RateRow };
 
-const emptyCategory: CategoryRow = {
-  title: "",
-  description: "",
-  icon_name: "ph:currency-circle-dollar-duotone",
-  note: "",
-  inclusions: [],
-  sort_order: 0,
-  is_active: true,
-};
-
-const emptyGroup: GroupRow = {
-  category_id: "",
-  title: "",
-  description: "",
-  note: "",
-  sort_order: 0,
-  is_active: true,
-};
-
-const emptyRate: RateRow = {
-  group_id: "",
-  name: "",
-  rate_text: "",
-  sort_order: 0,
-  is_active: true,
-};
+const ITEMS_PER_PAGE = 10;
 
 export function AdminRatesPage() {
   const [categories, setCategories] = useState<CategoryRow[]>([]);
   const [groups, setGroups] = useState<GroupRow[]>([]);
   const [rates, setRates] = useState<RateRow[]>([]);
+
   const [activeTab, setActiveTab] = useState<ActiveTab>("categories");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [categoryForm, setCategoryForm] = useState<CategoryRow>(emptyCategory);
   const [groupForm, setGroupForm] = useState<GroupRow>(emptyGroup);
   const [rateForm, setRateForm] = useState<RateRow>(emptyRate);
+
   const [modalType, setModalType] = useState<ActiveTab | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -101,6 +52,7 @@ export function AdminRatesPage() {
     [groups],
   );
 
+  // Used for refreshing data after creates/updates/deletes
   const loadData = async () => {
     const [categoryRes, groupRes, rateRes] = await Promise.all([
       supabase!.from("rate_categories").select("*").order("sort_order"),
@@ -124,6 +76,7 @@ export function AdminRatesPage() {
     else setRates(rateRes.data ?? []);
   };
 
+  // Used for the initial page load (Satisfies the strict linter rule)
   useEffect(() => {
     let mounted = true;
 
@@ -161,12 +114,8 @@ export function AdminRatesPage() {
 
   const openCreate = (type: ActiveTab) => {
     if (type === "categories") {
-      setCategoryForm({
-        ...emptyCategory,
-        sort_order: categories.length + 1,
-      });
+      setCategoryForm({ ...emptyCategory, sort_order: categories.length + 1 });
     }
-
     if (type === "services") {
       setGroupForm({
         ...emptyGroup,
@@ -174,7 +123,6 @@ export function AdminRatesPage() {
         sort_order: groups.length + 1,
       });
     }
-
     if (type === "rates") {
       setRateForm({
         ...emptyRate,
@@ -182,7 +130,6 @@ export function AdminRatesPage() {
         sort_order: rates.length + 1,
       });
     }
-
     setModalType(type);
   };
 
@@ -191,19 +138,14 @@ export function AdminRatesPage() {
   const saveCategory = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
-
     const { error } = await supabase!
       .from("rate_categories")
       .upsert(categoryForm);
-
     setIsSaving(false);
-
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-
-    toast.success(categoryForm.id ? "Rate category updated." : "Rate category created.");
+    if (error) return toast.error(error.message);
+    toast.success(
+      categoryForm.id ? "Rate category updated." : "Rate category created.",
+    );
     closeModal();
     await loadData();
   };
@@ -211,19 +153,14 @@ export function AdminRatesPage() {
   const saveGroup = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
-
     const { error } = await supabase!
       .from("rate_service_groups")
       .upsert(groupForm);
-
     setIsSaving(false);
-
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-
-    toast.success(groupForm.id ? "Service group updated." : "Service group created.");
+    if (error) return toast.error(error.message);
+    toast.success(
+      groupForm.id ? "Service group updated." : "Service group created.",
+    );
     closeModal();
     await loadData();
   };
@@ -231,16 +168,9 @@ export function AdminRatesPage() {
   const saveRate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
-
     const { error } = await supabase!.from("rate_items").upsert(rateForm);
-
     setIsSaving(false);
-
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-
+    if (error) return toast.error(error.message);
     toast.success(rateForm.id ? "Rate updated." : "Rate created.");
     closeModal();
     await loadData();
@@ -248,50 +178,43 @@ export function AdminRatesPage() {
 
   const deleteItem = async () => {
     if (!deleteTarget) return;
-
     setIsSaving(true);
 
     if (deleteTarget.type === "category") {
       const used = groups.some(
         (group) => group.category_id === deleteTarget.item.id,
       );
-
       if (used) {
         setIsSaving(false);
-        toast.error("Move or delete the service groups under this category first.");
-        return;
+        return toast.error(
+          "Move or delete the service groups under this category first.",
+        );
       }
-
       const { error } = await supabase!
         .from("rate_categories")
         .delete()
         .eq("id", deleteTarget.item.id);
-
       if (error) {
         setIsSaving(false);
-        toast.error(error.message);
-        return;
+        return toast.error(error.message);
       }
     }
 
     if (deleteTarget.type === "group") {
       const used = rates.some((rate) => rate.group_id === deleteTarget.item.id);
-
       if (used) {
         setIsSaving(false);
-        toast.error("Move or delete the rates under this service group first.");
-        return;
+        return toast.error(
+          "Move or delete the rates under this service group first.",
+        );
       }
-
       const { error } = await supabase!
         .from("rate_service_groups")
         .delete()
         .eq("id", deleteTarget.item.id);
-
       if (error) {
         setIsSaving(false);
-        toast.error(error.message);
-        return;
+        return toast.error(error.message);
       }
     }
 
@@ -300,11 +223,9 @@ export function AdminRatesPage() {
         .from("rate_items")
         .delete()
         .eq("id", deleteTarget.item.id);
-
       if (error) {
         setIsSaving(false);
-        toast.error(error.message);
-        return;
+        return toast.error(error.message);
       }
     }
 
@@ -316,7 +237,6 @@ export function AdminRatesPage() {
 
   const importDefaultRates = async () => {
     setIsSeeding(true);
-
     try {
       for (const category of defaultRateCategories) {
         const { data: categoryData, error: categoryError } = await supabase!
@@ -325,7 +245,8 @@ export function AdminRatesPage() {
             {
               title: category.title,
               description: category.description ?? "",
-              icon_name: category.iconName ?? "ph:currency-circle-dollar-duotone",
+              icon_name:
+                category.iconName ?? "ph:currency-circle-dollar-duotone",
               note: category.note ?? "",
               inclusions: category.inclusions ?? [],
               sort_order: category.sortOrder,
@@ -375,7 +296,6 @@ export function AdminRatesPage() {
           }
         }
       }
-
       toast.success("Default rates imported.");
       await loadData();
     } catch (error) {
@@ -388,6 +308,7 @@ export function AdminRatesPage() {
   };
 
   const q = searchQuery.toLowerCase();
+
   const filteredCategories = categories.filter((item) =>
     `${item.title} ${item.description}`.toLowerCase().includes(q),
   );
@@ -402,6 +323,15 @@ export function AdminRatesPage() {
       .includes(q),
   );
 
+  const getPaginatedData = <T,>(data: T[]) => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  };
+
+  const paginatedCategories = getPaginatedData(filteredCategories);
+  const paginatedGroups = getPaginatedData(filteredGroups);
+  const paginatedRates = getPaginatedData(filteredRates);
+
   return (
     <AdminGuard>
       <AdminShell title="Rates" description="Rates Management">
@@ -415,7 +345,10 @@ export function AdminRatesPage() {
               type="text"
               placeholder="Search rates..."
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setCurrentPage(1);
+              }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
           </div>
@@ -429,7 +362,10 @@ export function AdminRatesPage() {
               <button
                 key={tab.value}
                 type="button"
-                onClick={() => setActiveTab(tab.value as ActiveTab)}
+                onClick={() => {
+                  setActiveTab(tab.value as ActiveTab);
+                  setCurrentPage(1);
+                }}
                 className={`rounded-full border px-4 py-2 text-xs font-bold transition ${
                   activeTab === tab.value
                     ? "border-[#ad6a6c] bg-[#ad6a6c] text-white"
@@ -464,8 +400,13 @@ export function AdminRatesPage() {
         </div>
 
         {activeTab === "categories" && (
-          <RatesTableShell empty={filteredCategories.length === 0}>
-            {filteredCategories.map((item) => (
+          <RatesTableShell
+            empty={paginatedCategories.length === 0}
+            totalItems={filteredCategories.length}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          >
+            {paginatedCategories.map((item) => (
               <tr key={item.id} className="hover:bg-white/50">
                 <td className="px-5 py-3.5">
                   <div className="font-bold text-[#3c232c]">{item.title}</div>
@@ -494,8 +435,13 @@ export function AdminRatesPage() {
         )}
 
         {activeTab === "services" && (
-          <RatesTableShell empty={filteredGroups.length === 0}>
-            {filteredGroups.map((item) => (
+          <RatesTableShell
+            empty={paginatedGroups.length === 0}
+            totalItems={filteredGroups.length}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          >
+            {paginatedGroups.map((item) => (
               <tr key={item.id} className="hover:bg-white/50">
                 <td className="px-5 py-3.5">
                   <div className="font-bold text-[#3c232c]">{item.title}</div>
@@ -524,8 +470,13 @@ export function AdminRatesPage() {
         )}
 
         {activeTab === "rates" && (
-          <RatesTableShell empty={filteredRates.length === 0}>
-            {filteredRates.map((item) => (
+          <RatesTableShell
+            empty={paginatedRates.length === 0}
+            totalItems={filteredRates.length}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          >
+            {paginatedRates.map((item) => (
               <tr key={item.id} className="hover:bg-white/50">
                 <td className="px-5 py-3.5">
                   <div className="font-bold text-[#3c232c]">{item.name}</div>
@@ -599,12 +550,20 @@ export function AdminRatesPage() {
 function RatesTableShell({
   children,
   empty,
+  totalItems,
+  currentPage,
+  onPageChange,
 }: {
   children: ReactNode;
   empty: boolean;
+  totalItems: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }) {
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
   return (
-    <div className="overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
+    <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
       <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-[#efdad0]/60 bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c]">
@@ -633,6 +592,35 @@ function RatesTableShell({
           </tbody>
         </table>
       </div>
+
+      {!empty && totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
+          <span className="text-[11px] font-medium text-[#3c232c]/60">
+            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+            {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems}{" "}
+            entries
+          </span>
+          <div className="flex gap-1.5">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => onPageChange(currentPage - 1)}
+              className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
+            >
+              <Icon icon="ph:caret-left-bold" />
+            </button>
+            <div className="flex items-center px-2 text-xs font-bold text-[#3c232c]/70">
+              {currentPage} / {totalPages}
+            </div>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => onPageChange(currentPage + 1)}
+              className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
+            >
+              <Icon icon="ph:caret-right-bold" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -649,7 +637,7 @@ function RowActions({
       <button
         type="button"
         onClick={onEdit}
-        className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] hover:bg-[#ad6a6c]/10"
+        className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition hover:bg-[#ad6a6c]/10"
         title="Edit"
       >
         <Icon icon="ph:pencil-simple-bold" className="text-base" />
@@ -657,7 +645,7 @@ function RowActions({
       <button
         type="button"
         onClick={onDelete}
-        className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] hover:bg-red-500/10 hover:text-red-600"
+        className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition hover:bg-red-500/10 hover:text-red-600"
         title="Delete"
       >
         <Icon icon="ph:trash-bold" className="text-base" />
@@ -677,350 +665,5 @@ function StatusPill({ active }: { active: boolean }) {
     >
       {active ? "Active" : "Hidden"}
     </span>
-  );
-}
-
-function CategoryModal({
-  open,
-  form,
-  isSaving,
-  onChange,
-  onClose,
-  onSubmit,
-}: {
-  open: boolean;
-  form: CategoryRow;
-  isSaving: boolean;
-  onChange: (form: CategoryRow) => void;
-  onClose: () => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-}) {
-  return (
-    <AdminModal
-      open={open}
-      title={form.id ? "Edit Category" : "Create Category"}
-      description="Categories become the public Rates section tabs."
-      onClose={onClose}
-    >
-      <form onSubmit={onSubmit} className="grid gap-5">
-        <div className="grid gap-4 md:grid-cols-[1fr_120px]">
-          <Field label="Title" hint="Example: General Services">
-            <TextInput
-              value={form.title}
-              onChange={(event) =>
-                onChange({ ...form, title: event.target.value })
-              }
-              required
-              placeholder="Category title"
-            />
-          </Field>
-          <Field label="Order" hint="0 is first.">
-            <TextInput
-              type="number"
-              min="0"
-              value={form.sort_order}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  sort_order: Math.max(0, Number(event.target.value)),
-                })
-              }
-              required
-              placeholder="0"
-            />
-          </Field>
-        </div>
-        <Field label="Icon Name" hint="Use Iconify names such as ph:books-duotone.">
-          <TextInput
-            value={form.icon_name}
-            onChange={(event) =>
-              onChange({ ...form, icon_name: event.target.value })
-            }
-            placeholder="ph:currency-circle-dollar-duotone"
-          />
-        </Field>
-        <Field label="Description">
-          <TextArea
-            value={form.description}
-            onChange={(event) =>
-              onChange({ ...form, description: event.target.value })
-            }
-            placeholder="Short public-facing description..."
-            rows={3}
-          />
-        </Field>
-        <Field label="Note">
-          <TextArea
-            value={form.note}
-            onChange={(event) => onChange({ ...form, note: event.target.value })}
-            placeholder="Optional reminder shown under this category..."
-            rows={2}
-          />
-        </Field>
-        <Field
-          label="Package Inclusions"
-          hint="Optional. Write one inclusion per line; shown as a pop-up on the public Rates section."
-        >
-          <TextArea
-            value={form.inclusions.join("\n")}
-            onChange={(event) =>
-              onChange({
-                ...form,
-                inclusions: event.target.value
-                  .split("\n")
-                  .map((item) => item.trim())
-                  .filter(Boolean),
-              })
-            }
-            placeholder="Defense Presentation Slides: Professionally designed slides..."
-            rows={5}
-          />
-        </Field>
-        <ActiveToggle
-          checked={form.is_active}
-          onChange={(checked) => onChange({ ...form, is_active: checked })}
-        />
-        <ModalActions isSaving={isSaving} onClose={onClose} />
-      </form>
-    </AdminModal>
-  );
-}
-
-function GroupModal({
-  open,
-  form,
-  categories,
-  isSaving,
-  onChange,
-  onClose,
-  onSubmit,
-}: {
-  open: boolean;
-  form: GroupRow;
-  categories: CategoryRow[];
-  isSaving: boolean;
-  onChange: (form: GroupRow) => void;
-  onClose: () => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-}) {
-  return (
-    <AdminModal
-      open={open}
-      title={form.id ? "Edit Service" : "Create Service"}
-      description="Services are group headings under a rate category."
-      onClose={onClose}
-    >
-      <form onSubmit={onSubmit} className="grid gap-5">
-        <Field label="Category" hint="Choose where this service group appears.">
-          <select
-            value={form.category_id}
-            onChange={(event) =>
-              onChange({ ...form, category_id: event.target.value })
-            }
-            required
-            className="w-full rounded-xl border border-[#efdad0] bg-white/70 px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/15"
-          >
-            <option value="">Select category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.title}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <div className="grid gap-4 md:grid-cols-[1fr_120px]">
-          <Field label="Title" hint="Example: Write-Ups">
-            <TextInput
-              value={form.title}
-              onChange={(event) =>
-                onChange({ ...form, title: event.target.value })
-              }
-              required
-              placeholder="Service group title"
-            />
-          </Field>
-          <Field label="Order" hint="0 is first.">
-            <TextInput
-              type="number"
-              min="0"
-              value={form.sort_order}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  sort_order: Math.max(0, Number(event.target.value)),
-                })
-              }
-              required
-              placeholder="0"
-            />
-          </Field>
-        </div>
-        <Field label="Description">
-          <TextArea
-            value={form.description}
-            onChange={(event) =>
-              onChange({ ...form, description: event.target.value })
-            }
-            placeholder="Optional short description..."
-            rows={2}
-          />
-        </Field>
-        <Field label="Note">
-          <TextArea
-            value={form.note}
-            onChange={(event) => onChange({ ...form, note: event.target.value })}
-            placeholder="Optional note, such as package reminders..."
-            rows={2}
-          />
-        </Field>
-        <ActiveToggle
-          checked={form.is_active}
-          onChange={(checked) => onChange({ ...form, is_active: checked })}
-        />
-        <ModalActions isSaving={isSaving} onClose={onClose} />
-      </form>
-    </AdminModal>
-  );
-}
-
-function RateModal({
-  open,
-  form,
-  groups,
-  categories,
-  isSaving,
-  onChange,
-  onClose,
-  onSubmit,
-}: {
-  open: boolean;
-  form: RateRow;
-  groups: GroupRow[];
-  categories: CategoryRow[];
-  isSaving: boolean;
-  onChange: (form: RateRow) => void;
-  onClose: () => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-}) {
-  const categoryById = new Map(categories.map((category) => [category.id, category]));
-
-  return (
-    <AdminModal
-      open={open}
-      title={form.id ? "Edit Rate" : "Create Rate"}
-      description="Rates are individual rows inside a service group."
-      onClose={onClose}
-    >
-      <form onSubmit={onSubmit} className="grid gap-5">
-        <Field label="Service Group" hint="Choose where this rate row appears.">
-          <select
-            value={form.group_id}
-            onChange={(event) => onChange({ ...form, group_id: event.target.value })}
-            required
-            className="w-full rounded-xl border border-[#efdad0] bg-white/70 px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/15"
-          >
-            <option value="">Select service group</option>
-            {groups.map((group) => (
-              <option key={group.id} value={group.id}>
-                {categoryById.get(group.category_id)?.title ?? "No category"} /{" "}
-                {group.title}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <div className="grid gap-4 md:grid-cols-[1fr_160px_120px]">
-          <Field label="Service / Component" hint="Example: Essay (500 words)">
-            <TextInput
-              value={form.name}
-              onChange={(event) =>
-                onChange({ ...form, name: event.target.value })
-              }
-              required
-              placeholder="Service name"
-            />
-          </Field>
-          <Field label="Rate" hint="Keep symbols/text.">
-            <TextInput
-              value={form.rate_text}
-              onChange={(event) =>
-                onChange({ ...form, rate_text: event.target.value })
-              }
-              required
-              placeholder="₱250.00"
-            />
-          </Field>
-          <Field label="Order" hint="0 is first.">
-            <TextInput
-              type="number"
-              min="0"
-              value={form.sort_order}
-              onChange={(event) =>
-                onChange({
-                  ...form,
-                  sort_order: Math.max(0, Number(event.target.value)),
-                })
-              }
-              required
-              placeholder="0"
-            />
-          </Field>
-        </div>
-        <ActiveToggle
-          checked={form.is_active}
-          onChange={(checked) => onChange({ ...form, is_active: checked })}
-        />
-        <ModalActions isSaving={isSaving} onClose={onClose} />
-      </form>
-    </AdminModal>
-  );
-}
-
-function ActiveToggle({
-  checked,
-  onChange,
-}: {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <label className="flex cursor-pointer items-center gap-3">
-      <div className="relative flex items-center">
-        <input
-          type="checkbox"
-          className="peer sr-only"
-          checked={checked}
-          onChange={(event) => onChange(event.target.checked)}
-        />
-        <div className="h-6 w-11 rounded-full bg-[#e3d1d1] transition-colors peer-checked:bg-[#ad6a6c]"></div>
-        <div className="absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-transform peer-checked:translate-x-5"></div>
-      </div>
-      <span className="text-[11px] font-bold uppercase tracking-widest text-[#3c232c]/80">
-        Active on public website
-      </span>
-    </label>
-  );
-}
-
-function ModalActions({
-  isSaving,
-  onClose,
-}: {
-  isSaving: boolean;
-  onClose: () => void;
-}) {
-  return (
-    <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-      <AdminButton
-        type="button"
-        variant="secondary"
-        onClick={onClose}
-        disabled={isSaving}
-      >
-        Cancel
-      </AdminButton>
-      <SaveButton disabled={isSaving}>
-        {isSaving ? "Saving..." : "Save"}
-      </SaveButton>
-    </div>
   );
 }

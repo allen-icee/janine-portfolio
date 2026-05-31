@@ -1,3 +1,4 @@
+// apps\frontend\src\components\admin\PortfolioProjectModal.tsx
 import { useRef, useState, useEffect, useMemo } from "react";
 import type { FormEvent } from "react";
 import toast from "react-hot-toast";
@@ -209,7 +210,7 @@ export function PortfolioProjectModal({
                 placeholder="Auto-generated"
               />
             </Field>
-            {/* FIXED: Added a hint here to vertically align it with the Slug field */}
+
             <Field label="Order" hint="0 is first.">
               <TextInput
                 type="number"

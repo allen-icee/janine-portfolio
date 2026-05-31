@@ -1,3 +1,5 @@
+// src/types/content.ts
+
 import type { LucideIcon } from "lucide-react";
 
 export type PortfolioCategory = "All" | (string & {});
@@ -61,24 +63,15 @@ export type PublicProfile = {
 export interface PublicService {
   title: string;
   description: string;
-
   professionalBackground?: string;
-
   expertise?: string[];
-
   tools?: string[];
-
   toolTitle?: string;
-
   /* BETTER FALLBACK SYSTEM */
   toolFallbacks?: Record<string, string>;
-
   imageUrl?: string;
-
   priceRange?: string;
-
   iconName?: string;
-
   icon?: LucideIcon;
 }
 
@@ -140,6 +133,7 @@ export type TrustCard = {
   icon: LucideIcon;
 };
 
+// These are used by your static rate.ts file
 export type RateItem = {
   id?: string;
   name: string;

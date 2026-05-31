@@ -29,6 +29,8 @@ const emptyFaq: FaqRow = {
   is_active: true,
 };
 
+const ITEMS_PER_PAGE = 8;
+
 export function AdminFaqsPage() {
   const [items, setItems] = useState<FaqRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +43,6 @@ export function AdminFaqsPage() {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
 
   const loadItems = async () => {
     const { data, error } = await supabase!
@@ -85,15 +86,12 @@ export function AdminFaqsPage() {
       i.answer.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredItems.length / itemsPerPage),
-  );
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
-  const currentItems = filteredItems.slice(
-    startIndex,
-    startIndex + itemsPerPage,
+  // Pagination Logic
+  const totalItems = filteredItems.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const paginatedItems = filteredItems.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
   );
 
   const updateForm = <Key extends keyof FaqRow>(
@@ -163,6 +161,12 @@ export function AdminFaqsPage() {
 
     toast.success("FAQ deleted.");
     setDeleteTarget(null);
+
+    // Safety check: if deleting the last item on a page, go back a page
+    if (paginatedItems.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+
     await loadItems();
   };
 
@@ -181,21 +185,24 @@ export function AdminFaqsPage() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(1); // Reset page on search
               }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
           </div>
-          <AdminButton type="button" onClick={openCreate}>
-            <Icon icon="ph:plus-bold" className="text-base" />
-            Create FAQ
-          </AdminButton>
+
+          <div className="w-full sm:w-auto [&_button]:w-full">
+            <AdminButton type="button" onClick={openCreate}>
+              <Icon icon="ph:plus-bold" className="text-base" />
+              Create FAQ
+            </AdminButton>
+          </div>
         </div>
 
         {/* ===================================================================== */}
         {/* COMPACT DATA TABLE */}
         {/* ===================================================================== */}
-        <div className="overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[#efdad0]/60 bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c]">
@@ -210,7 +217,7 @@ export function AdminFaqsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#efdad0]/40">
-                {filteredItems.length === 0 ? (
+                {paginatedItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
@@ -222,7 +229,7 @@ export function AdminFaqsPage() {
                     </td>
                   </tr>
                 ) : (
-                  currentItems.map((item) => (
+                  paginatedItems.map((item) => (
                     <tr
                       key={item.id}
                       className="transition-colors hover:bg-white/50"
@@ -230,10 +237,10 @@ export function AdminFaqsPage() {
                       <td className="px-5 py-3.5 font-bold text-[#3c232c]/70">
                         {item.sort_order}
                       </td>
-                      <td className="px-5 py-3.5 font-bold text-[#3c232c] max-w-[200px] truncate">
+                      <td className="max-w-[200px] truncate px-5 py-3.5 font-bold text-[#3c232c]">
                         {item.question}
                       </td>
-                      <td className="hidden px-5 py-3.5 font-medium text-[#3c232c]/60 max-w-[250px] truncate md:table-cell">
+                      <td className="hidden max-w-[250px] truncate px-5 py-3.5 font-medium text-[#3c232c]/60 md:table-cell">
                         {item.answer}
                       </td>
                       <td className="px-5 py-3.5">
@@ -276,32 +283,32 @@ export function AdminFaqsPage() {
           </div>
 
           {/* ===================================================================== */}
-          {/* PAGINATION CONTROLS */}
+          {/* PAGINATION CONTROLS (Matched Style) */}
           {/* ===================================================================== */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-[#efdad0]/60 bg-white/30 px-5 py-3 text-xs font-bold text-[#3c232c]/60">
-              <span>
-                Showing {startIndex + 1} to{" "}
-                {Math.min(startIndex + itemsPerPage, filteredItems.length)} of{" "}
-                {filteredItems.length}
+          {totalItems > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
+              <span className="text-[11px] font-medium text-[#3c232c]/60">
+                Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+                {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of{" "}
+                {totalItems} entries
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex gap-1.5">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={safeCurrentPage === 1}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:opacity-50 disabled:hover:border-[#efdad0] disabled:hover:text-[#3c232c]/60"
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-left-bold" />
                 </button>
-                <span className="min-w-[2rem] text-center text-[#ad6a6c]">
-                  {safeCurrentPage} / {totalPages}
-                </span>
+                <div className="flex items-center px-2 text-xs font-bold text-[#3c232c]/70">
+                  {currentPage} / {totalPages}
+                </div>
                 <button
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(totalPages, p + 1))
-                  }
-                  disabled={safeCurrentPage === totalPages}
-                  className="grid size-7 place-items-center rounded-md border border-[#efdad0] bg-white transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:opacity-50 disabled:hover:border-[#efdad0] disabled:hover:text-[#3c232c]/60"
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
                 >
                   <Icon icon="ph:caret-right-bold" />
                 </button>
@@ -321,7 +328,6 @@ export function AdminFaqsPage() {
         >
           <form onSubmit={saveItem} className="grid gap-5">
             <div className="grid gap-5 md:grid-cols-[1fr_120px]">
-              {/* FIXED: Added a hint here to align perfectly with Sort Order */}
               <Field label="Question" hint="The main question being asked.">
                 <TextInput
                   value={form.question}
@@ -331,13 +337,11 @@ export function AdminFaqsPage() {
                 />
               </Field>
 
-              {/* FIXED: Added a hint here to push the input down and match the left side */}
               <Field label="Sort Order" hint="0 is first.">
                 <TextInput
                   type="number"
-                  min="0" // Added minimum attribute constraint
+                  min="0"
                   value={form.sort_order}
-                  // Added Math.max to programmatically prevent negatives
                   onChange={(e) =>
                     updateForm(
                       "sort_order",
@@ -350,7 +354,7 @@ export function AdminFaqsPage() {
               </Field>
             </div>
 
-            <Field label="Answer">
+            <Field label="Answer" hint="Keep it clear and helpful.">
               <TextArea
                 value={form.answer}
                 onChange={(e) => updateForm("answer", e.target.value)}
@@ -360,8 +364,7 @@ export function AdminFaqsPage() {
               />
             </Field>
 
-            {/* CUSTOM PREMIUM TOGGLE SWITCH */}
-            <label className="flex cursor-pointer items-center gap-3">
+            <label className="flex w-fit cursor-pointer items-center gap-3">
               <div className="relative flex items-center">
                 <input
                   type="checkbox"
@@ -378,17 +381,33 @@ export function AdminFaqsPage() {
             </label>
 
             <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-              <AdminButton
-                type="button"
-                variant="secondary"
-                onClick={requestCloseModal}
-                disabled={isSaving}
-              >
-                Cancel
-              </AdminButton>
-              <SaveButton disabled={isSaving}>
-                {isSaving ? "Saving..." : form.id ? "Update FAQ" : "Create FAQ"}
-              </SaveButton>
+              <div className="w-full sm:w-auto [&_button]:w-full">
+                <AdminButton
+                  type="button"
+                  variant="secondary"
+                  onClick={requestCloseModal}
+                  disabled={isSaving}
+                >
+                  Cancel
+                </AdminButton>
+              </div>
+              <div className="w-full sm:w-auto [&_button]:w-full">
+                <SaveButton disabled={isSaving}>
+                  {isSaving ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Icon
+                        icon="ph:spinner-gap-bold"
+                        className="animate-spin text-base"
+                      />
+                      Saving...
+                    </span>
+                  ) : form.id ? (
+                    "Update FAQ"
+                  ) : (
+                    "Create FAQ"
+                  )}
+                </SaveButton>
+              </div>
             </div>
           </form>
         </AdminModal>
@@ -397,7 +416,9 @@ export function AdminFaqsPage() {
         <ConfirmModal
           open={Boolean(deleteTarget)}
           title="Delete FAQ?"
-          description={`Are you sure you want to delete "${deleteTarget?.question ?? "this FAQ"}"? This action cannot be undone.`}
+          description={`Are you sure you want to delete "${
+            deleteTarget?.question ?? "this FAQ"
+          }"? This action cannot be undone.`}
           confirmLabel="Delete FAQ"
           danger
           isLoading={isSaving}

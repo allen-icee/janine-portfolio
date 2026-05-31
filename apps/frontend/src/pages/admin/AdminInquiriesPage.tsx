@@ -17,6 +17,8 @@ type InquiryRow = {
   created_at?: string;
 };
 
+const ITEMS_PER_PAGE = 10;
+
 export function AdminInquiriesPage() {
   const [items, setItems] = useState<InquiryRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +28,9 @@ export function AdminInquiriesPage() {
   const [deleteTarget, setDeleteTarget] = useState<InquiryRow | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
 
   const loadItems = async () => {
     const { data, error } = await supabase!
@@ -77,6 +82,14 @@ export function AdminInquiriesPage() {
     return matchesSearch && matchesStatus;
   });
 
+  // Pagination Logic
+  const totalItems = filteredItems.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const paginatedItems = filteredItems.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
+
   const updateStatus = async (item: InquiryRow, status: "new" | "handled") => {
     if (!item.id) return;
 
@@ -119,6 +132,12 @@ export function AdminInquiriesPage() {
 
     toast.success("Inquiry deleted.");
     setDeleteTarget(null);
+
+    // Safety check: if deleting the last item on a page, go back a page
+    if (paginatedItems.length === 1 && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+
     await loadItems();
   };
 
@@ -135,7 +154,10 @@ export function AdminInquiriesPage() {
               type="text"
               placeholder="Search messages..."
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setCurrentPage(1); // Reset to page 1 on search
+              }}
               className="h-10 w-full rounded-xl border border-[#efdad0] bg-white/60 pl-10 pr-4 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:bg-white"
             />
           </div>
@@ -149,9 +171,10 @@ export function AdminInquiriesPage() {
               <button
                 key={status.value}
                 type="button"
-                onClick={() =>
-                  setStatusFilter(status.value as typeof statusFilter)
-                }
+                onClick={() => {
+                  setStatusFilter(status.value as typeof statusFilter);
+                  setCurrentPage(1); // Reset to page 1 on filter change
+                }}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                   statusFilter === status.value
                     ? "border-[#ad6a6c] bg-gradient-to-r from-[#ad6a6c] to-[#3c232c] text-white shadow-md"
@@ -164,7 +187,7 @@ export function AdminInquiriesPage() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col overflow-hidden rounded-[1.5rem] border border-[#efdad0] bg-white/60 shadow-sm backdrop-blur-md">
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-[#efdad0]/60 bg-white/40 text-[10px] uppercase tracking-widest text-[#ad6a6c]">
@@ -181,7 +204,7 @@ export function AdminInquiriesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#efdad0]/40">
-                {filteredItems.length === 0 ? (
+                {paginatedItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={5}
@@ -191,7 +214,7 @@ export function AdminInquiriesPage() {
                     </td>
                   </tr>
                 ) : (
-                  filteredItems.map((item) => (
+                  paginatedItems.map((item) => (
                     <tr
                       key={item.id}
                       className="transition-colors hover:bg-white/50"
@@ -275,6 +298,38 @@ export function AdminInquiriesPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Footer */}
+          {totalItems > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-[#efdad0]/40 bg-white/30 px-5 py-3">
+              <span className="text-[11px] font-medium text-[#3c232c]/60">
+                Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+                {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of{" "}
+                {totalItems} entries
+              </span>
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
+                >
+                  <Icon icon="ph:caret-left-bold" />
+                </button>
+                <div className="flex items-center px-2 text-xs font-bold text-[#3c232c]/70">
+                  {currentPage} / {totalPages}
+                </div>
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  className="grid size-7 place-items-center rounded-lg border border-[#efdad0] bg-white/80 text-[#3c232c] transition hover:border-[#ad6a6c] hover:text-[#ad6a6c] disabled:pointer-events-none disabled:opacity-50"
+                >
+                  <Icon icon="ph:caret-right-bold" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <ConfirmModal
