@@ -180,7 +180,7 @@ export function Testimonials({
                       "{item.feedback}"
                     </p>
                     <p className="mt-3 text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c] opacity-0 transition-opacity group-hover:opacity-100">
-                      Click to read full story
+                      Click to read full comment
                     </p>
                   </div>
 
@@ -249,7 +249,7 @@ export function Testimonials({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative flex w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] bg-[#f9f6f3] shadow-2xl sm:rounded-[2.5rem]"
+              className="relative flex max-h-[90svh] w-full max-w-2xl flex-col overflow-hidden rounded-[2rem] bg-[#f9f6f3] shadow-2xl sm:rounded-[2.5rem]"
             >
               <div className="flex items-center justify-between border-b border-[#efdad0] bg-white/80 px-5 py-4 backdrop-blur-md sm:px-8 sm:py-5">
                 <div>
@@ -269,7 +269,7 @@ export function Testimonials({
                 </button>
               </div>
 
-              <div className="p-5 sm:p-10">
+              <div className="overflow-y-auto p-5 sm:p-10">
                 <div className="mb-5 flex gap-1 text-[#ad6a6c]">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Icon
