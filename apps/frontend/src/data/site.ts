@@ -394,6 +394,7 @@ export const testimonials: Testimonial[] = [
       "Working with Janine was the best decision I made for my business.",
     feedback:
       "The work was organized, thoughtful, and easy to review. Communication was clear from start to finish, and the final document felt polished and reliable.",
+    suggestion: "",
     rating: 5,
     date: "March 2026",
   },
@@ -404,6 +405,8 @@ export const testimonials: Testimonial[] = [
     preview: "She just gets it, and gets it done.",
     feedback:
       "I needed something clean and client-facing. Janine delivered a design that felt modern, fast, and professional without unnecessary clutter.",
+    suggestion:
+      "Maybe provide a few more layout options to choose from initially.",
     rating: 5,
     date: "February 2026",
   },
@@ -414,6 +417,7 @@ export const testimonials: Testimonial[] = [
     preview: "Everything was delivered with quality and care.",
     feedback:
       "The pacing, captions, and transitions made the videos feel much more professional. Revisions were handled quickly and carefully.",
+    suggestion: "",
     rating: 5,
     date: "January 2026",
   },

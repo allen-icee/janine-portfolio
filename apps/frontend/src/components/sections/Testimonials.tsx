@@ -25,6 +25,12 @@ export function Testimonials({
   const [reviewService, setReviewService] = useState("");
   const [reviewFeedback, setReviewFeedback] = useState("");
   const [reviewSuggestion, setReviewSuggestion] = useState("");
+
+  // Default the date to today in YYYY-MM-DD format
+  const [reviewDate, setReviewDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
+
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -53,6 +59,7 @@ export function Testimonials({
     setReviewService("");
     setReviewFeedback("");
     setReviewSuggestion("");
+    setReviewDate(new Date().toISOString().split("T")[0]);
   };
 
   const submitReview = async (event: FormEvent<HTMLFormElement>) => {
@@ -86,7 +93,7 @@ export function Testimonials({
       project_type: finalService,
       is_verified: false,
       is_approved: false,
-      feedback_date: new Date().toISOString().slice(0, 10),
+      feedback_date: reviewDate, // Using the selected date from the form
     });
 
     setIsSubmittingReview(false);
@@ -390,30 +397,45 @@ export function Testimonials({
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-1.5 sm:gap-2">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">
-                      Rating
-                    </label>
-                    <div className="flex gap-1 sm:gap-2">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => setRating(star)}
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          className="transition hover:scale-110"
-                        >
-                          <Icon
-                            icon={
-                              (hoverRating || rating) >= star
-                                ? "ph:star-fill"
-                                : "ph:star"
-                            }
-                            className={`text-2xl sm:text-3xl transition-colors ${(hoverRating || rating) >= star ? "text-[#ad6a6c]" : "text-[#e3d1d1]"}`}
-                          />
-                        </button>
-                      ))}
+                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+                    <div className="flex flex-col gap-1.5 sm:gap-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">
+                        Rating
+                      </label>
+                      <div className="flex h-[46px] items-center gap-1 sm:gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setRating(star)}
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            className="transition hover:scale-110"
+                          >
+                            <Icon
+                              icon={
+                                (hoverRating || rating) >= star
+                                  ? "ph:star-fill"
+                                  : "ph:star"
+                              }
+                              className={`text-2xl sm:text-3xl transition-colors ${(hoverRating || rating) >= star ? "text-[#ad6a6c]" : "text-[#e3d1d1]"}`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1.5 sm:gap-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        value={reviewDate}
+                        onChange={(event) => setReviewDate(event.target.value)}
+                        max={new Date().toISOString().split("T")[0]}
+                        required
+                        className="rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
+                      />
                     </div>
                   </div>
 
