@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Icon } from "@iconify/react";
 import { AdminGuard } from "../../components/admin/AdminGuard";
-import { ConfirmModal } from "../../components/admin/AdminModal";
+import { AdminModal, ConfirmModal } from "../../components/admin/AdminModal";
 import { AdminShell } from "../../components/admin/AdminShell";
 import { supabase } from "../../lib/supabase";
 
@@ -26,6 +26,7 @@ const ITEMS_PER_PAGE = 8;
 export function AdminTestimonialsPage() {
   const [items, setItems] = useState<TestimonialRow[]>([]);
   const [deleteTarget, setDeleteTarget] = useState<TestimonialRow | null>(null);
+  const [viewTarget, setViewTarget] = useState<TestimonialRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -302,6 +303,16 @@ export function AdminTestimonialsPage() {
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex justify-end gap-1.5">
                           <button
+                            onClick={() => setViewTarget(item)}
+                            className="grid size-8 place-items-center rounded-lg text-[#ad6a6c] transition-colors hover:bg-[#ad6a6c]/10"
+                            title="View Full Feedback"
+                          >
+                            <Icon
+                              icon="ph:article-bold"
+                              className="text-base"
+                            />
+                          </button>
+                          <button
                             onClick={() =>
                               updateApproval(item, !item.is_approved)
                             }
@@ -371,6 +382,64 @@ export function AdminTestimonialsPage() {
             </div>
           )}
         </div>
+
+        {/* View Details Modal */}
+        <AdminModal
+          open={Boolean(viewTarget)}
+          title="Feedback Details"
+          description={`Submitted by ${viewTarget?.client_name} on ${viewTarget?.feedback_date || "Unknown Date"}`}
+          onClose={() => setViewTarget(null)}
+        >
+          {viewTarget && (
+            <div className="flex flex-col gap-5">
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
+                  Service Provided
+                </h4>
+                <p className="mt-1 text-sm font-medium text-[#3c232c]">
+                  {viewTarget.service || "N/A"}
+                </p>
+              </div>
+
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
+                  Rating
+                </h4>
+                <div className="mt-1 flex gap-0.5 text-[#ad6a6c]">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Icon
+                      key={index}
+                      icon={
+                        index < viewTarget.rating ? "ph:star-fill" : "ph:star"
+                      }
+                      className="text-lg"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
+                  Client Feedback
+                </h4>
+                <p className="mt-1 text-sm leading-relaxed text-[#3c232c] whitespace-pre-wrap rounded-xl border border-[#efdad0] bg-white/60 p-4">
+                  {viewTarget.feedback}
+                </p>
+              </div>
+
+              {viewTarget.suggestion && (
+                <div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#ad6a6c]">
+                    Suggestion for Improvement
+                  </h4>
+                  <p className="mt-1 text-sm leading-relaxed text-[#3c232c] whitespace-pre-wrap rounded-xl border border-[#e3d1d1] bg-[#e3d1d1]/20 p-4">
+                    {viewTarget.suggestion}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </AdminModal>
 
         <ConfirmModal
           open={Boolean(deleteTarget)}
