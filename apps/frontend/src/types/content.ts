@@ -25,6 +25,7 @@ export type Testimonial = {
   service: string;
   preview: string;
   feedback: string;
+  suggestion?: string;
   rating: number;
   date: string;
 };

@@ -13,6 +13,7 @@ type TestimonialRow = {
   service: string;
   preview: string;
   feedback: string;
+  suggestion?: string;
   rating: number;
   project_type: string;
   feedback_date: string;
@@ -72,8 +73,9 @@ export function AdminTestimonialsPage() {
     const q = searchQuery.toLowerCase();
     const matchesSearch =
       item.client_name.toLowerCase().includes(q) ||
-      item.service.toLowerCase().includes(q) ||
-      item.feedback.toLowerCase().includes(q);
+      (item.service && item.service.toLowerCase().includes(q)) ||
+      item.feedback.toLowerCase().includes(q) ||
+      (item.suggestion && item.suggestion.toLowerCase().includes(q));
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "approved" && item.is_approved) ||
@@ -280,9 +282,21 @@ export function AdminTestimonialsPage() {
                       </td>
 
                       <td className="hidden px-5 py-3.5 lg:table-cell">
-                        <p className="max-w-[300px] truncate text-xs font-medium text-[#3c232c]/70">
-                          "{item.feedback}"
-                        </p>
+                        <div className="flex flex-col gap-2">
+                          <p className="max-w-[300px] truncate text-xs font-medium text-[#3c232c]/70">
+                            "{item.feedback}"
+                          </p>
+                          {item.suggestion && (
+                            <div className="max-w-[300px] rounded bg-[#e3d1d1]/30 p-2 text-[11px] text-[#3c232c]/80 border border-[#e3d1d1]/50">
+                              <span className="block font-bold uppercase tracking-wider text-[#ad6a6c] text-[9px] mb-0.5">
+                                Suggestion
+                              </span>
+                              <span className="truncate block">
+                                "{item.suggestion}"
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </td>
 
                       <td className="px-5 py-3.5 text-right">

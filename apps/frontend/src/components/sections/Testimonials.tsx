@@ -24,6 +24,7 @@ export function Testimonials({
   const [reviewName, setReviewName] = useState("");
   const [reviewService, setReviewService] = useState("");
   const [reviewFeedback, setReviewFeedback] = useState("");
+  const [reviewSuggestion, setReviewSuggestion] = useState("");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -51,6 +52,7 @@ export function Testimonials({
     setReviewName("");
     setReviewService("");
     setReviewFeedback("");
+    setReviewSuggestion("");
   };
 
   const submitReview = async (event: FormEvent<HTMLFormElement>) => {
@@ -69,17 +71,19 @@ export function Testimonials({
     setIsSubmittingReview(true);
 
     const trimmedFeedback = reviewFeedback.trim();
+    const finalService = reviewService.trim() || "General Feedback";
 
     const { error } = await supabase.from("testimonials").insert({
       client_name: reviewName.trim(),
-      service: reviewService.trim(),
+      service: finalService,
       preview:
         trimmedFeedback.length > 120
           ? `${trimmedFeedback.slice(0, 117)}...`
           : trimmedFeedback,
       feedback: trimmedFeedback,
+      suggestion: reviewSuggestion.trim() || null,
       rating,
-      project_type: reviewService.trim(),
+      project_type: finalService,
       is_verified: false,
       is_approved: false,
       feedback_date: new Date().toISOString().slice(0, 10),
@@ -372,14 +376,13 @@ export function Testimonials({
                     </div>
                     <div className="flex flex-col gap-1.5 sm:gap-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">
-                        Service
+                        Service (Optional)
                       </label>
                       <input
                         value={reviewService}
                         onChange={(event) =>
                           setReviewService(event.target.value)
                         }
-                        required
                         type="text"
                         placeholder="e.g. Graphic Design"
                         className="rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
@@ -424,8 +427,23 @@ export function Testimonials({
                         setReviewFeedback(event.target.value)
                       }
                       required
-                      rows={4}
+                      rows={3}
                       placeholder="How was your experience working with me?"
+                      className="resize-none rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
+                    ></textarea>
+                  </div>
+
+                  <div className="flex flex-col gap-1.5 sm:gap-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-[#3c232c]/80 sm:text-xs">
+                      Suggestion for Improvement (Optional)
+                    </label>
+                    <textarea
+                      value={reviewSuggestion}
+                      onChange={(event) =>
+                        setReviewSuggestion(event.target.value)
+                      }
+                      rows={2}
+                      placeholder="How can I improve my services?"
                       className="resize-none rounded-xl border border-[#efdad0] bg-white px-4 py-3 text-sm text-[#3c232c] outline-none transition focus:border-[#ad6a6c] focus:ring-1 focus:ring-[#ad6a6c]"
                     ></textarea>
                   </div>
