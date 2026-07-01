@@ -1,10 +1,10 @@
-# Janine Portfolio
+# JaneDesk
 
 A professional, dynamic freelance portfolio and Content Management System (CMS) designed for a Virtual Assistant. This application serves as a client-facing landing page to showcase services and rates, while also providing a secure administrative dashboard where the site owner can manage inquiries and update site content dynamically without modifying code.
 
 ---
 
-## Features
+## ✨ Features
 
 - Dynamic public landing page highlighting services, rates, portfolio items, and testimonials.
 - Secure, authenticated admin dashboard for full CMS control.
@@ -15,32 +15,25 @@ A professional, dynamic freelance portfolio and Content Management System (CMS) 
 
 ---
 
-## Tech Stack
+<h3>Languages & Tools (⌐■_■)</h3>
 
-**Frontend**
-- React 19
-- TypeScript
-- Vite
-
-**Backend**
-- Supabase (PostgreSQL, Auto-generated REST API)
-- Laravel (API Scaffold)
-
-**Authentication**
-- Supabase Auth
-
-**Styling & UI**
-- Tailwind CSS v4
-- Framer Motion
-- Lenis
-- Embla Carousel
-
-**Deployment**
-- Configured for Vercel
+<p align="left">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" width="35" title="React" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg" width="35" title="Vite" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" width="35" title="Laravel" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" width="35" title="TypeScript" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" width="35" title="PHP" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" width="35" title="Tailwind CSS" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg" width="35" title="Supabase" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" width="35" title="PostgreSQL" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" width="35" title="Node.js" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/npm/npm-original-wordmark.svg" width="35" title="npm" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg" width="35" title="Vercel" />
+</p>
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -78,7 +71,7 @@ VITE_SUPABASE_URL=your-supabase-project-url
 VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
-### Run Locally
+### Run
 
 Start the frontend development server:
 ```bash
@@ -88,14 +81,16 @@ npm run dev
 
 ---
 
-## Repository Usage
+## 📄 License
 
-This repository is shared for learning, inspiration, and portfolio purposes. You are welcome to explore the codebase and learn from the implementation.
+Copyright (c) 2026 JaneDesk
 
-Please do not copy, redistribute, submit, or present this project as your own work. If you create something inspired by this project, build your own implementation and give appropriate credit where applicable.
+This project is shared for portfolio, educational, and learning purposes.
 
----
+You are welcome to study the codebase and use it as inspiration for your own projects.
 
-## License
+Copying substantial portions of this project, redistributing it, submitting it as your own work, or creating direct clones is not permitted without explicit permission.
 
-Unless otherwise stated, this repository is intended for portfolio and educational purposes. All rights are reserved.
+If this project inspires your work, please build your own implementation rather than copying the source code.
+
+All rights reserved.
