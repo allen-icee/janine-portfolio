@@ -88,12 +88,6 @@ npm run dev
 
 ---
 
-## Live Demo
-
-[Insert Deployed URL Here]
-
----
-
 ## Repository Usage
 
 This repository is shared for learning, inspiration, and portfolio purposes. You are welcome to explore the codebase and learn from the implementation.
