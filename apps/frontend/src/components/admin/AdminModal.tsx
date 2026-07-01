@@ -60,7 +60,10 @@ export function AdminModal({
                 <Icon icon="ph:x-bold" className="text-lg" />
               </button>
             </header>
-            <div className="max-h-[calc(90svh-100px)] overflow-y-auto p-6 sm:p-8">
+            <div
+              className="max-h-[calc(90svh-100px)] overflow-y-auto p-6 sm:p-8"
+              data-lenis-prevent
+            >
               {children}
             </div>
           </motion.section>

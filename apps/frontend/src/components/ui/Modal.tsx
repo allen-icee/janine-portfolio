@@ -14,7 +14,10 @@ export function Modal({ title, children, onClose }: ModalProps) {
       className="fixed inset-0 z-50 grid place-items-center bg-ink/80 px-4 backdrop-blur-xl"
       role="dialog"
     >
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-white/12 bg-panel p-6 shadow-2xl">
+      <div
+        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-white/12 bg-panel p-6 shadow-2xl"
+        data-lenis-prevent
+      >
         <div className="mb-5 flex items-center justify-between gap-4">
           <h3 className="text-xl font-semibold text-white">{title}</h3>
           <button

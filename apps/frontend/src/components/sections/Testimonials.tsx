@@ -354,7 +354,7 @@ export function Testimonials({
                 </button>
               </div>
 
-              <div className="overflow-y-auto p-5 sm:p-8">
+              <div className="overflow-y-auto p-5 sm:p-8" data-lenis-prevent>
                 <form
                   className="flex flex-col gap-4 sm:gap-5"
                   onSubmit={submitReview}

@@ -280,7 +280,10 @@ function ProjectModal({
           </button>
         </div>
 
-        <div className="overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-5 py-6 sm:px-8 sm:py-8">
+        <div
+          className="overflow-y-auto px-5 py-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] sm:px-8 sm:py-8"
+          data-lenis-prevent
+        >
           <div className="aspect-video w-full overflow-hidden rounded-2xl border-[4px] border-white shadow-sm">
             {imageOrPlaceholder(project.coverUrl, project.title)}
           </div>
