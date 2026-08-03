@@ -1,9 +1,25 @@
+# Dependency directories
 node_modules
 vendor
+
+# Environment variables
 .env
 .env.*
 !.env.example
+
+# Build output
 dist
 build
+out
+
+# OS / Editor / Agent
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
+.agent/
+.agents/
+.gemini/
+.antigravity/
+*.log
+*.tmp

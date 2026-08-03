@@ -13,9 +13,13 @@ import {
   Sparkles,
   Sun,
   Sunrise,
+  Activity,
+  Eye,
+  Users,
 } from "lucide-react";
 import { AdminGuard } from "../components/admin/AdminGuard";
 import { AdminShell } from "../components/admin/AdminShell";
+import { supabase } from "../lib/supabase";
 
 const adminCards = [
   {
@@ -113,6 +117,8 @@ const greetingStyles = {
 
 export function AdminDashboard() {
   const [now, setNow] = useState(() => new Date());
+  const [totalViews, setTotalViews] = useState<number | null>(null);
+  const [todayViews, setTodayViews] = useState<number | null>(null);
 
   const manilaDate = useMemo(() => getManilaDateParts(now), [now]);
 
@@ -122,6 +128,29 @@ export function AdminDashboard() {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
 
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    Promise.all([
+      supabase.from("page_views").select("*", { count: "exact", head: true }),
+      supabase
+        .from("page_views")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", startOfToday.toISOString()),
+    ])
+      .then(([totalRes, todayRes]) => {
+        if (!totalRes.error) setTotalViews(totalRes.count ?? 0);
+        if (!todayRes.error) setTodayViews(todayRes.count ?? 0);
+      })
+      .catch(() => {
+        setTotalViews(0);
+        setTodayViews(0);
+      });
   }, []);
 
   return (
@@ -185,6 +214,63 @@ export function AdminDashboard() {
             >
               <GreetingIcon size={30} />
             </div>
+          </div>
+        </div>
+
+        {/* Admin-Only Visitor Traffic & Database Keep-Alive Widget */}
+        <div className="mb-8 grid gap-4 sm:grid-cols-3">
+          <div className="relative overflow-hidden rounded-2xl border border-[#efdad0] bg-white/70 p-5 shadow-sm backdrop-blur transition hover:border-[#ad6a6c]/60 hover:bg-white hover:shadow-md">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#3c232c]/65">
+                Total Site Visits
+              </span>
+              <div className="grid size-9 place-items-center rounded-xl bg-[#f8cdb4]/30 text-[#ad6a6c]">
+                <Users size={18} />
+              </div>
+            </div>
+            <p className="mt-3 font-mono text-3xl font-extrabold text-[#3c232c]">
+              {totalViews === null ? "—" : totalViews.toLocaleString()}
+            </p>
+            <p className="mt-1 text-xs text-[#3c232c]/60">
+              All-time views across public pages
+            </p>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border border-[#efdad0] bg-white/70 p-5 shadow-sm backdrop-blur transition hover:border-[#ad6a6c]/60 hover:bg-white hover:shadow-md">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#3c232c]/65">
+                Views Today
+              </span>
+              <div className="grid size-9 place-items-center rounded-xl bg-[#e3d1d1]/30 text-[#ad6a6c]">
+                <Eye size={18} />
+              </div>
+            </div>
+            <p className="mt-3 font-mono text-3xl font-extrabold text-[#3c232c]">
+              {todayViews === null ? "—" : todayViews.toLocaleString()}
+            </p>
+            <p className="mt-1 text-xs text-[#3c232c]/60">
+              Visits recorded since midnight (PHT)
+            </p>
+          </div>
+
+          <div className="relative overflow-hidden rounded-2xl border border-[#ad6a6c]/30 bg-gradient-to-br from-[#fffdfa] to-[#fff6f0] p-5 shadow-sm backdrop-blur transition hover:border-[#ad6a6c]/60 hover:shadow-md">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#ad6a6c]">
+                Supabase Keep-Alive
+              </span>
+              <div className="grid size-9 place-items-center rounded-xl bg-[#ad6a6c] text-white">
+                <Activity size={18} />
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <span className="inline-flex size-2 rounded-full bg-emerald-500" />
+              <span className="text-sm font-bold text-[#3c232c]">
+                Active (Auto-Reset)
+              </span>
+            </div>
+            <p className="mt-1 text-xs leading-4 text-[#3c232c]/65">
+              Every page visit resets the 7-day pause timer.
+            </p>
           </div>
         </div>
 

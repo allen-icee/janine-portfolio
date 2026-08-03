@@ -19,12 +19,14 @@ import { Contact } from "../components/sections/Contact";
 import { FloatingContact } from "../components/ui/FloatingContact";
 import { fetchPublicContent } from "../lib/publicContent";
 import type { PublicContent } from "../lib/publicContent";
+import { recordPageView } from "../lib/analytics";
 
 export function LandingPage() {
   const [content, setContent] = useState<PublicContent>({});
 
   useEffect(() => {
     let mounted = true;
+    recordPageView("/");
 
     fetchPublicContent()
       .then((data) => {
