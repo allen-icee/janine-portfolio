@@ -21,6 +21,8 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
 
   const [password, setPassword] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -162,14 +164,24 @@ export function AdminModal({ open, onClose }: AdminModalProps) {
                       Password
                     </label>
 
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className="h-12 rounded-xl border border-[#efdad0] bg-white/70 px-4 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        placeholder="••••••••"
+                        required
+                        className="h-12 w-full rounded-xl border border-[#efdad0] bg-white/70 px-4 pr-12 text-sm text-[#3c232c] outline-none transition-all duration-300 focus:border-[#ad6a6c] focus:bg-white focus:ring-2 focus:ring-[#ad6a6c]/20"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#3c232c]/50 hover:text-[#ad6a6c] transition-colors"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        <Icon icon={showPassword ? "ph:eye-slash-fill" : "ph:eye-fill"} className="text-xl" />
+                      </button>
+                    </div>
                   </div>
 
                   {error && (
